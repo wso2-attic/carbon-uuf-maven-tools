@@ -2,7 +2,7 @@
 
 Carbon UUF Maven Plugin project provides a maven plugin for creating UUF Applications and UUF Components of the [Unified UI Framework(UUF)](https://github.com/wso2/carbon-uuf).
 
-Carbon UUF Maven Plugin tries to reusing the existing maven plugins where as possible(i.e.Maven-Assembly-Plugin). This project also uses MOJO executor to execute MOJOs(i.e.Maven-Assembly-Plugin). This plugin provides two maven goals;
+Carbon UUF Maven Plugin tries to reusing the existing maven plugins where as possible(i.e.Maven-Assembly-Plugin, Maven-Dependency-Plugin). This plugin provides two maven goals;
 
 * create-component : This goal is used for creating UUF Component.
 * create-application : This goal is used for creating UUF Application.
@@ -127,6 +127,18 @@ Following UUF Application reuses the UUF Application "pets-store"(org.wso2.uuf.s
     </plugins>
 </build>
 ```
+#### OSGi Imports for UUF Artifacts
+If you are using Java classes exported by other OSGi bundles inside your JavaScript files, you need to explicitly mention the package imports inorder to minimize classloading complexisities. For instance;
+
+```xml
+<properties>
+    <import.package>
+        org.wso2.carbon.uuf.*;version=[1.0.0,2.0.0],
+        org.wso2.msf4j
+    </import.package>
+</properties>
+```
+
 ## Download 
 
 Use Maven snippet:
