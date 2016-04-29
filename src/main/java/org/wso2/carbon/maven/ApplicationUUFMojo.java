@@ -90,23 +90,16 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
     }
 
     private void unpackDependencies() throws MojoExecutionException {
-        executeMojo(
-                plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"),
-                version(dependencyPluginVersion)),
-                goal("unpack-dependencies"),
-                configuration(
-                        element(name("outputDirectory"), getUUFTempDirectory().toString())),
+        executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"),
+                version(dependencyPluginVersion)), goal("unpack-dependencies"),
+                configuration(element(name("outputDirectory"), getUUFTempDirectory().toString())),
                 executionEnvironment(getProject(), getMavenSession(), pluginManager));
     }
 
     private void createDependencyConfig() throws MojoExecutionException {
-        executeMojo(
-                plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"),
-                version(dependencyPluginVersion)),
-                goal("tree"),
-                configuration(
-                        element(name("verbose"), "true"),
-                        element(name("outputFile"), getUUFTempDirectory().resolve("dependency.tree").toString())),
+        executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"),
+                version(dependencyPluginVersion)), goal("tree"), configuration(element(name("verbose"), "true"),
+                element(name("outputFile"), getUUFTempDirectory().resolve("dependency.tree").toString())),
                 executionEnvironment(getProject(), getMavenSession(), getPluginManager()));
     }
 
@@ -174,7 +167,7 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
          * This will return all applications found.
          * @return all applications
          */
-        public Set<Path> getApplications(){
+        public Set<Path> getApplications() {
             return applications;
         }
 
@@ -216,19 +209,19 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
                 updateApplication(relativePath);
                 try {
                     Files.createDirectories(targetPath.resolve(removeAppName(relativePath)));
-                }catch (FileAlreadyExistsException e){
+                } catch (FileAlreadyExistsException e) {
                     //ignore
                 }
             }
             return FileVisitResult.CONTINUE;
         }
 
-        private void updateApplication(String relativePath){
+        private void updateApplication(String relativePath) {
             Path application = rootPath.resolve(relativePath.substring(0, relativePath.indexOf(File.separator)));
             applications.add(application);
         }
 
-        private String removeAppName(String relativePath){
+        private String removeAppName(String relativePath) {
             int thirdSlash = indexOfNthOccurrence(relativePath, File.separator, 3);
             return relativePath.substring(thirdSlash + 1);
         }
@@ -243,7 +236,7 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
         }
 
         private Log getLog() {
-            if(this.log == null) {
+            if (this.log == null) {
                 this.log = new SystemStreamLog();
             }
             return this.log;

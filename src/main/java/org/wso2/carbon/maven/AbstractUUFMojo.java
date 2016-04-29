@@ -43,54 +43,43 @@ import java.util.List;
 
 public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
 
+    protected static final String UUF_ASSEMBLY_FORMAT = "zip";
     @Parameter(defaultValue = "${project}", readonly = true, required = true) private MavenProject project;
-
     /**
      * Maven AssemblyArchiver.
      */
     @Component private AssemblyArchiver assemblyArchiver;
-
     /**
      * Indicates if zip archives (jar,zip etc) being added to the assembly should be compressed again.
      * Compressing again can result in smaller archive size, but gives noticeably longer execution time.
      */
     @Parameter(defaultValue = "true") private boolean recompressZippedFiles;
-
     /**
      * sets the merge manifest mode in the JarArchiver
      */
     @Parameter private String mergeManifestMode;
-
     /**
      * Maven ProjectHelper.
      */
     @Component private MavenProjectHelper projectHelper;
-
     /**
      * Controls whether the assembly plugin tries to attach the resulting assembly to the project.
      */
     @Parameter(property = "assembly.attach", defaultValue = "true") private boolean attach;
-
     /**
      * The filename of the assembled distribution file.
      */
     @Parameter(defaultValue = "${project.build.finalName}", required = true) private String finalName;
-
     /**
      * The artifactId of the project.
      */
-    @Parameter(defaultValue = "${project.artifactId}", required = true, readonly = true) private String
-            artifactId;
-
+    @Parameter(defaultValue = "${project.artifactId}", required = true, readonly = true) private String artifactId;
     @Parameter(defaultValue = "${import.package}", readonly = true) private List<String> osgiImports;
-
     /**
      * The output directory of the assembled distribution file.
      */
     @Parameter(defaultValue = "${project.build.directory}", required = true, readonly = true) private String
             outputDirectoryPath;
-
-    protected static final String UUF_ASSEMBLY_FORMAT = "zip";
 
     public abstract Assembly getAssembly();
 
@@ -106,8 +95,8 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
         Assembly assembly = getAssembly();
         final String fullName = AssemblyFormatUtils.getDistributionName(assembly, this);
         try {
-            final File destFile = assemblyArchiver.createArchive(assembly, fullName, UUF_ASSEMBLY_FORMAT,
-                    this, recompressZippedFiles);
+            final File destFile = assemblyArchiver.createArchive(assembly, fullName, UUF_ASSEMBLY_FORMAT, this,
+                    recompressZippedFiles);
             final MavenProject project = getProject();
             final String classifier = getClassifier();
             final String type = project.getArtifact().getType();
@@ -135,16 +124,14 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
                     projectHelper.attachArtifact(project, UUF_ASSEMBLY_FORMAT, null, destFile);
                 }
             } else if (attach) {
-                getLog().warn(
-                        "Assembly file: " + destFile + " is not a regular file (it may be a directory). " +
-                                "It cannot be attached to the project build for installation or " +
-                                "deployment.");
+                getLog().warn("Assembly file: " + destFile + " is not a regular file (it may be a directory). " +
+                        "It cannot be attached to the project build for installation or " +
+                        "deployment.");
             }
         } catch (final ArchiveCreationException | AssemblyFormattingException e) {
             throw new MojoExecutionException("Failed to create assembly: " + e.getMessage(), e);
         } catch (final InvalidAssemblerConfigurationException e) {
-            throw new MojoFailureException(assembly,
-                    "Assembly is incorrectly configured: " + assembly.getId(),
+            throw new MojoFailureException(assembly, "Assembly is incorrectly configured: " + assembly.getId(),
                     "Assembly: " + assembly.getId() + " is not configured correctly: " + e.getMessage());
         }
     }
