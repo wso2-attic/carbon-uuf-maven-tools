@@ -24,41 +24,17 @@ import org.apache.maven.plugin.assembly.model.Assembly;
 import org.apache.maven.plugin.assembly.model.FileSet;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.shared.dependency.graph.DependencyGraphBuilder;
 import org.apache.maven.shared.dependency.graph.DependencyNode;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.FileSystems;
-import java.nio.file.FileVisitOption;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 
 /**
  * Create a UUF application artifact.
@@ -105,16 +81,25 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
 
     @Override
     public Assembly getAssembly() {
-        return createApplicationAssembly("make-application", "/" + getSimpleArtifactId());
+        return createApplicationAssembly("make-application", "/" + getArtifactId());
     }
 
     private Assembly createApplicationAssembly(String assemblyId, String baseDirectory) {
         Assembly assembly = new Assembly();
         assembly.setId(assemblyId);
         assembly.setBaseDirectory(baseDirectory);
-        FileSet fileSet1 = createFileSet(getBasedir().getAbsolutePath(), "/components/root");
-        FileSet fileSet2 = createFileSet(getUUFTempDirectory().toString(), "/components/");
-        assembly.setFileSets(createFileSetList(fileSet1, fileSet2));
+        List<FileSet> fileSets = new ArrayList<>();
+        fileSets.add(createFileSet(getBasedir().getAbsolutePath(), "/components/root"));
+
+        DependencyHolder dependencies = getDependencies(getUUFTempDirectory());
+        for (Path currentTheme : dependencies.getThemes()) {
+            fileSets.add(createFileSet(currentTheme.toString(), "/themes/"));
+        }
+        for (Path currentComponent : dependencies.getComponents()) {
+            fileSets.add(createFileSet(currentComponent.toString(), "/components/"));
+        }
+        assembly.setFileSets(fileSets);
+
         List<String> formatsList = new ArrayList<>();
         formatsList.add(UUF_ASSEMBLY_FORMAT);
         assembly.setFormats(formatsList);
@@ -241,5 +226,48 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
             }
             return this.log;
         }
+    }
+
+    private static class DependencyHolder {
+        private final Set<Path> components;
+        private final Set<Path> themes;
+
+        public DependencyHolder(Set<Path> components, Set<Path> themes) {
+            this.components = components;
+            this.themes = themes;
+        }
+
+        public Set<Path> getComponents() {
+            return components;
+        }
+
+        public Set<Path> getThemes() {
+            return themes;
+        }
+    }
+
+    private static class DirectoriesFilter implements DirectoryStream.Filter<Path> {
+        @Override
+        public boolean accept(Path entry) throws IOException {
+            return Files.isDirectory(entry);
+        }
+    }
+
+    private static DependencyHolder getDependencies(Path rootDir) {
+        Set<Path> components = new HashSet<>();
+        Set<Path> themes = new HashSet<>();
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(rootDir, new DirectoriesFilter())) {
+            for (Path dir : directoryStream) {
+                System.out.println(dir.getFileName());
+                if (Files.exists(dir.resolve("theme.yaml"))) {
+                    themes.add(dir);
+                } else {
+                    components.add(dir);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new DependencyHolder(components, themes);
     }
 }
