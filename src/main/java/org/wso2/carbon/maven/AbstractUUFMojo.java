@@ -44,47 +44,58 @@ import java.util.List;
 public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
 
     protected static final String UUF_ASSEMBLY_FORMAT = "zip";
-    @Parameter(defaultValue = "${project}", readonly = true, required = true) private MavenProject project;
+    @Parameter(defaultValue = "${project}", readonly = true, required = true)
+    private MavenProject project;
     /**
      * Maven AssemblyArchiver.
      */
-    @Component private AssemblyArchiver assemblyArchiver;
+    @Component
+    private AssemblyArchiver assemblyArchiver;
     /**
-     * Indicates if zip archives (jar,zip etc) being added to the assembly should be compressed again.
-     * Compressing again can result in smaller archive size, but gives noticeably longer execution time.
+     * Indicates if zip archives (jar,zip etc) being added to the assembly should be compressed again. Compressing again
+     * can result in smaller archive size, but gives noticeably longer execution time.
      */
-    @Parameter(defaultValue = "true") private boolean recompressZippedFiles;
+    @Parameter(defaultValue = "true")
+    private boolean recompressZippedFiles;
     /**
      * sets the merge manifest mode in the JarArchiver
      */
-    @Parameter private String mergeManifestMode;
+    @Parameter
+    private String mergeManifestMode;
     /**
      * Maven ProjectHelper.
      */
-    @Component private MavenProjectHelper projectHelper;
+    @Component
+    private MavenProjectHelper projectHelper;
     /**
      * Controls whether the assembly plugin tries to attach the resulting assembly to the project.
      */
-    @Parameter(property = "assembly.attach", defaultValue = "true") private boolean attach;
+    @Parameter(property = "assembly.attach", defaultValue = "true")
+    private boolean attach;
     /**
      * The filename of the assembled distribution file.
      */
-    @Parameter(defaultValue = "${project.build.finalName}", required = true) private String finalName;
+    @Parameter(defaultValue = "${project.build.finalName}", required = true)
+    private String finalName;
     /**
      * The artifactId of the project.
      */
-    @Parameter(defaultValue = "${project.artifactId}", required = true, readonly = true) private String artifactId;
-    @Parameter(defaultValue = "${import.package}", readonly = true) private List<String> osgiImports;
+    @Parameter(defaultValue = "${project.artifactId}", required = true, readonly = true)
+    private String artifactId;
+    @Parameter(defaultValue = "${import.package}", readonly = true)
+    private List<String> osgiImports;
     /**
      * The output directory of the assembled distribution file.
      */
-    @Parameter(defaultValue = "${project.build.directory}", required = true, readonly = true) private String
+    @Parameter(defaultValue = "${project.build.directory}", required = true, readonly = true)
+    private String
             outputDirectoryPath;
 
-    public abstract Assembly getAssembly();
+    public abstract Assembly getAssembly() throws MojoFailureException;
 
     /**
      * Create the binary distribution.
+     *
      * @throws org.apache.maven.plugin.MojoExecutionException
      */
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -96,7 +107,7 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
         final String fullName = AssemblyFormatUtils.getDistributionName(assembly, this);
         try {
             final File destFile = assemblyArchiver.createArchive(assembly, fullName, UUF_ASSEMBLY_FORMAT, this,
-                    recompressZippedFiles);
+                                                                 recompressZippedFiles);
             final MavenProject project = getProject();
             final String classifier = getClassifier();
             final String type = project.getArtifact().getType();
@@ -108,16 +119,16 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
                 } else if (!"pom".equals(type) && UUF_ASSEMBLY_FORMAT.equals(type)) {
                     final StringBuilder message = new StringBuilder();
                     message.append("Configuration options: 'appendAssemblyId' is set to false, "
-                            + "and 'classifier' is missing.");
+                                           + "and 'classifier' is missing.");
                     message.append("\nInstead of attaching the assembly file: ").append(destFile);
                     message.append(", it will become the file for main project artifact.");
                     message.append("\nNOTE: If multiple descriptors or descriptor-formats are provided " +
-                            "for this project, the value of this file will be " + "non-deterministic!");
+                                           "for this project, the value of this file will be " + "non-deterministic!");
                     getLog().warn(message);
                     final File existingFile = project.getArtifact().getFile();
                     if ((existingFile != null) && existingFile.exists()) {
                         getLog().warn("Replacing pre-existing project main-artifact file: " + existingFile +
-                                "\n with assembly file: " + destFile);
+                                              "\n with assembly file: " + destFile);
                     }
                     project.getArtifact().setFile(destFile);
                 } else {
@@ -125,14 +136,15 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
                 }
             } else if (attach) {
                 getLog().warn("Assembly file: " + destFile + " is not a regular file (it may be a directory). " +
-                        "It cannot be attached to the project build for installation or " +
-                        "deployment.");
+                                      "It cannot be attached to the project build for installation or " +
+                                      "deployment.");
             }
         } catch (final ArchiveCreationException | AssemblyFormattingException e) {
             throw new MojoExecutionException("Failed to create assembly: " + e.getMessage(), e);
         } catch (final InvalidAssemblerConfigurationException e) {
             throw new MojoFailureException(assembly, "Assembly is incorrectly configured: " + assembly.getId(),
-                    "Assembly: " + assembly.getId() + " is not configured correctly: " + e.getMessage());
+                                           "Assembly: " + assembly.getId() + " is not configured correctly: " +
+                                                   e.getMessage());
         }
     }
 
@@ -181,7 +193,7 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
             Files.write(osgiImportsConfig, content.toString().getBytes());
         } catch (IOException e) {
             throw new MojoExecutionException("Cannot create file '" + osgiImportsConfig +
-                    "' when trying to create osgi imports config", e);
+                                                     "' when trying to create osgi imports config", e);
         }
     }
 

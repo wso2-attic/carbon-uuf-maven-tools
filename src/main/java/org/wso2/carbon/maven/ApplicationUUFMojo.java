@@ -34,6 +34,7 @@ import org.apache.maven.shared.dependency.graph.DependencyNode;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitOption;
@@ -62,10 +63,9 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 /**
  * Create a UUF application artifact.
- *
  */
 @Mojo(name = "create-application", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
-        threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
+      threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class ApplicationUUFMojo extends AbstractUUFMojo {
 
     /**
@@ -76,11 +76,30 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
     /**
      * The dependency tree builder to use.
      */
-    @Component(hint = "default") private DependencyGraphBuilder dependencyGraphBuilder;
+    @Component(hint = "default")
+    private DependencyGraphBuilder dependencyGraphBuilder;
 
-    @Parameter(defaultValue = "2.1") private String dependencyPluginVersion;
+    @Parameter(defaultValue = "2.1")
+    private String dependencyPluginVersion;
 
-    @Component private BuildPluginManager pluginManager;
+    @Component
+    private BuildPluginManager pluginManager;
+
+    private static DependencyHolder getDependencies(Path rootDir) throws IOException {
+        Set<Path> components = new HashSet<>();
+        Set<Path> themes = new HashSet<>();
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(rootDir, new DirectoriesFilter())) {
+            for (Path dir : directoryStream) {
+                System.out.println(dir.getFileName());
+                if (Files.exists(dir.resolve("theme.yaml"))) {
+                    themes.add(dir);
+                } else {
+                    components.add(dir);
+                }
+            }
+        }
+        return new DependencyHolder(components, themes);
+    }
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         unpackDependencies();
@@ -91,30 +110,47 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
 
     private void unpackDependencies() throws MojoExecutionException {
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"),
-                version(dependencyPluginVersion)), goal("unpack-dependencies"),
-                configuration(element(name("outputDirectory"), getUUFTempDirectory().toString())),
-                executionEnvironment(getProject(), getMavenSession(), pluginManager));
+                           version(dependencyPluginVersion)), goal("unpack-dependencies"),
+                    configuration(element(name("outputDirectory"), getUUFTempDirectory().toString())),
+                    executionEnvironment(getProject(), getMavenSession(), pluginManager));
     }
 
     private void createDependencyConfig() throws MojoExecutionException {
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"),
-                version(dependencyPluginVersion)), goal("tree"), configuration(element(name("verbose"), "true"),
-                element(name("outputFile"), getUUFTempDirectory().resolve("dependency.tree").toString())),
-                executionEnvironment(getProject(), getMavenSession(), getPluginManager()));
+                           version(dependencyPluginVersion)), goal("tree"),
+                    configuration(element(name("verbose"), "true"),
+                                  element(name("outputFile"),
+                                          getUUFTempDirectory().resolve("dependency.tree").toString())),
+                    executionEnvironment(getProject(), getMavenSession(), getPluginManager()));
     }
 
     @Override
-    public Assembly getAssembly() {
-        return createApplicationAssembly("make-application", "/" + getSimpleArtifactId());
+    public Assembly getAssembly() throws MojoFailureException {
+        return createApplicationAssembly("make-application", "/" + getArtifactId());
     }
 
-    private Assembly createApplicationAssembly(String assemblyId, String baseDirectory) {
+    private Assembly createApplicationAssembly(String assemblyId, String baseDirectory) throws MojoFailureException {
         Assembly assembly = new Assembly();
         assembly.setId(assemblyId);
         assembly.setBaseDirectory(baseDirectory);
-        FileSet fileSet1 = createFileSet(getBasedir().getAbsolutePath(), "/components/root");
-        FileSet fileSet2 = createFileSet(getUUFTempDirectory().toString(), "/components/");
-        assembly.setFileSets(createFileSetList(fileSet1, fileSet2));
+        List<FileSet> fileSets = new ArrayList<>();
+        fileSets.add(createFileSet(getBasedir().getAbsolutePath(), "/components/root"));
+
+        Path uufTempDirectory = getUUFTempDirectory();
+        try {
+            DependencyHolder dependencies = getDependencies(uufTempDirectory);
+            for (Path currentTheme : dependencies.getThemes()) {
+                fileSets.add(createFileSet(currentTheme.toString(), "/themes/"));
+            }
+            for (Path currentComponent : dependencies.getComponents()) {
+                fileSets.add(createFileSet(currentComponent.toString(), "/components/"));
+            }
+        } catch (IOException e) {
+            throw new MojoFailureException(
+                    "Error occurred while reading extracted dependencies on '" + uufTempDirectory.toString() + "'");
+        }
+        assembly.setFileSets(fileSets);
+
         List<String> formatsList = new ArrayList<>();
         formatsList.add(UUF_ASSEMBLY_FORMAT);
         assembly.setFormats(formatsList);
@@ -145,6 +181,31 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
         }
     }
 
+    private static class DependencyHolder {
+        private final Set<Path> components;
+        private final Set<Path> themes;
+
+        public DependencyHolder(Set<Path> components, Set<Path> themes) {
+            this.components = components;
+            this.themes = themes;
+        }
+
+        public Set<Path> getComponents() {
+            return components;
+        }
+
+        public Set<Path> getThemes() {
+            return themes;
+        }
+    }
+
+    private static class DirectoriesFilter implements DirectoryStream.Filter<Path> {
+        @Override
+        public boolean accept(Path entry) throws IOException {
+            return Files.isDirectory(entry);
+        }
+    }
+
     public class AppsVisitor extends SimpleFileVisitor<Path> {
 
         private final PathMatcher matcher;
@@ -165,6 +226,7 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
 
         /**
          * This will return all applications found.
+         *
          * @return all applications
          */
         public Set<Path> getApplications() {
@@ -172,9 +234,10 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
         }
 
         /**
-         * This method will be called when visiting all *files* inside root component.
-         * This will copy files into targetPath.
-         * @param file visiting file
+         * This method will be called when visiting all *files* inside root component. This will copy files into
+         * targetPath.
+         *
+         * @param file  visiting file
          * @param attrs file attributes
          * @return FileVisitResult
          * @throws IOException
@@ -194,10 +257,10 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
         }
 
         /**
-         * This method will be called when visiting all *folders* inside root component.
-         * This will create new folders in targetPath relative to the root component.
-         * relative to the root component.
-         * @param dir visiting directory
+         * This method will be called when visiting all *folders* inside root component. This will create new folders in
+         * targetPath relative to the root component. relative to the root component.
+         *
+         * @param dir   visiting directory
          * @param attrs directory attributes
          * @return FileVisitResult
          * @throws IOException

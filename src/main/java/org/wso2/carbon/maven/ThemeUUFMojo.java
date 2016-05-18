@@ -27,18 +27,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Create a UUF component artifact.
+ * Create a UUF Theme artifact.
  */
-@Mojo(name = "create-component", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
+@Mojo(name = "create-theme", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
-public class ComponentUUFMojo extends AbstractUUFMojo {
+public class ThemeUUFMojo extends AbstractUUFMojo {
 
     @Override
     public Assembly getAssembly() throws MojoFailureException {
-        return createComponentAssembly("make-component", "/" + getSimpleArtifactId());
+        return createThemeAssembly("make-theme", "/" + getArtifactId());
     }
 
-    private Assembly createComponentAssembly(String assemblyId, String baseDirectory) {
+    private Assembly createThemeAssembly(String assemblyId, String baseDirectory) {
         Assembly assembly = new Assembly();
         assembly.setId(assemblyId);
         assembly.setBaseDirectory(baseDirectory);
