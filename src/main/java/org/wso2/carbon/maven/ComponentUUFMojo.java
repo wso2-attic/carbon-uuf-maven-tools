@@ -16,6 +16,7 @@
 
 package org.wso2.carbon.maven;
 
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.assembly.model.Assembly;
 import org.apache.maven.plugin.assembly.model.FileSet;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -27,14 +28,13 @@ import java.util.List;
 
 /**
  * Create a UUF component artifact.
- *
  */
 @Mojo(name = "create-component", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
-        threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
+      threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class ComponentUUFMojo extends AbstractUUFMojo {
 
     @Override
-    public Assembly getAssembly() {
+    public Assembly getAssembly() throws MojoFailureException {
         return createComponentAssembly("make-component", "/" + getSimpleArtifactId());
     }
 
