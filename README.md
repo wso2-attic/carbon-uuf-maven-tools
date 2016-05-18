@@ -29,7 +29,25 @@ A client maven module which needs to create a UUF application and/or component s
 </plugin>
 ```
 
-#### 2) Creating a UUF Application
+#### 2) Creating a UUF Theme
+
+```xml
+<plugin>
+    <groupId>org.wso2.carbon.maven</groupId>
+    <artifactId>carbon-uuf-maven-plugin</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <executions>
+        <execution>
+            <phase>package</phase>
+            <goals>
+                <goal>create-theme</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+#### 3) Creating a UUF Application
 
 This is the way of creating the UUF application. All the `Pages` and `Fragments` of the current Application will be moved into a component called "root" inside the "/components" folder.
   
@@ -54,12 +72,20 @@ This is the way of creating the UUF application. All the `Pages` and `Fragments`
 </build>
 ```
 
-#### 3) Adding UUF Components dependencies to the UUF Application.
+#### 4) Adding UUF Components and Themes dependencies to the UUF Application.
 
-Following UUF Application reuses the UUF components "base"(org.wso2.uuf.base) and "basicauth"(org.wso2.is.uuf.basicauth).
+Following UUF Application reuses the UUF components "base"(org.wso2.uuf.base) and "basicauth"(org.wso2.is.uuf.basicauth) and utilize the theme "dark"(org.wso2.uuf.theme.dark).
 
 ```xml
 <dependencies>
+   <!-- themes -->
+   <dependency>
+      <groupId>org.wso2.uuf</groupId>
+      <artifactId>org.wso2.uuf.theme.dark</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <type>zip</type>
+  </dependency>
+  <!-- components -->
   <dependency>
       <groupId>org.wso2.uuf</groupId>
       <artifactId>org.wso2.uuf.base</artifactId>
@@ -94,7 +120,7 @@ Following UUF Application reuses the UUF components "base"(org.wso2.uuf.base) an
 </build>
 ```
 
-#### 4) When a UUF Application depends on another UUF Application.
+#### 5) When a UUF Application depends on another UUF Application.
 
 Following UUF Application reuses the UUF Application "pets-store"(org.wso2.uuf.sample.pets-store). In this case, the "root" components of the both applications are merged. When a duplicate occurs target application receives the priority.
 
