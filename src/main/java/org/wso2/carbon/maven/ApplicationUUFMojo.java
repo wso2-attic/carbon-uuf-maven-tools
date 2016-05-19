@@ -20,6 +20,7 @@ import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.assembly.model.Assembly;
+import org.apache.maven.plugin.assembly.model.FileItem;
 import org.apache.maven.plugin.assembly.model.FileSet;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -57,6 +58,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class ApplicationUUFMojo extends AbstractUUFMojo {
 
+    private static final String KEY_DEPENDENCY_TREE_FILE = "dependency.tree";
     /**
      * The computed dependency tree root node of the Maven project.
      */
@@ -98,7 +100,7 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         unpackDependencies();
-        createDependencyConfig();
+        createDependencyConfig("::" + UUF_THEME_ASSEMBLY_FORMAT + ":");
         normalizeAppDependencies();
         super.execute();
     }
@@ -110,12 +112,13 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
                     executionEnvironment(getProject(), getMavenSession(), pluginManager));
     }
 
-    private void createDependencyConfig() throws MojoExecutionException {
+    private void createDependencyConfig(String excludes) throws MojoExecutionException {
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"),
                            version(dependencyPluginVersion)), goal("tree"),
                     configuration(element(name("verbose"), "true"),
                                   element(name("outputFile"),
-                                          getUUFTempDirectory().resolve("dependency.tree").toString())),
+                                          getUUFTempDirectory().resolve(KEY_DEPENDENCY_TREE_FILE).toString()),
+                                  element(name("excludes"), excludes)),
                     executionEnvironment(getProject(), getMavenSession(), getPluginManager()));
     }
 
@@ -129,16 +132,16 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
         assembly.setId(assemblyId);
         assembly.setBaseDirectory(baseDirectory);
         List<FileSet> fileSets = new ArrayList<>();
-        fileSets.add(createFileSet(getBasedir().getAbsolutePath(), "/components/root"));
+        fileSets.add(createFileSet(getBasedir().getAbsolutePath(), "./components/root"));
 
         Path uufTempDirectory = getUUFTempDirectory();
         try {
             DependencyHolder dependencies = getDependencies(uufTempDirectory);
             for (Path currentTheme : dependencies.getThemes()) {
-                fileSets.add(createFileSet(currentTheme.toString(), "/themes/"));
+                fileSets.add(createFileSet(currentTheme.toString(), "./themes/"));
             }
             for (Path currentComponent : dependencies.getComponents()) {
-                fileSets.add(createFileSet(currentComponent.toString(), "/components/"));
+                fileSets.add(createFileSet(currentComponent.toString(), "./components/"));
             }
         } catch (IOException e) {
             throw new MojoFailureException(
@@ -146,8 +149,15 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
         }
         assembly.setFileSets(fileSets);
 
+        ArrayList<FileItem> fileItems = new ArrayList<>();
+        FileItem fileItem = new FileItem();
+        fileItem.setSource(uufTempDirectory.resolve(KEY_DEPENDENCY_TREE_FILE).toString());
+        fileItem.setOutputDirectory("/components/");
+        fileItems.add(fileItem);
+        assembly.setFiles(fileItems);
+
         List<String> formatsList = new ArrayList<>();
-        formatsList.add(UUF_ASSEMBLY_FORMAT);
+        formatsList.add(UUF_COMPONENT_ASSEMBLY_FORMAT);
         assembly.setFormats(formatsList);
         return assembly;
     }

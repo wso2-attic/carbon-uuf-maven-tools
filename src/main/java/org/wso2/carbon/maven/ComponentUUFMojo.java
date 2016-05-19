@@ -42,11 +42,11 @@ public class ComponentUUFMojo extends AbstractUUFMojo {
         Assembly assembly = new Assembly();
         assembly.setId(assemblyId);
         assembly.setBaseDirectory(baseDirectory);
-        FileSet fileSet1 = createFileSet(getBasedir().getAbsolutePath(), "/");
-        FileSet fileSet2 = createFileSet(getUUFTempDirectory().toString(), "/");
+        FileSet fileSet1 = createFileSet(getBasedir().getAbsolutePath(), "./");
+        FileSet fileSet2 = createFileSet(getUUFTempDirectory().toString(), "./");
         assembly.setFileSets(createFileSetList(fileSet1, fileSet2));
         List<String> formatsList = new ArrayList<>();
-        formatsList.add(UUF_ASSEMBLY_FORMAT);
+        formatsList.add(UUF_COMPONENT_ASSEMBLY_FORMAT);
         assembly.setFormats(formatsList);
         return assembly;
     }
