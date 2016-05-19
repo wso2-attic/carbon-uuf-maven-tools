@@ -43,7 +43,8 @@ import java.util.List;
 
 public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
 
-    protected static final String UUF_ASSEMBLY_FORMAT = "zip";
+    protected static final String UUF_COMPONENT_ASSEMBLY_FORMAT = "zip";
+    protected static final String UUF_THEME_ASSEMBLY_FORMAT = "tar";
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
     /**
@@ -104,19 +105,24 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
         setAppendAssemblyId(false);
         createOsgiImportsConfig();
         Assembly assembly = getAssembly();
+        List<String> formats = assembly.getFormats();
+        if (formats.isEmpty()) {
+            throw new MojoFailureException("Assembly is incorrectly configured: " + assembly.getId() +
+                                                   "archive format is not specified");
+        }
         final String fullName = AssemblyFormatUtils.getDistributionName(assembly, this);
         try {
-            final File destFile = assemblyArchiver.createArchive(assembly, fullName, UUF_ASSEMBLY_FORMAT, this,
+            final File destFile = assemblyArchiver.createArchive(assembly, fullName, formats.get(0), this,
                                                                  recompressZippedFiles);
             final MavenProject project = getProject();
             final String classifier = getClassifier();
             final String type = project.getArtifact().getType();
             if (attach && destFile.isFile()) {
                 if (isAssemblyIdAppended()) {
-                    projectHelper.attachArtifact(project, UUF_ASSEMBLY_FORMAT, assembly.getId(), destFile);
+                    projectHelper.attachArtifact(project, UUF_COMPONENT_ASSEMBLY_FORMAT, assembly.getId(), destFile);
                 } else if (classifier != null) {
-                    projectHelper.attachArtifact(project, UUF_ASSEMBLY_FORMAT, classifier, destFile);
-                } else if (!"pom".equals(type) && UUF_ASSEMBLY_FORMAT.equals(type)) {
+                    projectHelper.attachArtifact(project, UUF_COMPONENT_ASSEMBLY_FORMAT, classifier, destFile);
+                } else if (!"pom".equals(type) && UUF_COMPONENT_ASSEMBLY_FORMAT.equals(type)) {
                     final StringBuilder message = new StringBuilder();
                     message.append("Configuration options: 'appendAssemblyId' is set to false, "
                                            + "and 'classifier' is missing.");
@@ -132,7 +138,7 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
                     }
                     project.getArtifact().setFile(destFile);
                 } else {
-                    projectHelper.attachArtifact(project, UUF_ASSEMBLY_FORMAT, null, destFile);
+                    projectHelper.attachArtifact(project, UUF_COMPONENT_ASSEMBLY_FORMAT, null, destFile);
                 }
             } else if (attach) {
                 getLog().warn("Assembly file: " + destFile + " is not a regular file (it may be a directory). " +
