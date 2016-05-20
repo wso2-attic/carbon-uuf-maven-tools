@@ -112,17 +112,18 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
         }
         final String fullName = AssemblyFormatUtils.getDistributionName(assembly, this);
         try {
-            final File destFile = assemblyArchiver.createArchive(assembly, fullName, formats.get(0), this,
+            String currentFormat = formats.get(0);
+            final File destFile = assemblyArchiver.createArchive(assembly, fullName, currentFormat, this,
                                                                  recompressZippedFiles);
             final MavenProject project = getProject();
             final String classifier = getClassifier();
             final String type = project.getArtifact().getType();
             if (attach && destFile.isFile()) {
                 if (isAssemblyIdAppended()) {
-                    projectHelper.attachArtifact(project, UUF_COMPONENT_ASSEMBLY_FORMAT, assembly.getId(), destFile);
+                    projectHelper.attachArtifact(project, currentFormat, assembly.getId(), destFile);
                 } else if (classifier != null) {
-                    projectHelper.attachArtifact(project, UUF_COMPONENT_ASSEMBLY_FORMAT, classifier, destFile);
-                } else if (!"pom".equals(type) && UUF_COMPONENT_ASSEMBLY_FORMAT.equals(type)) {
+                    projectHelper.attachArtifact(project, currentFormat, classifier, destFile);
+                } else if (!"pom".equals(type) && currentFormat.equals(type)) {
                     final StringBuilder message = new StringBuilder();
                     message.append("Configuration options: 'appendAssemblyId' is set to false, "
                                            + "and 'classifier' is missing.");
@@ -138,7 +139,7 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
                     }
                     project.getArtifact().setFile(destFile);
                 } else {
-                    projectHelper.attachArtifact(project, UUF_COMPONENT_ASSEMBLY_FORMAT, null, destFile);
+                    projectHelper.attachArtifact(project, currentFormat, null, destFile);
                 }
             } else if (attach) {
                 getLog().warn("Assembly file: " + destFile + " is not a regular file (it may be a directory). " +
