@@ -1,0 +1,7 @@
+{{layout "org.wso2.uuf.base.main"}}
+{{title @app.config.appName " | " @pathParams.id}}
+{{#fillZone "content"}}
+{{!write your content here.}}
+    {{fragment "thumbnail"}}
+    <b>{{helloMessage}}</b>
+{{/fillZone}}

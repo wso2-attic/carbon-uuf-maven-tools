@@ -14,6 +14,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <modules>
         <module>maven-plugin</module>
+        <module>arche-types</module>
     </modules>
     <name>Maven UUF Plugin</name>
     <url>http://wso2.org</url>

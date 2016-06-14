@@ -1,0 +1,6 @@
+{{#unless appData.img}}
+    {{css "css/default.css"}}
+    <div style="height: 64px; width: 64px" class="default-app-image app-image"></div>
+{{else}}
+    <img src="{{appData.img}}" title="image of {{../name}}" class="app-image">
+{{/unless}}
