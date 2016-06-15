@@ -69,6 +69,21 @@ Then copy-paste the built `zip` artifact inside the target folder(eg. org.wso2.c
 
 This is same as creating UUF App. You can use `org.wso2.carbon.maven.uuf.archtype:uuf-component-archetype` and `org.wso2.carbon.maven.uuf.archtype:uuf-theme-archetype` accordingly.
 
+## Integrating UUF Archetypes into IDE
+
+All the local built artifcats are saved under `~/.m2/archetype-catalog.xml` file.
+
+### Adding UUF Archetypes into Eclipse IDE
+Goto "File->New->Maven Project->Next->Next". Select "All Catalogs" on the Catalog dropdown and tick "Include snapshot archetypes", then all local catalog archetypes may appear.
+
+### Adding UUF Archetypes into Intellij IDE
+
+Goto "File-->New Project-->Maven-->Next". Then click "Add archetype" and enter the following values for groupId, artifactId and version. Replace [version] with required version you need. 
+
+    GroupId : ArtifactId : Version
+    org.wso2.carbon.maven.uuf.archtype:uuf-application-archetype:[version]
+    org.wso2.carbon.maven.uuf.archtype:uuf-component-archetype:[version]
+    org.wso2.carbon.maven.uuf.archtype:uuf-theme-archetype:[version]
 
 ## Contributing to Carbon Maven UUF Archetype Project
 
