@@ -138,10 +138,11 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
         try {
             DependencyHolder dependencies = getDependencies(uufTempDirectory);
             for (Path currentTheme : dependencies.getThemes()) {
-                fileSets.add(createFileSet(currentTheme.toString(), "./themes/"));
+                fileSets.add(createFileSet(currentTheme.toString(), "./themes/" + currentTheme.getFileName()));
             }
             for (Path currentComponent : dependencies.getComponents()) {
-                fileSets.add(createFileSet(currentComponent.toString(), "./components/"));
+                fileSets.add(
+                        createFileSet(currentComponent.toString(), "./components/" + currentComponent.getFileName()));
             }
         } catch (IOException e) {
             throw new MojoFailureException(
@@ -152,7 +153,7 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
         ArrayList<FileItem> fileItems = new ArrayList<>();
         FileItem fileItem = new FileItem();
         fileItem.setSource(uufTempDirectory.resolve(KEY_DEPENDENCY_TREE_FILE).toString());
-        fileItem.setOutputDirectory("/components/");
+        fileItem.setOutputDirectory("./components/");
         fileItems.add(fileItem);
         assembly.setFiles(fileItems);
 
