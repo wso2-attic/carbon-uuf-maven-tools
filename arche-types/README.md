@@ -84,15 +84,3 @@ Goto "File-->New Project-->Maven-->Next". Then click "Add archetype" and enter t
     org.wso2.carbon.maven.uuf.archtype:uuf-application-archetype:[version]
     org.wso2.carbon.maven.uuf.archtype:uuf-component-archetype:[version]
     org.wso2.carbon.maven.uuf.archtype:uuf-theme-archetype:[version]
-
-## Contributing to Carbon Maven UUF Archetype Project
-
-Pull requests are highly encouraged and we recommend you to create a GitHub issue to discuss the issue or feature that you are contributing to.  
-
-## License
-
-Carbon Maven UUF Archetype is available under the Apache 2 License.
-
-## Copyright
-
-Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.

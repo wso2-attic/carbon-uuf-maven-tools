@@ -80,17 +80,23 @@
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.maven</groupId>
+                <artifactId>carbon-feature-plugin</artifactId>
+                <version>${carbon-feature-plugin.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <properties>
-        <maven-plugin-api.version>2.0</maven-plugin-api.version>
+        <maven-plugin-api.version>3.0</maven-plugin-api.version>
         <junit.version>3.8.1</junit.version>
         <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
         <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
         <maven-core.version>3.0</maven-core.version>
         <maven-dependency-tree.version>3.0</maven-dependency-tree.version>
         <maven-dependency-plugin.version>2.7</maven-dependency-plugin.version>
+        <carbon-feature-plugin.version>2.0.0</carbon-feature-plugin.version>
         <mojo-executor.version>2.2.0</mojo-executor.version>
         <commons-io.version>2.1</commons-io.version>
         <wso2.maven.compiler.source>1.7</wso2.maven.compiler.source>

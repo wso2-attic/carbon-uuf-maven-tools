@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.wso2.carbon.maven;
+package org.wso2.carbon.maven.uuf;
 
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.assembly.model.Assembly;
@@ -27,18 +27,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Create a UUF component artifact.
+ * Create a UUF Theme artifact.
  */
-@Mojo(name = "create-component", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
+@Mojo(name = "create-theme", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
-public class ComponentUUFMojo extends AbstractUUFMojo {
+public class ThemeUUFMojo extends AbstractUUFMojo {
 
     @Override
     public Assembly getAssembly() throws MojoFailureException {
-        return createComponentAssembly("make-component", "/" + getSimpleArtifactId());
+        return createThemeAssembly("make-theme", "/" + getArtifactId());
     }
 
-    private Assembly createComponentAssembly(String assemblyId, String baseDirectory) {
+    private Assembly createThemeAssembly(String assemblyId, String baseDirectory) {
         Assembly assembly = new Assembly();
         assembly.setId(assemblyId);
         assembly.setBaseDirectory(baseDirectory);
@@ -46,7 +46,7 @@ public class ComponentUUFMojo extends AbstractUUFMojo {
         FileSet fileSet2 = createFileSet(getUUFTempDirectory().toString(), "./");
         assembly.setFileSets(createFileSetList(fileSet1, fileSet2));
         List<String> formatsList = new ArrayList<>();
-        formatsList.add(UUF_COMPONENT_ASSEMBLY_FORMAT);
+        formatsList.add(UUF_THEME_ASSEMBLY_FORMAT);
         assembly.setFormats(formatsList);
         return assembly;
     }
