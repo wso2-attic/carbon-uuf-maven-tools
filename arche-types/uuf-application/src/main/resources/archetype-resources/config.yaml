@@ -1,4 +1,4 @@
-appName : ${applicationName}
+appName : ${ApplicationName}
 elementsPerPage: 10
 theme : org.wso2.uuf.sample.theme.default
 menu :
