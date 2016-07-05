@@ -2,7 +2,7 @@
 
 Carbon UUF Maven Plugins project provides a maven plugin and archetypes for creating UUF Applications, UUF Components and UUF Themes of the [Unified UI Framework(UUF)](https://github.com/wso2/carbon-uuf).
 
-## Carbon UUF Maven Archetypes
+## 1. Carbon UUF Maven Archetypes
 
 Carbon UUF Maven Archetypes provides project templates for each UUF projects. This project provides three maven archetypes;
 
@@ -32,7 +32,7 @@ Then select `the org.wso2.carbon.maven.uuf.archtype:uuf-application-archetype` a
 
 For more information on Carbon UUF Archetypes please [click here](https://github.com/rasika/carbon-uuf-maven-plugin/tree/master/arche-types).
 
-## Carbon UUF Maven Plugin
+## 2. Carbon UUF Maven Plugin
 
 Carbon UUF Maven Plugin tries to reusing the existing maven plugins where as possible(i.e.Maven-Assembly-Plugin, Maven-Dependency-Plugin). This plugin provides two maven goals;
 
