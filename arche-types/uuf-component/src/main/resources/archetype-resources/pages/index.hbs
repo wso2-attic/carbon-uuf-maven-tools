@@ -1,7 +1,8 @@
-{{layout "org.wso2.uuf.base.main"}}
-{{title @app.config.appName " | " @pathParams.id}}
+{{layout "org.wso2.uuf.sample.foundation.main"}}
+{{favicon "images/favicon.png"}}
+{{title @app.config.appName}}
 {{#fillZone "content"}}
 {{!write your content here.}}
-    {{fragment "thumbnail"}}
-    <b>{{helloMessage}}</b>
+    <b class="heading">{{helloMessage}}</b>
 {{/fillZone}}
+{{css "css/styles.css"}}

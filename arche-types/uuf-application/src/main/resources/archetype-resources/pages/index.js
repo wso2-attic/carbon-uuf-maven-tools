@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-//noinspection JSUnusedGlobalSymbols
+
 /**
  * This method will be called on page render.
  * @param env {{request: org.wso2.carbon.uuf.spi.HttpRequest,response: org.wso2.carbon.uuf.spi.HttpResponse,
- *     pathParams: Object.<string, string> , params: Object.<string, string>, app: {context: string, config:
+ *     pathParams: Object.<string, string> , params: Object.<string, string>, contextPath: string, config:
  *     org.wso2.carbon.uuf.api.Configuration}}} Enivornment
  * @returns {Object.<string, Object>} View Model for Handlebars
  */
