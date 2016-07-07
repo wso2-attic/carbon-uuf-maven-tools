@@ -31,6 +31,7 @@
         <groupId>org.wso2.carbon.uuf.maven</groupId>
         <version>1.0.0-SNAPSHOT</version>
         <artifactId>carbon-uuf</artifactId>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <dependencies>

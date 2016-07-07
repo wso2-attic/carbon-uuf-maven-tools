@@ -25,6 +25,13 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <parent>
+        <groupId>org.wso2.carbon.uuf.maven</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+        <artifactId>carbon-uuf</artifactId>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
     <name>WSO2 UUF Maven - ArchTypes</name>
     <description>Maven archetypes for UUF</description>
     <url>http://wso2.org</url>
