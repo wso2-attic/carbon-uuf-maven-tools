@@ -20,7 +20,7 @@
 
     <groupId>org.wso2.carbon.uuf.maven.archtype</groupId>
     <artifactId>uuf-archetype</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>WSO2 UUF Maven - ArchTypes</name>
