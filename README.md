@@ -28,7 +28,7 @@ Navigate into a preferred location where you need to create your sample project.
   
     mvn archetype:generate -DarchetypeCatalog=local
   
-Then select `the org.wso2.carbon.maven.uuf.archtype:uuf-application-archetype` as new archetype.   
+Then select `the org.wso2.carbon.uuf.maven.archtype:uuf-application-archetype` as new archetype.   
 
 For more information on Carbon UUF Archetypes please [click here](https://github.com/rasika/carbon-uuf-maven-plugin/tree/master/arche-types).
 
@@ -48,7 +48,7 @@ A client maven module which needs to create a UUF application and/or component s
 
 ```xml
 <plugin>
-    <groupId>org.wso2.carbon.maven</groupId>
+    <groupId>org.wso2.carbon.uuf.maven</groupId>
     <artifactId>carbon-uuf-maven-plugin</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <executions>
@@ -68,7 +68,7 @@ For more information on Carbon UUF Maven Plugin please [click here](https://gith
 Use Maven snippet:
 ````xml
 <dependency>
-    <groupId>org.wso2.carbon.maven</groupId>
+    <groupId>org.wso2.carbon.uuf.maven</groupId>
     <artifactId>carbon-uuf-maven-plugin</artifactId>
     <version>${carbon-uuf-maven-plugin.version}</version>
 </dependency>
