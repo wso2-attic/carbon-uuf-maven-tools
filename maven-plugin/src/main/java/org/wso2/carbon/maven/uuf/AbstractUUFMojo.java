@@ -92,8 +92,7 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
      * The output directory of the assembled distribution file.
      */
     @Parameter(defaultValue = "${project.build.directory}", required = true, readonly = true)
-    private String
-            outputDirectoryPath;
+    private String outputDirectoryPath;
 
     @Parameter
     private Map instructions = new LinkedHashMap();
