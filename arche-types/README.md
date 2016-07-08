@@ -26,7 +26,7 @@ Navigate into a preferred location where you need to create your sample project.
   
     mvn archetype:generate -DarchetypeCatalog=local
   
-Then select `the org.wso2.carbon.maven.uuf.archtype:uuf-application-archetype` as new archetype.   
+Then select `the org.wso2.carbon.uuf.maven.archtype:uuf-application-archetype` as new archetype.   
 
 ```sh
 mvn archetype:generate -DarchetypeCatalog=local
@@ -48,9 +48,9 @@ Choose archetype:
 2: local -> org.wso2.cdmf.devicetype:cdmf-devicetype-archetype (WSO2 CDMF Device Type Archetype)
 3: local -> org.wso2.iot:cdmf-devicetype-archetype (WSO2 CDMF Device Type Archetype)
 4: local -> org.wso2.msf4j:msf4j-microservice (This an archetype for WSO2 MSF4J microservice)
-5: local -> org.wso2.carbon.maven.uuf.archtype:uuf-application-archetype (UUF - Application Archetype)
-6: local -> org.wso2.carbon.maven.uuf.archtype:uuf-component-archetype (UUF - Component Archetype)
-7: local -> org.wso2.carbon.maven.uuf.archtype:uuf-theme-archetype (UUF - Theme Archetype)
+5: local -> org.wso2.carbon.uuf.maven.archtype:uuf-application-archetype (UUF - Application Archetype)
+6: local -> org.wso2.carbon.uuf.maven.archtype:uuf-component-archetype (UUF - Component Archetype)
+7: local -> org.wso2.carbon.uuf.maven.archtype:uuf-theme-archetype (UUF - Theme Archetype)
 Choose a number or apply filter (format: [groupId:]artifactId, case sensitive contains): : 5
 ```
 
@@ -67,7 +67,7 @@ Then copy-paste the built `zip` artifact inside the target folder(eg. org.wso2.c
 
 ### Creating sample UUF Component and UUF Theme
 
-This is same as creating UUF App. You can use `org.wso2.carbon.maven.uuf.archtype:uuf-component-archetype` and `org.wso2.carbon.maven.uuf.archtype:uuf-theme-archetype` accordingly.
+This is same as creating UUF App. You can use `org.wso2.carbon.uuf.maven.archtype:uuf-component-archetype` and `org.wso2.carbon.uuf.maven.archtype:uuf-theme-archetype` accordingly.
 
 ## Integrating UUF Archetypes into IDE
 
@@ -81,6 +81,6 @@ Goto "File->New->Maven Project->Next->Next". Select "All Catalogs" on the Catalo
 Goto "File-->New Project-->Maven-->Next". Then click "Add archetype" and enter the following values for groupId, artifactId and version. Replace [version] with required version you need. 
 
     GroupId : ArtifactId : Version
-    org.wso2.carbon.maven.uuf.archtype:uuf-application-archetype:[version]
-    org.wso2.carbon.maven.uuf.archtype:uuf-component-archetype:[version]
-    org.wso2.carbon.maven.uuf.archtype:uuf-theme-archetype:[version]
+    org.wso2.carbon.uuf.maven.archtype:uuf-application-archetype:[version]
+    org.wso2.carbon.uuf.maven.archtype:uuf-component-archetype:[version]
+    org.wso2.carbon.uuf.maven.archtype:uuf-theme-archetype:[version]

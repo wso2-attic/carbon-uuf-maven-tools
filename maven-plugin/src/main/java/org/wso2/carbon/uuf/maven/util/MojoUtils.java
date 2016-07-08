@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.wso2.carbon.maven.uuf.util;
+package org.wso2.carbon.uuf.maven.util;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.logging.Log;

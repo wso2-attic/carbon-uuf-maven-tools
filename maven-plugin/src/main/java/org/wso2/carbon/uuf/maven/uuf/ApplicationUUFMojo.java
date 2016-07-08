@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package org.wso2.carbon.maven.uuf;
+package org.wso2.carbon.uuf.maven.uuf;
 
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -29,7 +29,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.shared.dependency.graph.DependencyGraphBuilder;
 import org.apache.maven.shared.dependency.graph.DependencyNode;
-import org.wso2.carbon.maven.uuf.util.MojoUtils;
+import org.wso2.carbon.uuf.maven.util.MojoUtils;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;

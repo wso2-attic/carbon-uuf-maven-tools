@@ -15,7 +15,7 @@ A client maven module which needs to create a UUF application and/or component s
 
 ```xml
 <plugin>
-    <groupId>org.wso2.carbon.maven</groupId>
+    <groupId>org.wso2.carbon.uuf.maven</groupId>
     <artifactId>carbon-uuf-maven-plugin</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <executions>
@@ -33,7 +33,7 @@ A client maven module which needs to create a UUF application and/or component s
 
 ```xml
 <plugin>
-    <groupId>org.wso2.carbon.maven</groupId>
+    <groupId>org.wso2.carbon.uuf.maven</groupId>
     <artifactId>carbon-uuf-maven-plugin</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <executions>
@@ -55,7 +55,7 @@ This is the way of creating the UUF application. All the `Pages` and `Fragments`
 <build>
     <plugins>
         <plugin>
-            <groupId>org.wso2.carbon.maven</groupId>
+            <groupId>org.wso2.carbon.uuf.maven</groupId>
             <artifactId>carbon-uuf-maven-plugin</artifactId>
             <version>1.0.0-SNAPSHOT</version>
             <executions>
@@ -74,7 +74,7 @@ This is the way of creating the UUF application. All the `Pages` and `Fragments`
 
 #### 4) Adding UUF Components and Themes dependencies to the UUF Application.
 
-Following UUF Application reuses the UUF components "base"(org.wso2.uuf.base) and "basicauth"(org.wso2.is.uuf.basicauth) and utilize the theme "dark"(org.wso2.uuf.theme.dark).
+Following UUF Application reuses the UUF components "base"(org.wso2.carbon.uuf.base) and "basicauth"(org.wso2.is.uuf.basicauth) and utilize the theme "dark"(org.wso2.uuf.theme.dark).
 
 ```xml
 <dependencies>
@@ -103,7 +103,7 @@ Following UUF Application reuses the UUF components "base"(org.wso2.uuf.base) an
 <build>
     <plugins>
         <plugin>
-            <groupId>org.wso2.carbon.maven</groupId>
+            <groupId>org.wso2.carbon.uuf.maven</groupId>
             <artifactId>carbon-uuf-maven-plugin</artifactId>
             <version>1.0.0-SNAPSHOT</version>
             <executions>
@@ -122,7 +122,7 @@ Following UUF Application reuses the UUF components "base"(org.wso2.uuf.base) an
 
 #### 5) When a UUF Application depends on another UUF Application.
 
-Following UUF Application reuses the UUF Application "pets-store"(org.wso2.uuf.sample.pets-store). In this case, the "root" components of the both applications are merged. When a duplicate occurs target application receives the priority.
+Following UUF Application reuses the UUF Application "pets-store"(org.wso2.carbon.uuf.sample.pets-store). In this case, the "root" components of the both applications are merged. When a duplicate occurs target application receives the priority.
 
 ```xml
 <dependencies>
@@ -137,7 +137,7 @@ Following UUF Application reuses the UUF Application "pets-store"(org.wso2.uuf.s
 <build>
     <plugins>
         <plugin>
-            <groupId>org.wso2.carbon.maven</groupId>
+            <groupId>org.wso2.carbon.uuf.maven</groupId>
             <artifactId>carbon-uuf-maven-plugin</artifactId>
             <version>1.0.0-SNAPSHOT</version>
             <executions>
