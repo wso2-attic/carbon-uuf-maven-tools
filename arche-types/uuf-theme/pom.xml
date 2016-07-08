@@ -21,6 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>uuf-theme-archetype</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>maven-archetype</packaging>
 
     <name>WSO2 UUF Maven - ArchTypes - Theme</name>
@@ -28,10 +29,10 @@
     <url>http://wso2.org</url>
 
     <parent>
-        <artifactId>uuf-archetype</artifactId>
-        <groupId>org.wso2.carbon.uuf.maven.archtype</groupId>
+        <groupId>org.wso2.carbon.uuf.maven</groupId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <artifactId>carbon-uuf</artifactId>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <build>
@@ -39,14 +40,12 @@
             <extension>
                 <groupId>org.apache.maven.archetype</groupId>
                 <artifactId>archetype-packaging</artifactId>
-                <version>${archetype.packaging.version}</version>
             </extension>
         </extensions>
         <pluginManagement>
             <plugins>
                 <plugin>
                     <artifactId>maven-archetype-plugin</artifactId>
-                    <version>${archetype.plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

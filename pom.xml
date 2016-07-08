@@ -37,7 +37,9 @@
 
     <modules>
         <module>maven-plugin</module>
-        <module>arche-types</module>
+        <module>arche-types/uuf-application</module>
+        <module>arche-types/uuf-component</module>
+        <module>arche-types/uuf-theme</module>
     </modules>
 
     <scm>
@@ -109,20 +111,23 @@
     </dependencyManagement>
 
     <properties>
-        <maven-plugin-api.version>3.0</maven-plugin-api.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.scm.id>github-scm</project.scm.id>
         <junit.version>3.8.1</junit.version>
+        <maven-plugin-api.version>3.0</maven-plugin-api.version>
         <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
         <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
         <maven-core.version>3.0</maven-core.version>
         <maven-dependency-tree.version>3.0</maven-dependency-tree.version>
         <maven-dependency-plugin.version>2.7</maven-dependency-plugin.version>
+        <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
         <carbon-feature-plugin.version>2.0.0</carbon-feature-plugin.version>
         <mojo-executor.version>2.2.0</mojo-executor.version>
         <commons-io.version>2.1</commons-io.version>
         <wso2.maven.compiler.source>1.7</wso2.maven.compiler.source>
         <wso2.maven.compiler.target>1.7</wso2.maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.scm.id>github-scm</project.scm.id>
+        <archetype.packaging.version>2.4</archetype.packaging.version>
+        <archetype.plugin.version>2.4</archetype.plugin.version>
     </properties>
 
     <build>
