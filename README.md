@@ -1,5 +1,7 @@
 # Carbon UUF Maven Plugins
 
+[![Build Status](https://wso2.org/jenkins/buildStatus/icon?job=carbon-uuf-maven-plugin)](https://wso2.org/jenkins/me/my-views/view/All/job/carbon-uuf-maven-plugin/)
+
 Carbon UUF Maven Plugins project provides a maven plugin and archetypes for creating UUF Applications, UUF Components and UUF Themes of the [Unified UI Framework(UUF)](https://github.com/wso2/carbon-uuf).
 
 ## 1. Carbon UUF Maven Archetypes
