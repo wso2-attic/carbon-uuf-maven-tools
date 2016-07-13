@@ -21,6 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>carbon-uuf-maven-plugin</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>WSO2 UUF Maven - Maven Plugin</name>
@@ -28,9 +29,10 @@
     <url>http://wso2.org</url>
 
     <parent>
-        <groupId>org.wso2.carbon.maven</groupId>
+        <groupId>org.wso2.carbon.uuf.maven</groupId>
         <version>1.0.0-SNAPSHOT</version>
         <artifactId>carbon-uuf</artifactId>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <dependencies>
@@ -81,7 +83,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.4</version>
+                <version>${maven-plugin-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>default-descriptor</id>
