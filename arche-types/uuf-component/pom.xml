@@ -24,7 +24,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>maven-archetype</packaging>
 
-    <name>WSO2 UUF Maven - ArchTypes - Component</name>
+    <name>WSO2 UUF Maven Tools - ArchTypes - Component</name>
     <description>Maven archetype for UUF components</description>
     <url>http://wso2.org</url>
 
