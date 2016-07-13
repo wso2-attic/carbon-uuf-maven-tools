@@ -36,10 +36,10 @@
     </parent>
 
     <modules>
-        <module>maven-plugin</module>
         <module>arche-types/uuf-application</module>
         <module>arche-types/uuf-component</module>
         <module>arche-types/uuf-theme</module>
+        <module>plugin</module>
     </modules>
 
     <scm>
