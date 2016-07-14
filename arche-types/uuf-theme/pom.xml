@@ -24,7 +24,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>maven-archetype</packaging>
 
-    <name>WSO2 UUF Maven - ArchTypes - Theme</name>
+    <name>WSO2 UUF Maven Tools - ArchTypes - Theme</name>
     <description>Maven archetype for UUF themes</description>
     <url>http://wso2.org</url>
 
