@@ -47,41 +47,14 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
 
     protected static final String UUF_COMPONENT_ASSEMBLY_FORMAT = "zip";
     protected static final String UUF_THEME_ASSEMBLY_FORMAT = "tar";
-    protected static final String UUF_OSGI_IMPORT_PACKAGES = "Import-Package";
+    private static final String UUF_OSGI_IMPORT_PACKAGES = "Import-Package";
 
+    /**
+     * Maven Project.
+     */
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
-    /**
-     * Maven AssemblyArchiver.
-     */
-    @Component
-    private AssemblyArchiver assemblyArchiver;
-    /**
-     * Indicates if zip archives (jar,zip etc) being added to the assembly should be compressed again. Compressing again
-     * can result in smaller archive size, but gives noticeably longer execution time.
-     */
-    @Parameter(defaultValue = "true")
-    private boolean recompressZippedFiles;
-    /**
-     * sets the merge manifest mode in the JarArchiver
-     */
-    @Parameter
-    private String mergeManifestMode;
-    /**
-     * Maven ProjectHelper.
-     */
-    @Component
-    private MavenProjectHelper projectHelper;
-    /**
-     * Controls whether the assembly plugin tries to attach the resulting assembly to the project.
-     */
-    @Parameter(property = "assembly.attach", defaultValue = "true")
-    private boolean attach;
-    /**
-     * The filename of the assembled distribution file.
-     */
-    @Parameter(defaultValue = "${project.build.finalName}", required = true)
-    private String finalName;
+
     /**
      * The artifactId of the project.
      */
@@ -94,13 +67,29 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
     @Parameter(defaultValue = "${project.build.directory}", required = true, readonly = true)
     private String outputDirectoryPath;
 
+    /**
+     * Maven ProjectHelper.
+     */
+    @Component
+    private MavenProjectHelper projectHelper;
+
+    /**
+     * Maven AssemblyArchiver.
+     */
+    @Component
+    private AssemblyArchiver assemblyArchiver;
+
+    /**
+     * Instructions for MavenPlugin.
+     */
     @Parameter
     private Map instructions = new LinkedHashMap();
 
-    public abstract Assembly getAssembly() throws MojoFailureException;
+    protected abstract Assembly getAssembly() throws MojoFailureException;
 
     /**
      * Create the binary distribution.
+     * This method is invoked by Maven when running the MOJO.
      *
      * @throws org.apache.maven.plugin.MojoExecutionException
      */
@@ -112,18 +101,17 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
         Assembly assembly = getAssembly();
         List<String> formats = assembly.getFormats();
         if (formats.isEmpty()) {
-            throw new MojoFailureException("Assembly is incorrectly configured: " + assembly.getId() +
-                                                   "archive format is not specified");
+            throw new MojoFailureException(
+                    "Assembly is incorrectly configured: " + assembly.getId() + "archive format is not specified");
         }
         final String fullName = AssemblyFormatUtils.getDistributionName(assembly, this);
         try {
             String currentFormat = formats.get(0);
-            final File destFile = assemblyArchiver.createArchive(assembly, fullName, currentFormat, this,
-                                                                 recompressZippedFiles);
-            final MavenProject project = getProject();
-            final String classifier = getClassifier();
-            final String type = project.getArtifact().getType();
-            if (attach && destFile.isFile()) {
+            File destFile = assemblyArchiver.createArchive(assembly, fullName, currentFormat, this, true);
+            MavenProject project = getProject();
+            String classifier = getClassifier();
+            String type = project.getArtifact().getType();
+            if (destFile.isFile()) {
                 if (isAssemblyIdAppended()) {
                     projectHelper.attachArtifact(project, currentFormat, assembly.getId(), destFile);
                 } else if (classifier != null) {
@@ -146,7 +134,7 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
                 } else {
                     projectHelper.attachArtifact(project, currentFormat, null, destFile);
                 }
-            } else if (attach) {
+            } else {
                 getLog().warn("Assembly file: " + destFile + " is not a regular file (it may be a directory). " +
                                       "It cannot be attached to the project build for installation or " +
                                       "deployment.");
@@ -184,7 +172,7 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
         return Arrays.asList(fileSets);
     }
 
-    public void createOsgiImportsConfig() throws MojoExecutionException {
+    private void createOsgiImportsConfig() throws MojoExecutionException {
         String[] osgiImports = getOsgiImports();
         if (osgiImports == null) {
             //if no osgi imports found, just skip file creation...
@@ -220,15 +208,21 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
         }
     }
 
+    private String[] getOsgiImports() {
+        if (instructions == null) return null;
+        Object importsObj = instructions.get(UUF_OSGI_IMPORT_PACKAGES);
+        return ((importsObj != null) ? importsObj.toString().split(",") : null);
+    }
+
     @Override
     public MavenProject getProject() {
         return project;
     }
 
-    public String getArtifactId() {
+
+    protected String getArtifactId() {
         return artifactId;
     }
-
 
     protected String getSimpleArtifactId() {
         int lastIndex = artifactId.lastIndexOf(".");
@@ -244,11 +238,5 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
 
     protected Path getUUFOsgiConfigOutDirectory() {
         return getUUFTempDirectory();
-    }
-
-    private String[] getOsgiImports() {
-        if (instructions == null) return null;
-        Object importsObj = instructions.get(UUF_OSGI_IMPORT_PACKAGES);
-        return ((importsObj != null) ? importsObj.toString().split(",") : null);
     }
 }

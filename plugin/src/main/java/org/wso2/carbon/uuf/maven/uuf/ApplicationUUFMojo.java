@@ -27,9 +27,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.shared.dependency.graph.DependencyGraphBuilder;
-import org.apache.maven.shared.dependency.graph.DependencyNode;
-import org.wso2.carbon.uuf.maven.util.MojoUtils;
+import org.wso2.carbon.uuf.maven.util.AppsFinder;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -57,18 +55,12 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 @Mojo(name = "create-application", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class ApplicationUUFMojo extends AbstractUUFMojo {
-
-    private static final String KEY_DEPENDENCY_TREE_FILE = "dependency.tree";
-    /**
-     * The computed dependency tree root node of the Maven project.
-     */
-    private DependencyNode rootNode;
-
-    /**
-     * The dependency tree builder to use.
-     */
-    @Component(hint = "default")
-    private DependencyGraphBuilder dependencyGraphBuilder;
+    private static final String ROOT_COMPONENT_NAME = "root";
+    private static final String COMPONENTS_NAME = "components";
+    private static final String THEMES_PATH = "./themes/";
+    private static final String COMPONENTS_PATH = "./" + COMPONENTS_NAME + "/";
+    private static final String THEME_CONFIG_FILE_NAME = "theme.yaml";
+    private static final String DEPENDENCY_TREE_FILE_NAME = "dependency.tree";
 
     /**
      * The dependency plugin version to use.
@@ -82,13 +74,113 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
     @Component
     private BuildPluginManager pluginManager;
 
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        unpackDependencies();
+        createDependencyConfig("::" + UUF_THEME_ASSEMBLY_FORMAT + ":");
+        normalizeAppDependencies();
+        super.execute();
+    }
+
+    @Override
+    protected Assembly getAssembly() throws MojoFailureException {
+        return createApplicationAssembly("make-application", "/" + getArtifactId());
+    }
+
+    private void unpackDependencies() throws MojoExecutionException {
+        executeMojo(
+                plugin(
+                        groupId("org.apache.maven.plugins"),
+                        artifactId("maven-dependency-plugin"),
+                        version(dependencyPluginVersion)
+                ),
+                goal("unpack-dependencies"),
+                configuration(element(name("outputDirectory"), getUUFTempDirectory().toString())),
+                executionEnvironment(getProject(), getMavenSession(), pluginManager)
+        );
+    }
+
+    private void createDependencyConfig(String excludes) throws MojoExecutionException {
+        executeMojo(
+                plugin(
+                        groupId("org.apache.maven.plugins"),
+                        artifactId("maven-dependency-plugin"),
+                        version(dependencyPluginVersion)
+                ),
+                goal("tree"),
+                configuration(
+                        element(name("verbose"), "true"),
+                        element(name("outputFile"),
+                                getUUFTempDirectory().resolve(DEPENDENCY_TREE_FILE_NAME).toString()
+                        ),
+                        element(name("excludes"), excludes)
+                ),
+                executionEnvironment(getProject(), getMavenSession(), getPluginManager())
+        );
+    }
+
+    protected void normalizeAppDependencies() throws MojoExecutionException {
+        try {
+            Path rootDir = getUUFTempDirectory();
+            Path rootCompPath = getUUFTempDirectory().resolve(ROOT_COMPONENT_NAME);
+            createDirectoryIfNotExists(rootCompPath);
+            String rootComponentPattern = "**/" + COMPONENTS_NAME + "/" + ROOT_COMPONENT_NAME + "/**";
+            AppsFinder appsFinder = new AppsFinder(rootComponentPattern, rootCompPath, getUUFTempDirectory());
+            Files.walkFileTree(rootDir, appsFinder);
+            appsFinder.deleteMatchedApplications();
+        } catch (IOException e) {
+            throw new MojoExecutionException("Error normalizing app dependencies", e);
+        }
+    }
+
+    private Assembly createApplicationAssembly(String assemblyId, String baseDirectory) throws MojoFailureException {
+        Assembly assembly = new Assembly();
+        assembly.setId(assemblyId);
+        assembly.setBaseDirectory(baseDirectory);
+
+        //Adding root component
+        List<FileSet> fileSets = new ArrayList<>();
+        String rootComponentPath = COMPONENTS_PATH + ROOT_COMPONENT_NAME;
+        fileSets.add(createFileSet(getBasedir().getAbsolutePath(), rootComponentPath));
+
+        //Adding dependent components and themes
+        Path uufTempDirectory = getUUFTempDirectory();
+        try {
+            DependencyHolder dependencies = getDependencies(uufTempDirectory);
+            for (Path currentTheme : dependencies.getThemes()) {
+                fileSets.add(createFileSet(currentTheme.toString(), THEMES_PATH + currentTheme.getFileName()));
+            }
+            for (Path currentComponent : dependencies.getComponents()) {
+                fileSets.add(
+                        createFileSet(currentComponent.toString(), COMPONENTS_PATH + currentComponent.getFileName())
+                );
+            }
+        } catch (IOException e) {
+            throw new MojoFailureException(
+                    "Error occurred while reading extracted dependencies on '" + uufTempDirectory.toString() + "'");
+        }
+        assembly.setFileSets(fileSets);
+
+        //Adding dependency.tree file
+        ArrayList<FileItem> fileItems = new ArrayList<>();
+        FileItem fileItem = new FileItem();
+        fileItem.setSource(uufTempDirectory.resolve(DEPENDENCY_TREE_FILE_NAME).toString());
+        fileItem.setOutputDirectory(COMPONENTS_PATH);
+        fileItems.add(fileItem);
+        assembly.setFiles(fileItems);
+
+        //Setting format
+        List<String> formatsList = new ArrayList<>();
+        formatsList.add(UUF_COMPONENT_ASSEMBLY_FORMAT);
+        assembly.setFormats(formatsList);
+        return assembly;
+    }
+
     private static DependencyHolder getDependencies(Path rootDir) throws IOException {
         Set<Path> components = new HashSet<>();
         Set<Path> themes = new HashSet<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(rootDir, new DirectoriesFilter())) {
             for (Path dir : directoryStream) {
-                System.out.println(dir.getFileName());
-                if (Files.exists(dir.resolve("theme.yaml"))) {
+                if (Files.exists(dir.resolve(THEME_CONFIG_FILE_NAME))) {
                     themes.add(dir);
                 } else {
                     components.add(dir);
@@ -98,91 +190,12 @@ public class ApplicationUUFMojo extends AbstractUUFMojo {
         return new DependencyHolder(components, themes);
     }
 
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        unpackDependencies();
-        createDependencyConfig("::" + UUF_THEME_ASSEMBLY_FORMAT + ":");
-        normalizeAppDependencies();
-        super.execute();
-    }
-
-    private void unpackDependencies() throws MojoExecutionException {
-        executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"),
-                           version(dependencyPluginVersion)), goal("unpack-dependencies"),
-                    configuration(element(name("outputDirectory"), getUUFTempDirectory().toString())),
-                    executionEnvironment(getProject(), getMavenSession(), pluginManager));
-    }
-
-    private void createDependencyConfig(String excludes) throws MojoExecutionException {
-        executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"),
-                           version(dependencyPluginVersion)), goal("tree"),
-                    configuration(element(name("verbose"), "true"),
-                                  element(name("outputFile"),
-                                          getUUFTempDirectory().resolve(KEY_DEPENDENCY_TREE_FILE).toString()),
-                                  element(name("excludes"), excludes)),
-                    executionEnvironment(getProject(), getMavenSession(), getPluginManager()));
-    }
-
-    @Override
-    public Assembly getAssembly() throws MojoFailureException {
-        return createApplicationAssembly("make-application", "/" + getArtifactId());
-    }
-
-    private Assembly createApplicationAssembly(String assemblyId, String baseDirectory) throws MojoFailureException {
-        Assembly assembly = new Assembly();
-        assembly.setId(assemblyId);
-        assembly.setBaseDirectory(baseDirectory);
-        List<FileSet> fileSets = new ArrayList<>();
-        fileSets.add(createFileSet(getBasedir().getAbsolutePath(), "./components/root"));
-
-        Path uufTempDirectory = getUUFTempDirectory();
-        try {
-            DependencyHolder dependencies = getDependencies(uufTempDirectory);
-            for (Path currentTheme : dependencies.getThemes()) {
-                fileSets.add(createFileSet(currentTheme.toString(), "./themes/" + currentTheme.getFileName()));
-            }
-            for (Path currentComponent : dependencies.getComponents()) {
-                fileSets.add(
-                        createFileSet(currentComponent.toString(), "./components/" + currentComponent.getFileName()));
-            }
-        } catch (IOException e) {
-            throw new MojoFailureException(
-                    "Error occurred while reading extracted dependencies on '" + uufTempDirectory.toString() + "'");
-        }
-        assembly.setFileSets(fileSets);
-
-        ArrayList<FileItem> fileItems = new ArrayList<>();
-        FileItem fileItem = new FileItem();
-        fileItem.setSource(uufTempDirectory.resolve(KEY_DEPENDENCY_TREE_FILE).toString());
-        fileItem.setOutputDirectory("./components/");
-        fileItems.add(fileItem);
-        assembly.setFiles(fileItems);
-
-        List<String> formatsList = new ArrayList<>();
-        formatsList.add(UUF_COMPONENT_ASSEMBLY_FORMAT);
-        assembly.setFormats(formatsList);
-        return assembly;
-    }
-
     protected Path getUUFOsgiConfigOutDirectory() {
-        return getUUFTempDirectory().resolve("root");
+        return getUUFTempDirectory().resolve(ROOT_COMPONENT_NAME);
     }
 
     protected BuildPluginManager getPluginManager() {
         return this.pluginManager;
-    }
-
-    protected void normalizeAppDependencies() throws MojoExecutionException {
-        try {
-            Path rootDir = getUUFTempDirectory();
-            Path rootCompPath = getUUFTempDirectory().resolve("root");
-            createDirectoryIfNotExists(rootCompPath);
-            MojoUtils.AppsFinder appsFinder = new MojoUtils.AppsFinder("**/components/root/**", rootCompPath,
-                                                                       getUUFTempDirectory());
-            Files.walkFileTree(rootDir, appsFinder);
-            appsFinder.deleteMatchedApplications();
-        } catch (IOException e) {
-            throw new MojoExecutionException("Error normalizing app dependencies", e);
-        }
     }
 
     private static class DependencyHolder {

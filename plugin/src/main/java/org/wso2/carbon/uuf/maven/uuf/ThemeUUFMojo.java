@@ -34,7 +34,7 @@ import java.util.List;
 public class ThemeUUFMojo extends AbstractUUFMojo {
 
     @Override
-    public Assembly getAssembly() throws MojoFailureException {
+    protected Assembly getAssembly() throws MojoFailureException {
         return createThemeAssembly("make-theme", "/" + getArtifactId());
     }
 
@@ -42,9 +42,11 @@ public class ThemeUUFMojo extends AbstractUUFMojo {
         Assembly assembly = new Assembly();
         assembly.setId(assemblyId);
         assembly.setBaseDirectory(baseDirectory);
+
         FileSet fileSet1 = createFileSet(getBasedir().getAbsolutePath(), "./");
         FileSet fileSet2 = createFileSet(getUUFTempDirectory().toString(), "./");
         assembly.setFileSets(createFileSetList(fileSet1, fileSet2));
+
         List<String> formatsList = new ArrayList<>();
         formatsList.add(UUF_THEME_ASSEMBLY_FORMAT);
         assembly.setFormats(formatsList);
