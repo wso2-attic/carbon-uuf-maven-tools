@@ -33,6 +33,7 @@ import org.apache.maven.project.MavenProjectHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -88,8 +89,7 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
     protected abstract Assembly getAssembly() throws MojoFailureException;
 
     /**
-     * Create the binary distribution.
-     * This method is invoked by Maven when running the MOJO.
+     * Create the binary distribution. This method is invoked by Maven when running the MOJO.
      *
      * @throws org.apache.maven.plugin.MojoExecutionException
      */
@@ -118,8 +118,8 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
                     projectHelper.attachArtifact(project, currentFormat, classifier, destFile);
                 } else if (!"pom".equals(type) && currentFormat.equals(type)) {
                     final StringBuilder message = new StringBuilder();
-                    message.append("Configuration options: 'appendAssemblyId' is set to false, "
-                                           + "and 'classifier' is missing.");
+                    message.append("Configuration options: 'appendAssemblyId' is set to false, " +
+                                           "and 'classifier' is missing.");
                     message.append("\nInstead of attaching the assembly file: ").append(destFile);
                     message.append(", it will become the file for main project artifact.");
                     message.append("\nNOTE: If multiple descriptors or descriptor-formats are provided " +
@@ -191,10 +191,10 @@ public abstract class AbstractUUFMojo extends AbstractAssemblyMojo {
             content.append(importLine.trim()).append("\n");
         }
         try {
-            Files.write(osgiImportsConfig, content.toString().getBytes());
+            Files.write(osgiImportsConfig, content.toString().getBytes(Charset.forName("UTF-8")));
         } catch (IOException e) {
-            throw new MojoExecutionException("Cannot create file '" + osgiImportsConfig +
-                                                     "' when trying to create osgi imports config", e);
+            throw new MojoExecutionException(
+                    "Cannot create file '" + osgiImportsConfig + "' when trying to create osgi imports config", e);
         }
     }
 
