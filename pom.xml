@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) 2016, WSO2 Inc. (http://wso2.com) All Rights Reserved.
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~ http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
+ ~ Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ WSO2 Inc. licenses this file to you under the Apache License,
+ ~ Version 2.0 (the "License"); you may not use this file except
+ ~ in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~ http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing,
+ ~ software distributed under the License is distributed on an
+ ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ ~ KIND, either express or implied.  See the License for the
+ ~ specific language governing permissions and limitations
+ ~ under the License.
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -111,23 +113,32 @@
     </dependencyManagement>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.scm.id>github-scm</project.scm.id>
-        <junit.version>3.8.1</junit.version>
         <maven-plugin-api.version>3.0</maven-plugin-api.version>
         <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
-        <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
         <maven-core.version>3.0</maven-core.version>
+
+        <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
         <maven-dependency-tree.version>3.0</maven-dependency-tree.version>
         <maven-dependency-plugin.version>2.7</maven-dependency-plugin.version>
         <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
         <carbon-feature-plugin.version>2.0.0</carbon-feature-plugin.version>
         <mojo-executor.version>2.2.0</mojo-executor.version>
-        <commons-io.version>2.1</commons-io.version>
-        <wso2.maven.compiler.source>1.7</wso2.maven.compiler.source>
-        <wso2.maven.compiler.target>1.7</wso2.maven.compiler.target>
+
         <archetype.packaging.version>2.4</archetype.packaging.version>
         <archetype.plugin.version>2.4</archetype.plugin.version>
+
+        <commons-io.version>2.1</commons-io.version>
+
+        <!--Test-->
+        <junit.version>3.8.1</junit.version>
+
+        <!-- Source and target Java version -->
+        <wso2.maven.compiler.source>1.8</wso2.maven.compiler.source>
+        <wso2.maven.compiler.target>1.8</wso2.maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Release plugin ID for GitHub-->
+        <project.scm.id>github-scm</project.scm.id>
     </properties>
 
     <build>
@@ -188,10 +199,11 @@
             </plugins>
         </pluginManagement>
     </build>
+
     <repositories>
         <repository>
             <id>wso2-nexus</id>
-            <name>WSO2 internal Repository</name>
+            <name>WSO2 Public Repository</name>
             <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
             <releases>
                 <enabled>true</enabled>
@@ -199,10 +211,9 @@
                 <checksumPolicy>ignore</checksumPolicy>
             </releases>
         </repository>
-
         <repository>
-            <id>wso2.releases</id>
-            <name>WSO2 internal Repository</name>
+            <id>wso2-releases</id>
+            <name>WSO2 Releases Repository</name>
             <url>http://maven.wso2.org/nexus/content/repositories/releases/</url>
             <releases>
                 <enabled>true</enabled>
@@ -210,10 +221,9 @@
                 <checksumPolicy>ignore</checksumPolicy>
             </releases>
         </repository>
-
         <repository>
-            <id>wso2.snapshots</id>
-            <name>Apache Snapshot Repository</name>
+            <id>wso2-snapshots</id>
+            <name>WSO2 Snapshot Repository</name>
             <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
@@ -224,10 +234,21 @@
             </releases>
         </repository>
     </repositories>
+
     <pluginRepositories>
         <pluginRepository>
-            <id>wso2.releases</id>
-            <name>WSO2 internal Repository</name>
+            <id>wso2-nexus</id>
+            <name>WSO2 Public Repository</name>
+            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </pluginRepository>
+        <pluginRepository>
+            <id>wso2-releases</id>
+            <name>WSO2 Releases Repository</name>
             <url>http://maven.wso2.org/nexus/content/repositories/releases/</url>
             <releases>
                 <enabled>true</enabled>
@@ -236,8 +257,8 @@
             </releases>
         </pluginRepository>
         <pluginRepository>
-            <id>wso2.snapshots</id>
-            <name>Apache Snapshot Repository</name>
+            <id>wso2-snapshots</id>
+            <name>WSO2 Snapshot Repository</name>
             <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
@@ -245,16 +266,6 @@
             </snapshots>
             <releases>
                 <enabled>false</enabled>
-            </releases>
-        </pluginRepository>
-        <pluginRepository>
-            <id>wso2-nexus</id>
-            <name>WSO2 internal Repository</name>
-            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
             </releases>
         </pluginRepository>
     </pluginRepositories>
