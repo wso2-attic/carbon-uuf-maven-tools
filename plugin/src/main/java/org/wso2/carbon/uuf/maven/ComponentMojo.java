@@ -27,7 +27,7 @@ import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 import java.nio.file.Paths;
 import java.util.Map;
 
-@Mojo(name = "create-component-new", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
+@Mojo(name = "create-component", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class ComponentMojo extends AbstractZipMojo {
 

@@ -20,7 +20,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
-@Mojo(name = "create-theme-new", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
+@Mojo(name = "create-theme", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class ThemeMojo extends AbstractZipMojo {
 

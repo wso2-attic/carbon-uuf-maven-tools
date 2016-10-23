@@ -53,7 +53,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
-@Mojo(name = "create-app-new", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
+@Mojo(name = "create-app", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class AppMojo implements UUFMojo {
 
