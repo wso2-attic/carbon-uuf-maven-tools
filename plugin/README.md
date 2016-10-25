@@ -5,8 +5,8 @@ Carbon UUF Maven Plugin project provides a maven plugin for creating UUF Applica
 Carbon UUF Maven Plugin tries to reusing the existing maven plugins where as possible(i.e.Maven-Assembly-Plugin, Maven-Dependency-Plugin). This plugin provides two maven goals;
 
 * create-component : This goal is used for creating UUF Component.
-* create-app : This goal is used for creating UUF Application.
 * create-theme : This goal is used for creating UUF Theme.
+* create-app : This goal is used for creating UUF Application.
 
 ## Getting Started
 
@@ -21,35 +21,35 @@ Project structure of UUF component
 ```xml
 org.wso2.carbon.<product-name>.<feature-name>
 |src
-   |--main
-        |---- pages
-        |          |---- index.hbs
-        |          |---- index.js
-        |          |---- more-pages
-        |          |              `one-more-page.hbs
-        |          `---- my-page.hbs
-        |  
-        |---- public
-        |          |---- css
-        |          |---- js
-        |          |---- lib
-        |          `---- images
-        |
-        |---- layout
-        |          |---- one-column.hbs
-        |          `---- two-column.hbs
-        |
-        |---- fragments
-        |          `---- listing
-        |                |---- listing.hbs
-        |                |---- listing.js
-        |                |---- listing.json
-        |                `---- public
-        |                         |---- css
-        |                         |---- js /* front-end JS */
-        |                         |---- images /* images */
-        |                         `---- lib /* front-end libs */
-        |
+|   |--main
+|        |---- pages
+|        |          |---- index.hbs
+|        |          |---- index.js
+|        |          |---- more-pages
+|        |          |              `one-more-page.hbs
+|        |          `---- my-page.hbs
+|        |  
+|        |---- public
+|        |          |---- css
+|        |          |---- js
+|        |          |---- lib
+|        |          `---- images
+|        |
+|        |---- layout
+|        |          |---- one-column.hbs
+|        |          `---- two-column.hbs
+|        |
+|        |---- fragments
+|                  `---- listing
+|                        |---- listing.hbs
+|                        |---- listing.js
+|                        |---- listing.json
+|                        `---- public
+|                                 |---- css
+|                                 |---- js /* front-end JS */
+|                                 |---- images /* images */
+|                                 `---- lib /* front-end libs */
+|        
 |---- pom.xml /* defines dependent components */
 ```
 Please refer complete version of simple-oauth component sample [here](https://github.com/wso2/carbon-uuf/tree/master/samples/components/org.wso2.carbon.uuf.sample.simple-auth)
@@ -96,13 +96,13 @@ Project structure of UUF theme
 ```xml
 org.wso2.carbon.theme.<theme-name>/
    |src
-      |--main
-          |---- public/
-          |      |---- css/
-          |      |---- js/
-          |      |---- images/
-          |      `---- libs/
-          |---- theme.yaml
+   |   |--main
+   |       |---- public/
+   |       |      |---- css/
+   |       |      |---- js/
+   |       |      |---- images/
+   |       |      `---- libs/
+   |       |---- theme.yaml
    |---- pom.xml
 ```
 
@@ -142,17 +142,17 @@ Project structure of an app
 ```xml
 org.wso2.carbon.<product-name>.<app-name>
    |--src
-     |--main
-        |---- pages/ - page structure of UUF application
-        |---- fragments/
-        |---- layouts/
-        |---- modules/
-        |---- lang/  - include language prop file ex: en_US.properties
-        |---- public/
-        |          |---- css /* CSS files only */
-        |          |---- js  /* front-end JS */
-        |          |---- images  /* images */
-        |          |---- lib /* other front-end libraries e.g. D3 */
+   |  |--main
+   |     |---- pages/ - page structure of UUF application
+   |     |---- fragments/
+   |     |---- layouts/
+   |     |---- modules/
+   |     |---- lang/  - include language prop file ex: en_US.properties
+   |     |---- public/
+   |               |---- css /* CSS files only */
+   |               |---- js  /* front-end JS */
+   |               |---- images  /* images */
+   |               |---- lib /* other front-end libraries e.g. D3 */
    |---- pom.xml /* defines dependent components */
 ```
 
@@ -243,6 +243,7 @@ Following UUF Application reuses the UUF components "base"(org.wso2.carbon.uuf.b
             <groupId>org.wso2.carbon.uuf.maven</groupId>
             <artifactId>carbon-uuf-maven-plugin</artifactId>
             <version>1.0.0-m5</version>
+            <extensions>true</extensions>
             <executions>
                 <execution>
                     <id>create</id>
@@ -277,6 +278,7 @@ Following UUF Application reuses the UUF Application "pets-store"(org.wso2.carbo
             <groupId>org.wso2.carbon.uuf.maven</groupId>
             <artifactId>carbon-uuf-maven-plugin</artifactId>
             <version>1.0.0-SNAPSHOT</version>
+            <extensions>true</extensions>
             <executions>
                 <execution>
                     <id>create</id>
