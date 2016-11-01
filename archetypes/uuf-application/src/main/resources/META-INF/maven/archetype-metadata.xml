@@ -30,19 +30,15 @@
         <requiredProperty key="package">
             <defaultValue>org.wso2.carbon.uuf.sample.hello-world</defaultValue>
         </requiredProperty>
+        <requiredProperty key="applicationName">
+            <defaultValue>Hello World App</defaultValue>
+        </requiredProperty>
     </requiredProperties>
     <fileSets>
-        <fileSet filtered="false" encoding="UTF-8">
+        <fileSet filtered="true" encoding="UTF-8">
             <directory>src/main</directory>
             <includes>
                 <include>**/*</include>
-            </includes>
-        </fileSet>
-        <fileSet filtered="true" encoding="UTF-8">
-            <directory></directory>
-            <includes>
-                <include>*.xml</include>
-                <include>*.yaml</include>
             </includes>
         </fileSet>
     </fileSets>

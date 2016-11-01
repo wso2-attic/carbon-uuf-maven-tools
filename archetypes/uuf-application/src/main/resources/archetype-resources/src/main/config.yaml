@@ -1,4 +1,4 @@
-appName : Hello World App
+appName : ${applicationName}
 elementsPerPage: 10
 theme : org.wso2.carbon.uuf.sample.theme.default
 menu :
