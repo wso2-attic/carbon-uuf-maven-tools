@@ -36,19 +36,7 @@
     </requiredProperties>
     <fileSets>
         <fileSet filtered="false" encoding="UTF-8">
-            <directory>fragments</directory>
-            <includes>
-                <include>**/*</include>
-            </includes>
-        </fileSet>
-        <fileSet filtered="false" encoding="UTF-8">
-            <directory>pages</directory>
-            <includes>
-                <include>**/*</include>
-            </includes>
-        </fileSet>
-        <fileSet filtered="false" encoding="UTF-8">
-            <directory>public</directory>
+            <directory>src/main</directory>
             <includes>
                 <include>**/*</include>
             </includes>
@@ -58,12 +46,6 @@
             <includes>
                 <include>*.xml</include>
                 <include>*.yaml</include>
-            </includes>
-        </fileSet>
-        <fileSet filtered="false" encoding="UTF-8">
-            <directory>lang</directory>
-            <includes>
-                <include>**/*</include>
             </includes>
         </fileSet>
     </fileSets>
