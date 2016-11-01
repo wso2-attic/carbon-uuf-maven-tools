@@ -48,9 +48,9 @@ Choose archetype:
 2: local -> org.wso2.cdmf.devicetype:cdmf-devicetype-archetype (WSO2 CDMF Device Type Archetype)
 3: local -> org.wso2.iot:cdmf-devicetype-archetype (WSO2 CDMF Device Type Archetype)
 4: local -> org.wso2.msf4j:msf4j-microservice (This an archetype for WSO2 MSF4J microservice)
-5: local -> org.wso2.carbon.uuf.maven.archtype:uuf-application-archetype (UUF - Application Archetype)
-6: local -> org.wso2.carbon.uuf.maven.archtype:uuf-component-archetype (UUF - Component Archetype)
-7: local -> org.wso2.carbon.uuf.maven.archtype:uuf-theme-archetype (UUF - Theme Archetype)
+5: local -> org.wso2.carbon.uuf.maven:uuf-application-archetype (Maven archetype for UUF apps)
+6: local -> org.wso2.carbon.uuf.maven:uuf-component-archetype (Maven archetype for UUF components)
+7: local -> org.wso2.carbon.uuf.maven:uuf-theme-archetype (Maven archetype for UUF themes)
 Choose a number or apply filter (format: [groupId:]artifactId, case sensitive contains): : 5
 ```
 
@@ -63,7 +63,37 @@ To build newly created UUF App, issue following command inside the UUF-App proje
 
     mvn clean install
 
-Then copy-paste the built `zip` artifact inside the target folder(eg. org.wso2.carbon.uuf.sample.hello-world.zip) into UUF_HOME/deployement/uufapps folder.
+The above build will generate a carbon-p2-feature compatible feature for the app as a zip archive.
+To use the the built app (i.e carbon-feature) in your project, you can use carbon-feature-plugin to integrate with the build like below.
+
+Add the app as a dependency like below for your project so that carbon-feature-plugin resolves it during build time.
+
+    <dependency>
+           <groupId>org.wso2.carbon.uuf.sample</groupId>
+           <artifactId>org.wso2.carbon.uuf.sample.hello-world.feature</artifactId>
+           <version>1.0.0-SNAPSHOT</version>
+           <type>zip</type>
+    </dependency>
+
+Then configure your project p2 profile generation config sections to reflect the feature configuration like below under
+"generate-repo" and "install" goals of "package" phase of carbon-feature-plugin.
+
+Add the following feature config under "generate-repo"
+    <feature>
+      <id>org.wso2.carbon.uuf.sample.hello-world.feature</id>
+       <version>1.0.0-SNAPSHOT</version>
+    </feature>
+
+Add the following feature config under "install"
+    <feature>
+       <id>org.wso2.carbon.uuf.sample.hello-world.feature.group</id>
+       <version>1.0.0-SNAPSHOT</version>
+    </feature>
+
+
+Once the above app feature is successfully added to your project (say UUF), then it will be deployed in UUF_HOME/deployement/uufapps folder.
+
+You can refer the UUF product build on how to include carbon-feature-plugin and apps as carbon-features from - https://github.com/wso2/carbon-uuf/blob/master/product/pom.xml
 
 ### Creating sample UUF Component and UUF Theme
 
@@ -81,6 +111,6 @@ Goto "File->New->Maven Project->Next->Next". Select "All Catalogs" on the Catalo
 Goto "File-->New Project-->Maven-->Next". Then click "Add archetype" and enter the following values for groupId, artifactId and version. Replace [version] with required version you need. 
 
     GroupId : ArtifactId : Version
-    org.wso2.carbon.uuf.maven.archtype:uuf-application-archetype:[version]
-    org.wso2.carbon.uuf.maven.archtype:uuf-component-archetype:[version]
-    org.wso2.carbon.uuf.maven.archtype:uuf-theme-archetype:[version]
+    org.wso2.carbon.uuf.maven:uuf-application-archetype:[version]
+    org.wso2.carbon.uuf.maven:uuf-component-archetype:[version]
+    org.wso2.carbon.uuf.maven:uuf-theme-archetype:[version]
