@@ -18,6 +18,11 @@
 
 package org.wso2.carbon.uuf.maven.model;
 
+/**
+ * A bean class to represent a bundle when used as a dependency for component or application.
+ *
+ * @since 1.0.0
+ */
 public class Bundle {
 
     private String symbolicName;

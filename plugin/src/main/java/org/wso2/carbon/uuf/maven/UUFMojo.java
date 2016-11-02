@@ -20,10 +20,11 @@ package org.wso2.carbon.uuf.maven;
 
 import org.apache.maven.plugin.Mojo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+/**
+ * Base interface for all the UUF archetypes Mojo's
+ *
+ * @since 1.0.0
+ */
 public interface UUFMojo extends Mojo {
 
     String ARTIFACT_TYPE_UUF_APP = "carbon-feature";
@@ -37,8 +38,4 @@ public interface UUFMojo extends Mojo {
     String EXPRESSION_CONFIGURATION_INSTRUCTIONS = "instructions";
 
     String CONFIGURATION_IMPORT_PACKAGE = "Import-Package";
-
-    List<String> EXCLUDING_FILE_PATTERNS = new ArrayList<>(Arrays.asList("**/*.iml", "**/*.ipr", "**/*.iwr",
-                                                                         "**/*.eclipse", "**/target/**", "**/pom.xml",
-                                                                         "**/assembly.xml"));
 }
