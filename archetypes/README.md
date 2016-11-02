@@ -79,12 +79,14 @@ Then configure your project p2 profile generation config sections to reflect the
 "generate-repo" and "install" goals of "package" phase of carbon-feature-plugin.
 
 Add the following feature config under "generate-repo"
+
     <feature>
       <id>org.wso2.carbon.uuf.sample.hello-world.feature</id>
        <version>1.0.0-SNAPSHOT</version>
     </feature>
 
 Add the following feature config under "install"
+
     <feature>
        <id>org.wso2.carbon.uuf.sample.hello-world.feature.group</id>
        <version>1.0.0-SNAPSHOT</version>
