@@ -1,6 +1,11 @@
 # Carbon UUF Maven Plugins
 
-[![Build Status](https://wso2.org/jenkins/buildStatus/icon?job=carbon-uuf-maven-plugin)](https://wso2.org/jenkins/me/my-views/view/All/job/carbon-uuf-maven-plugin/)
+---
+
+|  Branch | Build Status |
+| :------------ |:-------------
+| master      | [![Build Status](https://wso2.org/jenkins/job/carbon-uuf-maven-tools/badge/icon)](https://wso2.org/jenkins/job/carbon-uuf-maven-tools/) |
+---
 
 Carbon UUF Maven Plugins project provides a maven plugin and archetypes for creating UUF Applications, UUF Components and UUF Themes of the [Unified UI Framework(UUF)](https://github.com/wso2/carbon-uuf).
 
@@ -32,7 +37,7 @@ Navigate into a preferred location where you need to create your sample project.
   
 Then select `the org.wso2.carbon.uuf.maven:uuf-application-archetype` as new archetype.
 
-For more information on Carbon UUF Archetypes please [click here](https://github.com/rasika/carbon-uuf-maven-plugin/tree/master/arche-types).
+For more information on Carbon UUF Archetypes please [click here](https://github.com/wso2/carbon-uuf-maven-tools/tree/master/archetypes).
 
 ## 2. Carbon UUF Maven Plugin
 
