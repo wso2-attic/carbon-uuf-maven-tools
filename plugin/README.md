@@ -19,38 +19,52 @@ A component is a collection of reusable elements that offers application develop
 Project structure of UUF component
 
 ```xml
-org.wso2.carbon.<product-name>.<feature-name>
-|src
-|   |--main
-|        |---- pages
-|        |          |---- index.hbs
-|        |          |---- index.js
-|        |          |---- more-pages
-|        |          |              `one-more-page.hbs
-|        |          `---- my-page.hbs
-|        |  
-|        |---- public
-|        |          |---- css
-|        |          |---- js
-|        |          |---- lib
-|        |          `---- images
-|        |
-|        |---- layout
-|        |          |---- one-column.hbs
-|        |          `---- two-column.hbs
-|        |
-|        |---- fragments
-|                  `---- listing
-|                        |---- listing.hbs
-|                        |---- listing.js
-|                        |---- listing.json
-|                        `---- public
-|                                 |---- css
-|                                 |---- js /* front-end JS */
-|                                 |---- images /* images */
-|                                 `---- lib /* front-end libs */
-|        
-|---- pom.xml /* defines dependent components */
+org.wso2.carbon.<product-name>.<component-name>
+|----src
+|    |----main
+|         |----pages
+|         |    |---- index.hbs
+|         |    |---- index.js
+|         |    |----more-pages
+|         |    |    ‘---- one-more-page.hbs
+|         |    |---- my-page.hbs
+|         |    ‘---- my-page.js
+|         |
+|         |----layouts
+|         |    |---- one-column.hbs
+|         |    ‘---- two-column.hbs
+|         |
+|         |----fragments
+|         |     |----listing
+|         |     |     |---- listing.hbs
+|         |     |     |---- listing.js
+|         |     |     ‘----public
+|         |     |          |----css/
+|         |     |          |----js/         /*front-end JS*/
+|         |     |          |----images/     /*images*/
+|         |     |          ‘----lib/        /*front-end libs*/
+|         |     ‘----footer
+|         |           |---- footer.hbs
+|         |           ‘----public/
+|         |
+|         |----modules
+|         |     |---- registry-handler.js
+|         |     ‘---- device-da-a-formatter.js
+|         |
+|         |----lang
+|         |     |---- en_US.properties
+|         |     ‘---- fr_FR.properties
+|         |
+|         |----public
+|         |    |----css/
+|         |    |----js/     /*front-end JS*/
+|         |    |----lib/
+|         |    ‘----images/
+|         |
+|         |---- config.yaml
+|         ‘---- bindings.yaml
+|
+‘---- pom.xml
 ```
 Please refer complete version of simple-oauth component sample [here](https://github.com/wso2/carbon-uuf/tree/master/samples/components/org.wso2.carbon.uuf.sample.simple-auth)
 
@@ -94,16 +108,16 @@ Each application must design its own mechanism to allow the user to switch theme
 
 Project structure of UUF theme
 ```xml
-org.wso2.carbon.theme.<theme-name>/
-   |src
-   |   |--main
-   |       |---- public/
-   |       |      |---- css/
-   |       |      |---- js/
-   |       |      |---- images/
-   |       |      `---- libs/
-   |       |---- theme.yaml
-   |---- pom.xml
+org.wso2.carbon.theme.<theme-name>
+|----src
+|     |----main
+|           |----public/
+|           |     |---- css/
+|           |     |---- js/
+|           |     |---- images/
+|           |     ‘---- libs/
+|           |---- theme.yaml
+‘---- pom.xml
 ```
 
 Please refer complete version of ‘green’ theme sample [here](https://github.com/wso2/carbon-uuf/tree/master/samples/themes/org.wso2.carbon.uuf.sample.theme.green).
@@ -140,20 +154,18 @@ This is the way of creating the UUF application. All the `Pages` and `Fragments`
   
 Project structure of an app
 ```xml
-org.wso2.carbon.<product-name>.<app-name>
-   |--src
-   |  |--main
-   |     |---- pages/ - page structure of UUF application
-   |     |---- fragments/
-   |     |---- layouts/
-   |     |---- modules/
-   |     |---- lang/  - include language prop file ex: en_US.properties
-   |     |---- public/
-   |               |---- css /* CSS files only */
-   |               |---- js  /* front-end JS */
-   |               |---- images  /* images */
-   |               |---- lib /* other front-end libraries e.g. D3 */
-   |---- pom.xml /* defines dependent components */
+org.wso2.carbon.<product-name>.<app-name>.feature
+|----src
+|     |----main
+|           |---- pages/
+|           |---- fragments/
+|           |---- layouts/
+|           |---- modules/
+|           |---- lang/
+|           |---- public/
+|           |---- config.yaml
+|           ‘---- bindings.yaml
+‘---- pom.xml /* defines dependent components */
 ```
 
 Please refer complete version of pets-store sample [here](https://github.com/wso2/carbon-uuf/tree/master/samples/apps/org.wso2.carbon.uuf.sample.pets-store)
