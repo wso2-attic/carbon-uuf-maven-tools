@@ -8,9 +8,9 @@ Carbon UUF Maven Plugins project provides a maven plugin and archetypes for crea
 
 Carbon UUF Maven Archetypes provides project templates for each UUF projects. This project provides three maven archetypes;
 
-* UUF Application Archetype : This archtype is used for creating UUF Application template project.
-* UUF Compoenent Archetype : This archtype is used for creating UUF Component template project.
-* UUF Theme Archetype : This archtype is used for creating UUF Theme template project.
+* UUF Application Archetype : This archetype is used for creating UUF Application template project.
+* UUF Component Archetype : This archetype is used for creating UUF Component template project.
+* UUF Theme Archetype : This archetype is used for creating UUF Theme template project.
 
 ### Getting Started
 
@@ -30,7 +30,7 @@ Navigate into a preferred location where you need to create your sample project.
   
     mvn archetype:generate -DarchetypeCatalog=local
   
-Then select `the org.wso2.carbon.uuf.maven.archtype:uuf-application-archetype` as new archetype.   
+Then select `the org.wso2.carbon.uuf.maven:uuf-application-archetype` as new archetype.
 
 For more information on Carbon UUF Archetypes please [click here](https://github.com/rasika/carbon-uuf-maven-plugin/tree/master/arche-types).
 
@@ -39,7 +39,7 @@ For more information on Carbon UUF Archetypes please [click here](https://github
 Carbon UUF Maven Plugin tries to reusing the existing maven plugins where as possible(i.e.Maven-Assembly-Plugin, Maven-Dependency-Plugin). This plugin provides two maven goals;
 
 * create-component : This goal is used for creating UUF Component.
-* create-application : This goal is used for creating UUF Application.
+* create-app : This goal is used for creating UUF Application.
 * create-theme : This goal is used for creating UUF Theme.
 
 ### Getting Started
@@ -57,7 +57,7 @@ A client maven module which needs to create a UUF application and/or component s
         <execution>
             <phase>package</phase>
             <goals>
-                <goal>create-application</goal>
+                <goal>create-app</goal>
             </goals>
         </execution>
     </executions>
