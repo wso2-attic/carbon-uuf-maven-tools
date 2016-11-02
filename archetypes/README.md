@@ -78,14 +78,14 @@ Add the app as a dependency like below for your project so that carbon-feature-p
 Then configure your project p2 profile generation config sections to reflect the feature configuration like below under
 "generate-repo" and "install" goals of "package" phase of carbon-feature-plugin.
 
-Add the following feature config under "generate-repo"
+Add the following feature config under "generate-repo" goal
 
     <feature>
       <id>org.wso2.carbon.uuf.sample.hello-world.feature</id>
        <version>1.0.0-SNAPSHOT</version>
     </feature>
 
-Add the following feature config under "install"
+Add the following feature config under "install" goal
 
     <feature>
        <id>org.wso2.carbon.uuf.sample.hello-world.feature.group</id>
@@ -93,7 +93,7 @@ Add the following feature config under "install"
     </feature>
 
 
-Once the above app feature is successfully added to your project (say UUF), then it will be deployed in UUF_HOME/deployement/uufapps folder.
+Once the above app feature is successfully added to your project build, then it will be installed in CARBON_HOME/deployment/uufapps folder.
 
 You can refer the UUF product build on how to include carbon-feature-plugin and apps as carbon-features from - https://github.com/wso2/carbon-uuf/blob/master/product/pom.xml
 
