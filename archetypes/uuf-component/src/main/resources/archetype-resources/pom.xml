@@ -64,7 +64,7 @@
             <plugin>
                 <groupId>org.wso2.carbon.uuf.maven</groupId>
                 <artifactId>carbon-uuf-maven-plugin</artifactId>
-                <version>${project.version}</version>
+                <version>^project.version^</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>

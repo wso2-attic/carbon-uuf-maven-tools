@@ -22,6 +22,11 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
+/**
+ * UUF Theme creation Mojo that zip archive for the given theme project.
+ *
+ * @since 1.0.0
+ */
 @Mojo(name = "create-theme", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class ThemeMojo extends AbstractZipMojo {

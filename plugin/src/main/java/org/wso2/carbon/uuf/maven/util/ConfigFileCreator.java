@@ -30,6 +30,11 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+/**
+ * Utility class that creates various configuration files needed by the UUF project creation Mojo's.
+ *
+ * @since 1.0.0
+ */
 public class ConfigFileCreator {
 
     private static final String FILE_OSGI_IMPORTS = "osgi-imports";

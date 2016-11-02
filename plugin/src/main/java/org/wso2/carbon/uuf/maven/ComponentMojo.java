@@ -29,6 +29,12 @@ import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 import java.nio.file.Paths;
 import java.util.Map;
 
+/**
+ * UUF Component creation Mojo that generates the osgi-imports when this component uses any OSGi imports
+ * and creates the component zip archive for the given component project.
+ *
+ * @since 1.0.0
+ */
 @Mojo(name = "create-component", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class ComponentMojo extends AbstractZipMojo {

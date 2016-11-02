@@ -35,13 +35,25 @@ import org.apache.maven.project.MavenProjectHelper;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Zip archive assembling Mojo that is used for both uuf component and theme archive creation.
+ *
+ * @since 1.0.0
+ */
 public abstract class AbstractZipMojo extends AbstractAssemblyMojo implements UUFMojo {
 
     private static final String FORMAT = "zip";
     private static final List<String> FORMATS = Collections.singletonList(FORMAT);
+
+    private static final List<String> EXCLUDING_FILE_PATTERNS = new ArrayList<>(
+            Arrays.asList(
+                    "**/*.iml", "**/*.ipr", "**/*.iwr",
+                    "**/*.eclipse", "**/target/**", "**/pom.xml",
+                    "**/assembly.xml"));
 
     /**
      * Maven project.
