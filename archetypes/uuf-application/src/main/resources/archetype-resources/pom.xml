@@ -29,6 +29,7 @@
     <groupId>${groupId}</groupId>
     <artifactId>${artifactId}</artifactId>
     <version>${version}</version>
+    <packaging>carbon-feature</packaging>
 
     <url>http://wso2.org</url>
 
@@ -64,6 +65,7 @@
                 <groupId>org.wso2.carbon.uuf.maven</groupId>
                 <artifactId>carbon-uuf-maven-plugin</artifactId>
                 <version>${project.version}</version>
+                <extensions>true</extensions>
                 <executions>
                     <execution>
                         <id>create</id>
