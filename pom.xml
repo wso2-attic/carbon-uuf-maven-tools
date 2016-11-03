@@ -22,7 +22,7 @@
 
     <groupId>org.wso2.carbon.uuf.maven</groupId>
     <artifactId>carbon-uuf</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-m6</version>
     <packaging>pom</packaging>
 
     <name>WSO2 UUF Maven Tools</name>
@@ -44,7 +44,7 @@
         <url>https://github.com/wso2/carbon-uuf-maven-tools.git</url>
         <developerConnection>scm:git:https://github.com/wso2/carbon-uuf-maven-tools.git</developerConnection>
         <connection>scm:git:https://github.com/wso2/carbon-uuf-maven-tools.git</connection>
-        <tag>HEAD</tag>
+        <tag>v1.0.0-m6</tag>
     </scm>
 
     <dependencyManagement>
