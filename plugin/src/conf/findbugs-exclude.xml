@@ -17,8 +17,11 @@
 -->
 
 <FindBugsFilter>
-    <!-- Ignore warnings for generated HelpMojo class -->
+    <!-- Ignore warnings for generated HelpMojo classes -->
     <Match>
         <Class name="HelpMojo"/>
+    </Match>
+    <Match>
+        <Class name="org.wso2.carbon.uuf.maven.HelpMojo"/>
     </Match>
 </FindBugsFilter>
