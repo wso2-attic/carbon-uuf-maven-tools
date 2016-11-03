@@ -41,9 +41,9 @@
     </modules>
 
     <scm>
-        <url>https://github.com/wso2/carbon-uuf-maven-plugin.git</url>
-        <developerConnection>scm:git:https://github.com/wso2/carbon-uuf-maven-plugin.git</developerConnection>
-        <connection>scm:git:https://github.com/wso2/carbon-uuf-maven-plugin.git</connection>
+        <url>https://github.com/wso2/carbon-uuf-maven-tools.git</url>
+        <developerConnection>scm:git:https://github.com/wso2/carbon-uuf-maven-tools.git</developerConnection>
+        <connection>scm:git:https://github.com/wso2/carbon-uuf-maven-tools.git</connection>
         <tag>HEAD</tag>
     </scm>
 
