@@ -21,9 +21,9 @@ Carbon UUF Maven Archetypes provides project templates for each UUF projects. Th
 
 #### Installing UUF Archetypes
 
-First you need to download correct version of maven archetype. Replace [version] with required version you need to download. 
+First you need to clone the project to your local system to build. 
 
-    git clone -b release-[version] --single-branch https://github.com/wso2/carbon-uuf-maven-plugin.git
+    git clone https://github.com/wso2/carbon-uuf-maven-tools.git
 
 To install this maven archetype into your local system, issue following command inside the carbon-uuf-maven-plugin.
 
@@ -68,7 +68,7 @@ A client maven module which needs to create a UUF application and/or component s
     </executions>
 </plugin>
 ```
-For more information on Carbon UUF Maven Plugin please [click here](https://github.com/rasika/carbon-uuf-maven-plugin/tree/master/maven-plugin).
+For more information on Carbon UUF Maven Plugin please [click here](https://github.com/wso2/carbon-uuf-maven-tools/tree/master/plugin).
 
 ## Download 
 
@@ -119,7 +119,7 @@ Use following Maven repository for released stable versions of Carbon Maven UUF 
 
 ## Building From Source
 
-Clone this repository first (`git clone https://github.com/wso2/carbon-uuf-maven-plugin.git`) and use Maven install to build `mvn clean install`.
+Clone this repository first (`git clone https://github.com/wso2/carbon-uuf-maven-tools.git`) and use Maven install to build `mvn clean install`.
 
 ## Contributing to Carbon Maven UUF Plugin Project
 
@@ -131,4 +131,4 @@ Carbon Maven UUF Plugin is available under the Apache 2 License.
 
 ## Copyright
 
-Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+Copyright (c) 2016, WSO2 Inc. (http://wso2.org) All Rights Reserved.
