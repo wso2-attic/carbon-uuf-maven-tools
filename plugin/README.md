@@ -16,7 +16,13 @@ A client maven module which needs to create a UUF application and/or component s
 
 A component is a collection of reusable elements that offers application developers some functionality. A component may declare that it depends on other components. That is similar to an OSGi dependency - declaring that one component depends on another simply means that the dependent component will be available at runtime.
 
-Project structure of UUF component
+To generate a example uuf-component maven project, you can tse the uuf-component archetype.
+
+```bash
+mvn archetype:generate -DarchetypeVersion=1.0.0-SNAPSHOT -DarchetypeGroupId=org.wso2.carbon.uuf.maven -DarchetypeArtifactId=uuf-component-archetype
+```
+
+Project structure of UUF component will be like the below.
 
 ```xml
 org.wso2.carbon.<product-name>.<component-name>
@@ -68,7 +74,7 @@ org.wso2.carbon.<product-name>.<component-name>
 ```
 Please refer complete version of simple-oauth component sample [here](https://github.com/wso2/carbon-uuf/tree/master/samples/components/org.wso2.carbon.uuf.sample.simple-auth)
 
-User should add the plugin dependency into project pom.xml file in order to create an UUF component as follows. 
+User should add the plugin dependency into project pom.xml file in order to create an UUF component as follows. This will be automatically added with the generated archetype.
 
 ```xml
 <build>
@@ -76,7 +82,7 @@ User should add the plugin dependency into project pom.xml file in order to crea
        <plugin>
            <groupId>org.wso2.carbon.uuf.maven</groupId>
            <artifactId>carbon-uuf-maven-plugin</artifactId>
-           <version>1.0.0-m5</version>
+           <version>1.0.0-SNAPSHOT</version>
            <extensions>true</extensions>
            <executions>
                <execution>
@@ -106,7 +112,14 @@ A theme is a named collection of stylesheets, supporting images & fonts. Themes 
 
 Each application must design its own mechanism to allow the user to switch themes. UUF will provide an API (available on the server-side) to select a theme. By default the "default" theme will be used to render the application.
 
-Project structure of UUF theme
+To generate a example uuf-theme maven project, you can tse the uuf-theme archetype.
+
+```bash
+mvn archetype:generate -DarchetypeVersion=1.0.0-SNAPSHOT -DarchetypeGroupId=org.wso2.carbon.uuf.maven -DarchetypeArtifactId=uuf-theme-archetype
+```
+
+Project structure of UUF theme will look like the below.
+
 ```xml
 org.wso2.carbon.theme.<theme-name>
 |----src
@@ -122,7 +135,7 @@ org.wso2.carbon.theme.<theme-name>
 
 Please refer complete version of ‘green’ theme sample [here](https://github.com/wso2/carbon-uuf/tree/master/samples/themes/org.wso2.carbon.uuf.sample.theme.green).
 
-User should add the plugin dependency into project pom.xml file in order to create an UUF theme as follows. 
+The plugin dependency and the plugin goal that is added into project pom.xml file in order to create an UUF theme as follows. This will be automatically added with the generated archetype.
 
 ```xml
 <build>
@@ -130,7 +143,7 @@ User should add the plugin dependency into project pom.xml file in order to crea
        <plugin>
            <groupId>org.wso2.carbon.uuf.maven</groupId>
            <artifactId>carbon-uuf-maven-plugin</artifactId>
-           <version>1.0.0-m5</version>
+           <version>1.0.0-SNAPSHOT</version>
            <extensions>true</extensions>
            <executions>
                <execution>
@@ -151,8 +164,15 @@ Once you created a project according as described in the above. You can create a
 An application is simply a component that is taking over "/" in a web context and also defines which other components are to be incorporated below "/" with their own sub-contexts. It also indicates the themes it wishes to include into the application.
 
 This is the way of creating the UUF application. All the `Pages` and `Fragments` of the current Application will be moved into a component called "root" inside the "/components" folder.
-  
-Project structure of an app
+
+To generate a example uuf-application maven project, you can tse the uuf-application archetype.
+
+```bash
+mvn archetype:generate -DarchetypeVersion=1.0.0-SNAPSHOT -DarchetypeGroupId=org.wso2.carbon.uuf.maven -DarchetypeArtifactId=uuf-application-archetype
+```
+   
+Project structure of an app will look like the below.
+
 ```xml
 org.wso2.carbon.<product-name>.<app-name>.feature
 |----src
@@ -170,7 +190,7 @@ org.wso2.carbon.<product-name>.<app-name>.feature
 
 Please refer complete version of pets-store sample [here](https://github.com/wso2/carbon-uuf/tree/master/samples/apps/org.wso2.carbon.uuf.sample.pets-store)
 
-User should add the plugin dependency into project pom.xml file in order to create an UUF application as follows. 
+The plugin dependency and the plugin goal that is added into project pom.xml file in order to create an UUF application as follows. This will be automatically added with the generated archetype.
 
 ```xml
 <build>
@@ -178,7 +198,7 @@ User should add the plugin dependency into project pom.xml file in order to crea
        <plugin>
            <groupId>org.wso2.carbon.uuf.maven</groupId>
            <artifactId>carbon-uuf-maven-plugin</artifactId>
-           <version>1.0.0-m5</version>
+           <version>1.0.0-SNAPSHOT</version>
            <extensions>true</extensions>
            <executions>
                <execution>
