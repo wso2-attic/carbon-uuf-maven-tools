@@ -274,7 +274,7 @@ Following UUF Application reuses the UUF components "base"(org.wso2.carbon.uuf.b
         <plugin>
             <groupId>org.wso2.carbon.uuf.maven</groupId>
             <artifactId>carbon-uuf-maven-plugin</artifactId>
-            <version>1.0.0-m5</version>
+            <version>1.0.0-SNAPSHOT</version>
             <extensions>true</extensions>
             <executions>
                 <execution>
@@ -309,7 +309,7 @@ Following UUF Application reuses the UUF Application "pets-store"(org.wso2.carbo
         <plugin>
             <groupId>org.wso2.carbon.uuf.maven</groupId>
             <artifactId>carbon-uuf-maven-plugin</artifactId>
-            <version>1.0.0-m5</version>
+            <version>1.0.0-SNAPSHOT</version>
             <extensions>true</extensions>
             <executions>
                 <execution>
