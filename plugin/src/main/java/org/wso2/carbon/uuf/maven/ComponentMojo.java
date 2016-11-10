@@ -30,8 +30,8 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 /**
- * UUF Component creation Mojo that generates the osgi-imports when this component uses any OSGi imports
- * and creates the component zip archive for the given component project.
+ * UUF Component creation Mojo that generates the osgi-imports when this component uses any OSGi imports and creates the
+ * component zip archive for the given component project.
  *
  * @since 1.0.0
  */
@@ -56,6 +56,12 @@ public class ComponentMojo extends AbstractZipMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (!ARTIFACT_TYPE_UUF_COMPONENT.equals(packaging)) {
+            throw new MojoExecutionException(
+                    "Packaging type of an UUF Component should be '" + ARTIFACT_TYPE_UUF_COMPONENT +
+                            "'. Instead found '" + packaging + "'.");
+        }
+
         // create OSGi imports file
         if ((instructions != null) && !instructions.isEmpty()) {
             ConfigFileCreator.createOsgiImports(instructions.get(CONFIGURATION_IMPORT_PACKAGE),
