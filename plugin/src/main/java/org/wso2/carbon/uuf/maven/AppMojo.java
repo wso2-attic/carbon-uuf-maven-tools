@@ -56,8 +56,8 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 /**
- * UUF Application creation Mojo that generates dependency.tree, p2.inf files and finally creates the
- * carbon-feature for the given app project.
+ * UUF Application creation Mojo that generates dependency.tree, p2.inf files and finally creates the carbon-feature for
+ * the given app project.
  *
  * @since 1.0.0
  */
@@ -79,6 +79,12 @@ public class AppMojo implements UUFMojo {
      */
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
+
+    /**
+     * Packaging type of the project.
+     */
+    @Parameter(defaultValue = "${project.packaging}", readonly = true, required = true)
+    protected String packaging;
 
     /**
      * Source directory path for UUF Maven plugin.
@@ -152,6 +158,12 @@ public class AppMojo implements UUFMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (!ARTIFACT_TYPE_UUF_APP.equals(packaging)) {
+            throw new MojoExecutionException(
+                    "Packaging type of an UUF App should be '" + ARTIFACT_TYPE_UUF_APP + "'. Instead found '" +
+                            packaging + "'.");
+        }
+
         // Remove ".feature" from the artifact ID.
         String featureName = artifactId.substring(0, (artifactId.length() - ".feature".length()));
         outputDirectoryPath += featureName;
