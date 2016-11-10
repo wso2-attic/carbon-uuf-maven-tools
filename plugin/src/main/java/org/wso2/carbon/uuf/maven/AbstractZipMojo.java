@@ -50,28 +50,26 @@ public abstract class AbstractZipMojo extends AbstractAssemblyMojo implements UU
     private static final List<String> FORMATS = Collections.singletonList(FORMAT);
 
     private static final List<String> EXCLUDING_FILE_PATTERNS = new ArrayList<>(
-            Arrays.asList(
-                    "**/*.iml", "**/*.ipr", "**/*.iwr",
-                    "**/*.eclipse", "**/target/**", "**/pom.xml",
-                    "**/assembly.xml"));
+            Arrays.asList("**/*.iml", "**/*.ipr", "**/*.iwr", "**/*.eclipse", "**/target/**", "**/pom.xml",
+                          "**/assembly.xml"));
 
     /**
      * Maven project.
      */
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
-    private MavenProject project;
+    protected MavenProject project;
 
     /**
      * Packaging type of the project.
      */
     @Parameter(defaultValue = "${project.packaging}", readonly = true, required = true)
-    private String packaging;
+    protected String packaging;
 
     /**
      * Source directory path for UUF Maven plugin.
      */
     @Parameter(defaultValue = EXPRESSION_SOURCE_DIRECTORY_PATH, readonly = true, required = true)
-    private String sourceDirectoryPath;
+    protected String sourceDirectoryPath;
 
     /**
      * The output directory for UUF Maven plugin.
@@ -131,10 +129,7 @@ public abstract class AbstractZipMojo extends AbstractAssemblyMojo implements UU
         } catch (ArchiveCreationException | AssemblyFormattingException e) {
             throw new MojoExecutionException("Failed to create assembly '" + distributionName + "'.", e);
         } catch (InvalidAssemblerConfigurationException e) {
-            throw new MojoFailureException(assembly,
-                                           "Assembly '" + distributionName + "'is incorrectly configured.",
-                                           "Assembly '" + distributionName + "'is incorrectly configured: " +
-                                                   e.getMessage());
+            throw new MojoFailureException("Assembly '" + distributionName + "'is incorrectly configured.", e);
         }
     }
 
