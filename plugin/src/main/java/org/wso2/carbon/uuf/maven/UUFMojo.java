@@ -35,7 +35,6 @@ public interface UUFMojo extends Mojo {
     String DIRECTORY_THEMES = "/themes";
 
     String EXPRESSION_SOURCE_DIRECTORY_PATH = "${project.basedir}/src/main/";
-    String EXPRESSION_CONFIGURATION_INSTRUCTIONS = "instructions";
 
     String CONFIGURATION_IMPORT_PACKAGE = "Import-Package";
 }
