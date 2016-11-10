@@ -18,6 +18,8 @@
 
 package org.wso2.carbon.uuf.maven;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -34,5 +36,15 @@ public class ThemeMojo extends AbstractZipMojo {
     @Override
     String getZipBaseDirectory() {
         return artifactId;
+    }
+
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        if (!ARTIFACT_TYPE_UUF_THEME.equals(packaging)) {
+            throw new MojoExecutionException(
+                    "Packaging type of an UUF Theme should be '" + ARTIFACT_TYPE_UUF_THEME + "'. Instead found '" +
+                            packaging + "'.");
+        }
+        super.execute();
     }
 }
