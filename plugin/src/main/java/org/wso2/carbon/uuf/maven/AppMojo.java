@@ -172,10 +172,16 @@ public class AppMojo implements UUFMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        // Validation: Packaging type should be 'carbon-feature'
         if (!ARTIFACT_TYPE_UUF_APP.equals(packaging)) {
             throw new MojoExecutionException(
                     "Packaging type of an UUF App should be '" + ARTIFACT_TYPE_UUF_APP + "'. Instead found '" +
                             packaging + "'.");
+        }
+        // Validation: Artifact ID should end with '.feature'
+        if (!artifactId.endsWith(".feature")) {
+            throw new MojoExecutionException(
+                    "Artifact ID of an UUF App should end with '.feature' as it is packaged as a Carbon Feature.");
         }
 
         // Remove ".feature" from the artifact ID.
