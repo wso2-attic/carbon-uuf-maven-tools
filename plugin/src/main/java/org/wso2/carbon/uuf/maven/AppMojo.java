@@ -116,7 +116,7 @@ public class AppMojo implements UUFMojo {
     /**
      * The artifact repository to use.
      */
-    @Parameter(property = "${localRepository}", readonly = true, required = true)
+    @Parameter(property = "localRepository", readonly = true, required = true)
     private ArtifactRepository localRepository;
 
     /**
