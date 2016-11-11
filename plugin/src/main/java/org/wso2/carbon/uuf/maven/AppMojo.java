@@ -19,6 +19,7 @@
 package org.wso2.carbon.uuf.maven;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -32,6 +33,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.dependency.graph.DependencyGraphBuilder;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 import org.wso2.carbon.uuf.maven.model.Bundle;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
@@ -77,13 +79,13 @@ public class AppMojo implements UUFMojo {
     /**
      * Maven project.
      */
-    @Parameter(defaultValue = "${project}", readonly = true, required = true)
+    @Parameter(defaultValue = EXPRESSION_PROJECT, readonly = true, required = true)
     private MavenProject project;
 
     /**
      * Packaging type of the project.
      */
-    @Parameter(defaultValue = "${project.packaging}", readonly = true, required = true)
+    @Parameter(defaultValue = EXPRESSION_PROJECT_PACKAGING, readonly = true, required = true)
     protected String packaging;
 
     /**
@@ -108,16 +110,22 @@ public class AppMojo implements UUFMojo {
     /**
      * The artifact ID of the project.
      */
-    @Parameter(defaultValue = "${project.artifactId}", readonly = true, required = true)
+    @Parameter(defaultValue = EXPRESSION_ARTIFACT_ID, readonly = true, required = true)
     private String artifactId;
+
+    /**
+     * The artifact repository to use.
+     */
+    @Parameter(property = "${localRepository}", readonly = true, required = true)
+    private ArtifactRepository localRepository;
 
     /**
      * OSGi {@code <Import-Package>} instructions for this UUF App.
      */
-    @Parameter(readonly = true, required = false)
+    @Parameter(property = EXPRESSION_INSTRUCTIONS, readonly = true, required = false)
     private Map<String, String> instructions;
 
-    @Parameter(readonly = true, required = false)
+    @Parameter(property = "bundles", readonly = true, required = false)
     private List<Bundle> bundles;
 
     /**
@@ -141,8 +149,14 @@ public class AppMojo implements UUFMojo {
     /**
      * Plugin manager to execute other Maven plugins.
      */
-    @Component
+    @Component(hint = "default")
     private BuildPluginManager pluginManager;
+
+    /**
+     * The dependency tree builder to use.
+     */
+    @Component(hint = "default")
+    private DependencyGraphBuilder dependencyGraphBuilder;
 
     private Log log = new SystemStreamLog();
 

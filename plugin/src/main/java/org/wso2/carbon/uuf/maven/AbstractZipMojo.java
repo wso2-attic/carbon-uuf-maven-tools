@@ -56,13 +56,13 @@ public abstract class AbstractZipMojo extends AbstractAssemblyMojo implements UU
     /**
      * Maven project.
      */
-    @Parameter(defaultValue = "${project}", readonly = true, required = true)
+    @Parameter(defaultValue = EXPRESSION_PROJECT, readonly = true, required = true)
     protected MavenProject project;
 
     /**
      * Packaging type of the project.
      */
-    @Parameter(defaultValue = "${project.packaging}", readonly = true, required = true)
+    @Parameter(defaultValue = EXPRESSION_PROJECT_PACKAGING, readonly = true, required = true)
     protected String packaging;
 
     /**
@@ -74,13 +74,13 @@ public abstract class AbstractZipMojo extends AbstractAssemblyMojo implements UU
     /**
      * The output directory for UUF Maven plugin.
      */
-    @Parameter(defaultValue = "${project.build.directory}/uuf-temp/", readonly = true, required = true)
+    @Parameter(defaultValue = "${project.build.directory}/uuf/", readonly = true, required = true)
     protected String outputDirectoryPath;
 
     /**
      * The artifact ID of the project.
      */
-    @Parameter(defaultValue = "${project.artifactId}", readonly = true, required = true)
+    @Parameter(defaultValue = EXPRESSION_ARTIFACT_ID, readonly = true, required = true)
     protected String artifactId;
 
     /**
