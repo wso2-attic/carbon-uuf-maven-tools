@@ -131,19 +131,19 @@ public class AppMojo implements UUFMojo {
     /**
      * Maven Dependency Plugin version to use.
      */
-    @Parameter(defaultValue = "2.1", readonly = true, required = false)
+    @Parameter(defaultValue = "2.9", readonly = true, required = false)
     private String dependencyPluginVersion;
 
     /**
      * Maven Resources Plugin version to use.
      */
-    @Parameter(defaultValue = "3.0.1", readonly = true, required = false)
+    @Parameter(defaultValue = "2.7", readonly = true, required = false)
     private String resourcesPluginVersion;
 
     /**
      * Carbon Feature Plugin version to use.
      */
-    @Parameter(defaultValue = "2.0.1", readonly = true, required = false)
+    @Parameter(defaultValue = "2.0.0", readonly = true, required = false)
     private String carbonFeaturePluginVersion;
 
     /**
