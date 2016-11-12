@@ -68,6 +68,7 @@ public class AppMojo implements UUFMojo {
 
     private static final String FILE_DEPENDENCY_TREE = "dependency.tree";
     private static final String DIRECTORY_ROOT_COMPONENT = "/root";
+    private static final String APP_ARTIFACT_ID_TAIL = ".feature";
 
     /**
      * The Maven session.
@@ -172,27 +173,26 @@ public class AppMojo implements UUFMojo {
                             packaging + "'.");
         }
         // Validation: Artifact ID should end with '.feature'
-        if (!artifactId.endsWith(".feature")) {
+        if (!artifactId.endsWith(APP_ARTIFACT_ID_TAIL)) {
             throw new MojoExecutionException(
                     "Artifact ID of an UUF App should end with '.feature' as it is packaged as a Carbon Feature.");
         }
 
-        // Remove ".feature" from the artifact ID.
-        String featureName = artifactId.substring(0, (artifactId.length() - ".feature".length()));
-        outputDirectoryPath += featureName;
-
+        // Compute the App's fully qualified name by removing ".feature" from the artifact ID.
+        String appFullyQualifiedName = artifactId.substring(0, (artifactId.length() - APP_ARTIFACT_ID_TAIL.length()));
+        outputDirectoryPath += appFullyQualifiedName;
         // Categorize dependencies.
         @SuppressWarnings("unchecked")
         Set<Artifact> allDependencies = ((Set<Artifact>) project.getArtifacts());
-        Set<Artifact> uufComponentDependencies = allDependencies.stream()
+        Set<Artifact> allComponentDependencies = allDependencies.stream()
                 .filter(artifact -> ARTIFACT_TYPE_UUF_COMPONENT.equals(artifact.getClassifier()))
                 .collect(Collectors.toSet());
-        Set<Artifact> uufComponentThemeDependencies = allDependencies.stream()
+        Set<Artifact> allThemeDependencies = allDependencies.stream()
                 .filter(artifact -> ARTIFACT_TYPE_UUF_THEME.equals(artifact.getClassifier()))
                 .collect(Collectors.toSet());
 
         // 1. Unpack UUF Component dependencies.
-        unpackDependencies(uufComponentDependencies, outputDirectoryPath + DIRECTORY_COMPONENTS);
+        unpackDependencies(allComponentDependencies, outputDirectoryPath + DIRECTORY_COMPONENTS);
         // 2.1. Create "root" component.
         // TODO: 10/19/16 Exclude unnecessary files (e.g. .iml, .DS_Store) when packing the root component
         executeMojo(
@@ -220,7 +220,7 @@ public class AppMojo implements UUFMojo {
             ConfigFileCreator.createOsgiImports(instructions.get(CONFIGURATION_IMPORT_PACKAGE), rootComponentDir);
         }
         // 3. Unpack UUF Theme dependencies.
-        unpackDependencies(uufComponentThemeDependencies, outputDirectoryPath + DIRECTORY_THEMES);
+        unpackDependencies(allThemeDependencies, outputDirectoryPath + DIRECTORY_THEMES);
         // 4. Create dependencies tree.
         executeMojo(
                 plugin(
@@ -234,7 +234,7 @@ public class AppMojo implements UUFMojo {
                         element(name("outputFile"),
                                 outputDirectoryPath + DIRECTORY_COMPONENTS + "/" + FILE_DEPENDENCY_TREE
                         ),
-                        element(name("includes"), uufComponentDependencies.stream()
+                        element(name("includes"), allComponentDependencies.stream()
                                 .map(artifact -> artifact.getGroupId() + ":" + artifact.getArtifactId() + "::")
                                 .collect(Collectors.joining(",")))
                 ),
@@ -247,7 +247,7 @@ public class AppMojo implements UUFMojo {
         resource.setDirectory(tempResourcesDirectory.toString());
         project.addResource(resource);
         // 5.1.2 Create the "p2.inf" file in that 'resources' directory.
-        ConfigFileCreator.createP2Inf(featureName, tempResourcesDirectory);
+        ConfigFileCreator.createP2Inf(appFullyQualifiedName, tempResourcesDirectory);
         // 5.2 Create Carbon P2 Feature.
         executeMojo(
                 plugin(
