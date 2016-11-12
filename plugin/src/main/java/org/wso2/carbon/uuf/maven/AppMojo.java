@@ -33,7 +33,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.dependency.graph.DependencyGraphBuilder;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 import org.wso2.carbon.uuf.maven.model.Bundle;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
@@ -151,12 +150,6 @@ public class AppMojo implements UUFMojo {
      */
     @Component(hint = "default")
     private BuildPluginManager pluginManager;
-
-    /**
-     * The dependency tree builder to use.
-     */
-    @Component(hint = "default")
-    private DependencyGraphBuilder dependencyGraphBuilder;
 
     private Log log = new SystemStreamLog();
 

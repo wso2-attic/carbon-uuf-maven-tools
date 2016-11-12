@@ -78,12 +78,6 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>${maven-assembly-plugin.version}</version>
             </dependency>
-            <!--Dependency tree-->
-            <dependency>
-                <groupId>org.apache.maven.shared</groupId>
-                <artifactId>maven-dependency-tree</artifactId>
-                <version>${maven-dependency-tree.version}</version>
-            </dependency>
             <!--Other-->
             <dependency>
                 <groupId>commons-io</groupId>
@@ -113,7 +107,6 @@
         <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
         <mojo-executor.version>2.2.0</mojo-executor.version>
         <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
-        <maven-dependency-tree.version>3.0</maven-dependency-tree.version>
         <commons-io.version>2.1</commons-io.version>
         <!--Test-->
         <testng.version>6.9.4</testng.version>
