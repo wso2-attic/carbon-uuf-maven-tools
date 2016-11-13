@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * Represents a node in the dependency tree.
+ */
 public class DependencyNode {
 
     private final String artifactId;
@@ -29,6 +32,13 @@ public class DependencyNode {
     private final DependencyNode parent;
     private final List<DependencyNode> dependencies;
 
+    /**
+     * Creates a new node.
+     *
+     * @param artifactId artifact ID of the UUF Component reflected by this node
+     * @param version    version of the UUF Component reflected by this node
+     * @param parent     parent node of the creating node; can be {@code null} if the creating node is root node
+     */
     public DependencyNode(String artifactId, String version, DependencyNode parent) {
         this.artifactId = artifactId;
         this.version = version;
@@ -36,18 +46,39 @@ public class DependencyNode {
         this.dependencies = new ArrayList<>();
     }
 
+    /**
+     * Returns the artifact ID of the UUF Component which is reflected by this node.
+     *
+     * @return artifact ID of the UUF Component
+     */
     public String getArtifactId() {
         return artifactId;
     }
 
+    /**
+     * Returns the version of the UUF Component which is reflected by this node.
+     *
+     * @return version of the UUF Component
+     */
     public String getVersion() {
         return version;
     }
 
+    /**
+     * Returns the dependencies of the UUF Component which is reflected by this node.
+     *
+     * @return dependencies of the UUF Component
+     */
     public List<DependencyNode> getDependencies() {
         return dependencies;
     }
 
+    /**
+     * Adds the specified dependency to this node. Parent of the adding dependency should be this node.
+     *
+     * @param dependency a dependency of this node
+     * @throws IllegalArgumentException if the parent of the specified dependecy is not this node
+     */
     public void addDependency(DependencyNode dependency) {
         if (this != dependency.parent) {
             throw new IllegalArgumentException(
@@ -56,6 +87,15 @@ public class DependencyNode {
         dependencies.add(dependency);
     }
 
+    /**
+     * Returns the parent node in the specified level of this node.
+     *
+     * @param level level of the parent, where {@code 1} means immediate parent and {@code 2} means parent of that
+     *              parent and so on
+     * @return parent node
+     * @throws IllegalStateException    if there is no parent in this node, which idicates that this is the root node
+     * @throws IllegalArgumentException if {@code level < 1}
+     */
     public DependencyNode getParent(int level) {
         if (parent == null) {
             throw new IllegalStateException("This is the root node.");
@@ -71,11 +111,19 @@ public class DependencyNode {
         return currentParent;
     }
 
-    public void travese(Consumer<DependencyNode> nodeConsumer) {
+    /**
+     * Traverse this node and its dependencies in depth-first manner.
+     *
+     * @param nodeConsumer consumer that consumes each node
+     */
+    public void traverse(Consumer<DependencyNode> nodeConsumer) {
         dependencies.forEach(nodeConsumer);
         nodeConsumer.accept(this);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "{" + artifactId + ", " + version + "}";
