@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.uuf.maven.util;
+package org.wso2.carbon.uuf.maven.serializer;
 
 import org.wso2.carbon.uuf.maven.model.DependencyNode;
 import org.yaml.snakeyaml.DumperOptions;
