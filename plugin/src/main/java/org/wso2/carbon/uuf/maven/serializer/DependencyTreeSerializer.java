@@ -33,8 +33,19 @@ import java.util.Set;
 
 /**
  * YAML serializer which can serialize a dependency tree.
+ *
+ * @apiNote Not thread safe.
  */
 public class DependencyTreeSerializer {
+
+    private final Yaml yaml;
+
+    /**
+     * Creates a new instance.
+     */
+    public DependencyTreeSerializer() {
+        this.yaml = new Yaml(new DependencyNodeRepresenter());
+    }
 
     /**
      * Serialize the specified dependency ree to a valid YAML text.
@@ -42,9 +53,8 @@ public class DependencyTreeSerializer {
      * @param rootNode root node of the dependency tree to be serialize
      * @return YAML representation of the dependency tree
      */
-    public static String serialize(DependencyNode rootNode) {
-        Representer representer = new DependencyNodeRepresenter();
-        return new Yaml(representer).dumpAs(rootNode, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
+    public String serialize(DependencyNode rootNode) {
+        return yaml.dumpAs(rootNode, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
     }
 
     /**
