@@ -43,11 +43,8 @@ public class DependencyTreeSerializer {
      * @return YAML representation of the dependency tree
      */
     public static String serialize(DependencyNode rootNode) {
-        DumperOptions dumperOptions = new DumperOptions();
-        dumperOptions.setAllowReadOnlyProperties(true);
         Representer representer = new DependencyNodeRepresenter();
-
-        return new Yaml(representer, dumperOptions).dumpAs(rootNode, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
+        return new Yaml(representer).dumpAs(rootNode, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
     }
 
     /**
@@ -60,6 +57,11 @@ public class DependencyTreeSerializer {
      */
     private static class DependencyNodeRepresenter extends Representer {
 
+        /**
+         * Creates a new {@link DependencyNodeRepresenter}.
+         *
+         * @throws RuntimeException if cannot retrieve JavaBean properties from {@link DependencyNode} class.
+         */
         public DependencyNodeRepresenter() {
             Set<Property> properties = new LinkedHashSet<>(); // to preserve order
             try {
