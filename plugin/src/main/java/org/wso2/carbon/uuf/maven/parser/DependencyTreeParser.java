@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.uuf.maven.util;
+package org.wso2.carbon.uuf.maven.parser;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.wso2.carbon.uuf.maven.model.DependencyNode;
