@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.uuf.maven.serializer;
 
+import org.wso2.carbon.uuf.maven.exception.SerializationException;
 import org.wso2.carbon.uuf.maven.model.DependencyNode;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -34,27 +35,25 @@ import java.util.Set;
 /**
  * YAML serializer which can serialize a dependency tree.
  *
- * @apiNote Not thread safe.
+ * @since 1.0.0
  */
 public class DependencyTreeSerializer {
 
-    private final Yaml yaml;
+    private final Yaml yaml = new Yaml(new DependencyNodeRepresenter());
 
     /**
-     * Creates a new instance.
-     */
-    public DependencyTreeSerializer() {
-        this.yaml = new Yaml(new DependencyNodeRepresenter());
-    }
-
-    /**
-     * Serialize the specified dependency ree to a valid YAML text.
+     * Serialize the specified dependency tree to YAML.
      *
      * @param rootNode root node of the dependency tree to be serialize
      * @return YAML representation of the dependency tree
+     * @throws SerializationException if an error occurred during serialization
      */
-    public String serialize(DependencyNode rootNode) {
-        return yaml.dumpAs(rootNode, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
+    public String serialize(DependencyNode rootNode) throws SerializationException {
+        try {
+            return yaml.dumpAs(rootNode, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
+        } catch (Exception e) {
+            throw new SerializationException("Cannot serialize dependency tree where root node " + rootNode + ".", e);
+        }
     }
 
     /**
