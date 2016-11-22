@@ -24,6 +24,8 @@ import java.util.function.Consumer;
 
 /**
  * Represents a node in the dependency tree.
+ *
+ * @since 1.0.0
  */
 public class DependencyNode {
 
