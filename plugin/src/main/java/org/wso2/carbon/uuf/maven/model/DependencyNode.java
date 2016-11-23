@@ -20,6 +20,7 @@ package org.wso2.carbon.uuf.maven.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -95,8 +96,9 @@ public class DependencyNode {
      * @param level level of the parent, where {@code 1} means immediate parent and {@code 2} means parent of that
      *              parent and so on
      * @return parent node
-     * @throws IllegalStateException    if there is no parent in this node, which idicates that this is the root node
-     * @throws IllegalArgumentException if {@code level < 1}
+     * @exception  IllegalStateException    if there is no parent in this node, which indicates that this is the root node
+     * @exception IllegalArgumentException if {@code level < 1}
+     * @exception NullPointerException if there is no parent
      */
     public DependencyNode getParent(int level) {
         if (parent == null) {
@@ -121,6 +123,18 @@ public class DependencyNode {
     public void traverse(Consumer<DependencyNode> nodeConsumer) {
         dependencies.forEach(nodeConsumer);
         nodeConsumer.accept(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if ((obj != null) && (obj instanceof DependencyNode)) {
+            DependencyNode otherNode = (DependencyNode) obj;
+            return Objects.equals(artifactId, otherNode.artifactId) && Objects.equals(version, otherNode.version);
+        }
+        return false;
     }
 
     /**
