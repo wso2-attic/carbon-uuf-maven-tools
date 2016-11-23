@@ -84,6 +84,11 @@
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.orbit.org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${orbit.org.yaml.version}</version>
+            </dependency>
             <!-- Test -->
             <dependency>
                 <groupId>org.testng</groupId>
@@ -111,6 +116,7 @@
         <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
         <!--Other-->
         <commons-io.version>2.1</commons-io.version>
+        <orbit.org.yaml.version>1.16.0.wso2v1</orbit.org.yaml.version>
         <!--Test-->
         <testng.version>6.9.4</testng.version>
         <mockito-core.version>2.0.44-beta</mockito-core.version>
