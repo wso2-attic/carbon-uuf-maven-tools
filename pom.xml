@@ -78,6 +78,11 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>${maven-assembly-plugin.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-archiver</artifactId>
+                <version>${plexus-archiver.version}</version>
+            </dependency>
             <!--Other-->
             <dependency>
                 <groupId>commons-io</groupId>
@@ -113,6 +118,7 @@
         <!--Mojo executor-->
         <mojo-executor.version>2.2.0</mojo-executor.version>
         <!--Assembly API-->
+        <plexus-archiver.version>3.0</plexus-archiver.version>
         <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
         <!--Other-->
         <commons-io.version>2.1</commons-io.version>
