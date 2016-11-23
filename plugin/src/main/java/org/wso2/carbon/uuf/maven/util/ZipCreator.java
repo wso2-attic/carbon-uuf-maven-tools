@@ -41,9 +41,10 @@ public class ZipCreator {
      * @param baseDirectoryName   base directory of the creating zip archive, pass {@code null} for no base directory
      * @param outputDirectoryPath path to the directory where the zip archive is created
      * @param archiveFileName     filename of the creating zip archive without the ".zip" extension
-     * @throws MojoExecutionException if an error occurres during the archive creation process
+     * @return created zip archive file
+     * @throws MojoExecutionException if an error occurred when creating the zip archive
      */
-    public static void createArchive(String sourceDirectoryPath, String baseDirectoryName, String outputDirectoryPath,
+    public static File createArchive(String sourceDirectoryPath, String baseDirectoryName, String outputDirectoryPath,
                                      String archiveFileName) throws MojoExecutionException {
         Archiver zipArchiver = new ZipArchiver();
         DefaultFileSet fileSet = new DefaultFileSet(new File(sourceDirectoryPath));
@@ -61,5 +62,6 @@ public class ZipCreator {
             throw new MojoExecutionException("Cannot create zip archive '" + outputZipFile.getPath() +
                                                      "' from directory '" + sourceDirectoryPath + "'.", e);
         }
+        return outputZipFile;
     }
 }
