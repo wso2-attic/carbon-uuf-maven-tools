@@ -26,7 +26,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 
-import java.nio.file.Paths;
 import java.util.Map;
 
 /**
@@ -45,6 +44,9 @@ public class ComponentMojo extends AbstractZipMojo {
     @Parameter(readonly = true, required = false)
     private Map<String, String> instructions;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getZipBaseDirectory() {
         int lastIndex = artifactId.lastIndexOf(".");
@@ -54,8 +56,12 @@ public class ComponentMojo extends AbstractZipMojo {
         return artifactId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        // Validation: Packaging type should be 'uuf-component'.
         if (!ARTIFACT_TYPE_UUF_COMPONENT.equals(packaging)) {
             throw new MojoExecutionException(
                     "Packaging type of an UUF Component should be '" + ARTIFACT_TYPE_UUF_COMPONENT +
@@ -64,8 +70,7 @@ public class ComponentMojo extends AbstractZipMojo {
 
         // create OSGi imports file
         if ((instructions != null) && !instructions.isEmpty()) {
-            ConfigFileCreator.createOsgiImports(instructions.get(CONFIGURATION_IMPORT_PACKAGE),
-                                                Paths.get(outputDirectoryPath));
+            ConfigFileCreator.createOsgiImports(instructions.get(CONFIGURATION_IMPORT_PACKAGE), outputDirectoryPath);
         }
         super.execute();
     }
