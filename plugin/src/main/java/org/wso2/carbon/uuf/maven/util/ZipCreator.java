@@ -33,6 +33,8 @@ import java.io.IOException;
  */
 public class ZipCreator {
 
+    public static final String ARCHIVE_FORMAT = "zip";
+
     /**
      * Creates a zip archive.
      *
