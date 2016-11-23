@@ -33,11 +33,17 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class ThemeMojo extends AbstractZipMojo {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     String getZipBaseDirectory() {
         return artifactId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (!ARTIFACT_TYPE_UUF_THEME.equals(packaging)) {
