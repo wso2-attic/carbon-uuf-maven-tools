@@ -33,7 +33,14 @@ import java.io.IOException;
  */
 public class ZipCreator {
 
+    /**
+     * Archive format.
+     */
     public static final String ARCHIVE_FORMAT = "zip";
+    /**
+     * Archive extension.
+     */
+    public static final String ARCHIVE_EXTENSION = "." + ARCHIVE_FORMAT;
 
     /**
      * Creates a zip archive.
@@ -56,7 +63,7 @@ public class ZipCreator {
         fileSet.setExcludes(null);
         zipArchiver.addFileSet(fileSet);
 
-        File outputZipFile = new File(outputDirectoryPath, (archiveFileName + ".zip"));
+        File outputZipFile = new File(outputDirectoryPath, (archiveFileName + ARCHIVE_EXTENSION));
         zipArchiver.setDestFile(outputZipFile);
         try {
             zipArchiver.createArchive();
