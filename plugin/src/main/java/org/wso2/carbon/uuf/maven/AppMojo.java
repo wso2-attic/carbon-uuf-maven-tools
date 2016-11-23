@@ -34,10 +34,17 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
+import org.wso2.carbon.uuf.maven.exception.ParsingException;
+import org.wso2.carbon.uuf.maven.exception.SerializationException;
 import org.wso2.carbon.uuf.maven.model.Bundle;
+import org.wso2.carbon.uuf.maven.model.Configuration;
+import org.wso2.carbon.uuf.maven.model.DependencyNode;
+import org.wso2.carbon.uuf.maven.parser.ConfigurationParser;
+import org.wso2.carbon.uuf.maven.parser.DependencyTreeParser;
+import org.wso2.carbon.uuf.maven.serializer.ConfigurationSerializer;
+import org.wso2.carbon.uuf.maven.serializer.DependencyTreeSerializer;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
@@ -67,7 +74,11 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 public class AppMojo implements UUFMojo {
 
     private static final String FILE_DEPENDENCY_TREE = "dependency.tree";
-    private static final String DIRECTORY_ROOT_COMPONENT = "/root";
+    private static final String FILE_CONFIG_YAML = "config.yaml";
+    private static final String FILE_BINDINGS_YAML = "bindings.yaml";
+    private static final String DIRECTORY_COMPONENTS = "components";
+    private static final String DIRECTORY_THEMES = "themes";
+    private static final String DIRECTORY_ROOT_COMPONENT = "root";
     private static final String APP_ARTIFACT_ID_TAIL = ".feature";
 
     /**
@@ -154,16 +165,25 @@ public class AppMojo implements UUFMojo {
 
     private Log log = new SystemStreamLog();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setLog(Log log) {
         this.log = log;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Log getLog() {
         return log;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         // Validation: Packaging type should be 'carbon-feature'
@@ -190,109 +210,226 @@ public class AppMojo implements UUFMojo {
         Set<Artifact> allThemeDependencies = allDependencies.stream()
                 .filter(artifact -> ARTIFACT_TYPE_UUF_THEME.equals(artifact.getClassifier()))
                 .collect(Collectors.toSet());
+        String allComponentsDirectory = pathOf(outputDirectoryPath, DIRECTORY_COMPONENTS);
+        String allThemesDirectory = pathOf(outputDirectoryPath, DIRECTORY_THEMES);
 
         // 1. Unpack UUF Component dependencies.
-        unpackDependencies(allComponentDependencies, outputDirectoryPath + DIRECTORY_COMPONENTS);
+        unpackDependencies(allComponentDependencies, allComponentsDirectory);
         // 2.1. Create "root" component.
-        // TODO: 10/19/16 Exclude unnecessary files (e.g. .iml, .DS_Store) when packing the root component
-        executeMojo(
-                plugin(
-                        groupId("org.apache.maven.plugins"),
-                        artifactId("maven-resources-plugin"),
-                        version(resourcesPluginVersion)
-                ),
-                goal("copy-resources"),
-                configuration(
-                        element(name("outputDirectory"),
-                                outputDirectoryPath + DIRECTORY_COMPONENTS + DIRECTORY_ROOT_COMPONENT),
-                        element(name("resources"),
-                                element(name("resource"),
-                                        element(name("directory"), sourceDirectoryPath),
-                                        element(name("filtering"), "false")
-                                )
-                        )
-                ),
-                executionEnvironment(project, session, pluginManager)
-        );
+        copyFiles(sourceDirectoryPath, pathOf(allComponentsDirectory, DIRECTORY_ROOT_COMPONENT));
         // 2.2 Create "osgi-imports" file for the "root" component.
         if ((instructions != null) && !instructions.isEmpty()) {
-            Path rootComponentDir = Paths.get(outputDirectoryPath, DIRECTORY_COMPONENTS, DIRECTORY_ROOT_COMPONENT);
-            ConfigFileCreator.createOsgiImports(instructions.get(CONFIGURATION_IMPORT_PACKAGE), rootComponentDir);
+            String osgiImportsContent = instructions.get(CONFIGURATION_IMPORT_PACKAGE);
+            ConfigFileCreator.createOsgiImports(osgiImportsContent,
+                                                pathOf(allComponentsDirectory, DIRECTORY_ROOT_COMPONENT));
         }
-        // 3. Unpack UUF Theme dependencies.
-        unpackDependencies(allThemeDependencies, outputDirectoryPath + DIRECTORY_THEMES);
-        // 4. Create dependencies tree.
-        executeMojo(
-                plugin(
-                        groupId("org.apache.maven.plugins"),
-                        artifactId("maven-dependency-plugin"),
-                        version(dependencyPluginVersion)
-                ),
-                goal("tree"),
-                configuration(
-                        element(name("verbose"), "true"),
-                        element(name("outputFile"),
-                                outputDirectoryPath + DIRECTORY_COMPONENTS + "/" + FILE_DEPENDENCY_TREE
-                        ),
-                        element(name("includes"), allComponentDependencies.stream()
-                                .map(artifact -> artifact.getGroupId() + ":" + artifact.getArtifactId() + "::")
-                                .collect(Collectors.joining(",")))
-                ),
-                executionEnvironment(project, session, pluginManager)
-        );
-        // 5.1.1 Create a 'resources' directory and add it to the project as a resources directory.
-        Path tempDirectory = Paths.get(tempDirectoryPath);
-        Path tempResourcesDirectory = tempDirectory.resolve("resources");
+        // 3.1. Create dependency tree.
+        DependencyNode rootNode = getDependencyTree(allComponentDependencies);
+        // 3.2. Create the final configuration.
+        createConfigFile(rootNode, allComponentsDirectory);
+        // 3.3 Create dependency tree file.
+        createDependencyTree(rootNode, allComponentsDirectory);
+        // 4. Unpack UUF Theme dependencies.
+        unpackDependencies(allThemeDependencies, allThemesDirectory);
+        // 5. Create Carbon Feature.
+        createCarbonFeature(appFullyQualifiedName);
+    }
+
+    private DependencyNode getDependencyTree(Set<Artifact> includes) throws MojoExecutionException {
+        String dependencyTreeFilePath = tempDirectoryPath + FILE_DEPENDENCY_TREE;
+        try {
+            executeMojo(
+                    plugin(
+                            groupId("org.apache.maven.plugins"),
+                            artifactId("maven-dependency-plugin"),
+                            version(dependencyPluginVersion)
+                    ),
+                    goal("tree"),
+                    configuration(
+                            element(name("verbose"), "true"),
+                            element(name("outputFile"), dependencyTreeFilePath),
+                            element(name("includes"), includes.stream()
+                                    .map(artifact -> artifact.getGroupId() + ":" + artifact.getArtifactId() + "::")
+                                    .collect(Collectors.joining(",")))
+                    ),
+                    executionEnvironment(project, session, pluginManager)
+            );
+        } catch (MojoExecutionException e) {
+            throw new MojoExecutionException(
+                    "Cannot generate dependency tree for '" + artifactId + "'.", e);
+        }
+        try {
+            return new DependencyTreeParser().parse(dependencyTreeFilePath);
+        } catch (ParsingException e) {
+            throw new MojoExecutionException(
+                    "Cannot parse generated dependency tree in '" + dependencyTreeFilePath + "'.", e);
+        }
+    }
+
+    private void createConfigFile(DependencyNode rootNode, String componentsDirectory) throws MojoExecutionException {
+        Configuration configuration = new Configuration();
+        // Create the final configuration by traversing through the dependency tree.
+        try {
+            ConfigurationParser parser = new ConfigurationParser();
+            rootNode.traverse(node -> {
+                String configFilePath = getFilePathIn(node.getArtifactId(), componentsDirectory, FILE_CONFIG_YAML);
+                Map configMap;
+                // Since we are in a lambda, we throw RuntimeExceptions.
+                try {
+                    configMap = parser.parse(configFilePath);
+                } catch (ParsingException e) {
+                    throw new RuntimeException("Cannot parse '" + FILE_CONFIG_YAML + "' of " + node +
+                                                       " which read from '" + configFilePath + "' path.", e);
+                }
+                if (configMap == null) {
+                    return; // No configuration found for this node.
+                }
+                try {
+                    configuration.merge(configMap);
+                } catch (IllegalArgumentException e) {
+                    throw new RuntimeException(
+                            "Cannot merge configuration Map parsed from '" + FILE_CONFIG_YAML + "' of " + node +
+                                    " which read from '" + configFilePath + "' path.", e);
+                }
+            });
+        } catch (RuntimeException e) {
+            // Catch above thrown RuntimeExceptions.
+            throw new MojoExecutionException(
+                    "Cannot create final configuration for " + rootNode + ".", e);
+        }
+        // Now create the app's configuration file by serializing the final configuration.
+        ConfigurationSerializer serializer = new ConfigurationSerializer();
+        String content;
+        try {
+            content = serializer.serialize(configuration);
+        } catch (SerializationException e) {
+            throw new MojoExecutionException("Cannot serialize configuration " + configuration + ".", e);
+        }
+        ConfigFileCreator.createConfigYaml(content, componentsDirectory);
+    }
+
+    private void createDependencyTree(DependencyNode rootNode, String componentsDirectory)
+            throws MojoExecutionException {
+        String content;
+        try {
+            content = new DependencyTreeSerializer().serialize(rootNode);
+        } catch (SerializationException e) {
+            throw new MojoExecutionException(
+                    "Cannot serialize dependency tree where root node is " + rootNode + ".", e);
+        }
+        ConfigFileCreator.createDependencyTree(content, componentsDirectory);
+    }
+
+    private void createCarbonFeature(String appFullyQualifiedName) throws MojoExecutionException {
+        // Create a 'resources' directory and add it to the project as a resources directory.
+        String tempResourcesDirectoryPath = pathOf(tempDirectoryPath, "resources");
         Resource resource = new Resource();
-        resource.setDirectory(tempResourcesDirectory.toString());
+        resource.setDirectory(tempResourcesDirectoryPath);
         project.addResource(resource);
-        // 5.1.2 Create the "p2.inf" file in that 'resources' directory.
-        ConfigFileCreator.createP2Inf(appFullyQualifiedName, tempResourcesDirectory);
-        // 5.2 Create Carbon P2 Feature.
-        executeMojo(
-                plugin(
-                        groupId("org.wso2.carbon.maven"),
-                        artifactId("carbon-feature-plugin"),
-                        version(carbonFeaturePluginVersion)
-                ),
-                goal("generate"),
-                configuration(
-                        element(name("propertyFile"),
-                                ConfigFileCreator.createFeatureProperties(tempDirectory).toAbsolutePath().toString()),
-                        element(name("adviceFileContents"),
-                                element(name("advice"),
-                                        element(name("name"), "org.wso2.carbon.p2.category.type"),
-                                        element(name("value"), "server")
-                                ),
-                                element(name("advice"),
-                                        element(name("name"), "org.eclipse.equinox.p2.type.group"),
-                                        element(name("value"), "false")
-                                )
-                        ),
-                        element(name("bundles"), (bundles == null ? Collections.<Bundle>emptyList() : bundles).stream()
-                                .map(bundle -> element(name("bundle"),
-                                                       element(name("symbolicName"), bundle.getSymbolicName()),
-                                                       element(name("version"), bundle.getVersion()))
-                                ).toArray(MojoExecutor.Element[]::new))
-                ),
-                executionEnvironment(project, session, pluginManager)
-        );
+        // Create the "p2.inf" file in that 'resources' directory.
+        ConfigFileCreator.createP2Inf(appFullyQualifiedName, tempResourcesDirectoryPath);
+        // Create Carbon Feature.
+        try {
+            executeMojo(
+                    plugin(
+                            groupId("org.wso2.carbon.maven"),
+                            artifactId("carbon-feature-plugin"),
+                            version(carbonFeaturePluginVersion)
+                    ),
+                    goal("generate"),
+                    configuration(
+                            element(name("propertyFile"), ConfigFileCreator.createFeatureProperties(tempDirectoryPath)),
+                            element(name("adviceFileContents"),
+                                    element(name("advice"),
+                                            element(name("name"), "org.wso2.carbon.p2.category.type"),
+                                            element(name("value"), "server")
+                                    ),
+                                    element(name("advice"),
+                                            element(name("name"), "org.eclipse.equinox.p2.type.group"),
+                                            element(name("value"), "false")
+                                    )
+                            ),
+                            element(name("bundles"),
+                                    (bundles == null ? Collections.<Bundle>emptyList() : bundles).stream()
+                                            .map(bundle -> element(name("bundle"),
+                                                                   element(name("symbolicName"),
+                                                                           bundle.getSymbolicName()),
+                                                                   element(name("version"), bundle.getVersion()))
+                                            ).toArray(MojoExecutor.Element[]::new))
+                    ),
+                    executionEnvironment(project, session, pluginManager)
+            );
+        } catch (MojoExecutionException e) {
+            throw new MojoExecutionException(
+                    "Cannot create Carbon Feature for UUF App '" + appFullyQualifiedName + "'.", e);
+        }
+    }
+
+    private void copyFiles(String sourcePath, String destinationPath) throws MojoExecutionException {
+        // TODO: 10/19/16 Exclude unnecessary files (e.g. .iml, .DS_Store) when packing the root component
+        try {
+            executeMojo(
+                    plugin(
+                            groupId("org.apache.maven.plugins"),
+                            artifactId("maven-resources-plugin"),
+                            version(resourcesPluginVersion)
+                    ),
+                    goal("copy-resources"),
+                    configuration(
+                            element(name("outputDirectory"), destinationPath),
+                            element(name("resources"),
+                                    element(name("resource"),
+                                            element(name("directory"), sourcePath),
+                                            element(name("filtering"), "false")
+                                    )
+                            )
+                    ),
+                    executionEnvironment(project, session, pluginManager)
+            );
+        } catch (MojoExecutionException e) {
+            throw new MojoExecutionException(
+                    "Cannot copy sources from '" + sourcePath + "' to '" + destinationPath + "'.", e);
+        }
     }
 
     private void unpackDependencies(Set<Artifact> includes, String outputDirectory) throws MojoExecutionException {
-        executeMojo(
-                plugin(
-                        groupId("org.apache.maven.plugins"),
-                        artifactId("maven-dependency-plugin"),
-                        version(dependencyPluginVersion)
-                ),
-                goal("unpack-dependencies"),
-                configuration(
-                        element(name("outputDirectory"), outputDirectory),
-                        element(name("includeArtifactIds"),
-                                includes.stream().map(Artifact::getArtifactId).collect(Collectors.joining(",")))
-                ),
-                executionEnvironment(project, session, pluginManager)
-        );
+        try {
+            executeMojo(
+                    plugin(
+                            groupId("org.apache.maven.plugins"),
+                            artifactId("maven-dependency-plugin"),
+                            version(dependencyPluginVersion)
+                    ),
+                    goal("unpack-dependencies"),
+                    configuration(
+                            element(name("outputDirectory"), outputDirectory),
+                            element(name("includeArtifactIds"),
+                                    includes.stream().map(Artifact::getArtifactId).collect(Collectors.joining(",")))
+                    ),
+                    executionEnvironment(project, session, pluginManager)
+            );
+        } catch (MojoExecutionException e) {
+            throw new MojoExecutionException("Cannot unpack dependencies " + includes + ".", e);
+        }
+    }
+
+    private String getFilePathIn(String componentArtifactId, String componentsDirectory, String fileName) {
+        if (artifactId.equals(componentArtifactId)) {
+            // root component
+            return pathOf(componentsDirectory, DIRECTORY_ROOT_COMPONENT, fileName);
+        } else {
+            int lastIndex = artifactId.lastIndexOf(".");
+            String componentContext;
+            if (lastIndex > -1) {
+                componentContext = artifactId.substring(lastIndex + 1);
+            } else {
+                componentContext = componentArtifactId;
+            }
+            return pathOf(componentsDirectory, componentContext, fileName);
+        }
+    }
+
+    private static String pathOf(String part1, String... parts) {
+        return Paths.get(part1, parts).toString();
     }
 }
