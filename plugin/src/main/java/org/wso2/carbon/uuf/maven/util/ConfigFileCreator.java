@@ -44,6 +44,13 @@ public class ConfigFileCreator {
     private static final String FILE_FEATURE_PROPERTIES = "feature.properties";
     private static final String FILE_P2_INF = "p2.inf";
 
+    /**
+     * Creates the OSGI imports file with the specified content in the specified path.
+     *
+     * @param osgiImportsContent  content of the OSGi imports file to be written
+     * @param outputDirectoryPath path to the directory that OSGi imports file to be created
+     * @throws MojoExecutionException if an error occurred when creating the OSGi imports file
+     */
     public static void createOsgiImports(String osgiImportsContent, String outputDirectoryPath)
             throws MojoExecutionException {
         if ((osgiImportsContent == null) || osgiImportsContent.isEmpty()) {
@@ -64,6 +71,13 @@ public class ConfigFileCreator {
         }
     }
 
+    /**
+     * Creates the config file with the specified content in the specified path.
+     *
+     * @param configYamlContent   content of the config file to be written
+     * @param outputDirectoryPath path to the directory that config file to be created
+     * @throws MojoExecutionException if an error occurred when creating the config file
+     */
     public static void createConfigYaml(String configYamlContent, String outputDirectoryPath)
             throws MojoExecutionException {
         try {
@@ -74,6 +88,13 @@ public class ConfigFileCreator {
         }
     }
 
+    /**
+     * Creates the dependency tree file with the specified content in the specified path.
+     *
+     * @param dependencyTreeContent content of the dependency tree file to be written
+     * @param outputDirectoryPath   path to the directory that dependency tree file to be created
+     * @throws MojoExecutionException if an error occurred when creating the dependency tree file
+     */
     public static void createDependencyTree(String dependencyTreeContent, String outputDirectoryPath)
             throws MojoExecutionException {
         try {
@@ -85,6 +106,14 @@ public class ConfigFileCreator {
         }
     }
 
+    /**
+     * Creates the Carbon Feature property file in the specified path.
+     *
+     * @param outputDirectoryPath path to the directory where the Carbon Feature property file should be created (will
+     *                            be created if not exists)
+     * @return path to the created Carbon Feature property file
+     * @throws MojoExecutionException if an error occurred when creating the Carbon Feature property file
+     */
     public static String createFeatureProperties(String outputDirectoryPath) throws MojoExecutionException {
         Path outputDirectory = Paths.get(outputDirectoryPath);
         Path buildPropertiesFile = outputDirectory.resolve(FILE_FEATURE_PROPERTIES);
@@ -98,6 +127,14 @@ public class ConfigFileCreator {
         }
     }
 
+    /**
+     * Creates the P2 INF file for the given feature in the specified path.
+     *
+     * @param featureName         name of the feature
+     * @param outputDirectoryPath path to the directory where the P2 INF file should be created (will be created if not
+     *                            exists)
+     * @throws MojoExecutionException if an error occurred when creating the P2 INF file
+     */
     public static void createP2Inf(String featureName, String outputDirectoryPath) throws MojoExecutionException {
         Path outputDirectory = Paths.get(outputDirectoryPath);
         Path p2InfFile = outputDirectory.resolve(FILE_P2_INF);
