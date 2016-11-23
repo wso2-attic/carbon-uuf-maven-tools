@@ -107,6 +107,9 @@ public abstract class AbstractZipMojo extends AbstractAssemblyMojo implements UU
      */
     abstract String getZipBaseDirectory();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         // create assembly
