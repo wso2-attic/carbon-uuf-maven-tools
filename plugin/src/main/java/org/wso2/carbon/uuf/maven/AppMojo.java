@@ -19,20 +19,16 @@
 package org.wso2.carbon.uuf.maven;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
@@ -71,11 +67,9 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
  */
 @Mojo(name = "create-app", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
-public class AppMojo implements UUFMojo {
+public class AppMojo extends ComponentMojo {
 
     private static final String FILE_DEPENDENCY_TREE = "dependency.tree";
-    private static final String FILE_CONFIG_YAML = "config.yaml";
-    private static final String FILE_BINDINGS_YAML = "bindings.yaml";
     private static final String DIRECTORY_COMPONENTS = "components";
     private static final String DIRECTORY_THEMES = "themes";
     private static final String DIRECTORY_ROOT_COMPONENT = "root";
@@ -86,24 +80,6 @@ public class AppMojo implements UUFMojo {
      */
     @Parameter(defaultValue = "${session}", readonly = true, required = true)
     private MavenSession session;
-
-    /**
-     * Maven project.
-     */
-    @Parameter(defaultValue = EXPRESSION_PROJECT, readonly = true, required = true)
-    private MavenProject project;
-
-    /**
-     * Packaging type of the project.
-     */
-    @Parameter(defaultValue = EXPRESSION_PROJECT_PACKAGING, readonly = true, required = true)
-    protected String packaging;
-
-    /**
-     * Source directory path for UUF Maven plugin.
-     */
-    @Parameter(defaultValue = EXPRESSION_SOURCE_DIRECTORY_PATH, readonly = true, required = true)
-    private String sourceDirectoryPath;
 
     /**
      * The output directory for UUF Maven plugin.
@@ -117,24 +93,6 @@ public class AppMojo implements UUFMojo {
      */
     @Parameter(defaultValue = "${project.build.directory}/uuf-temp/", readonly = true, required = true)
     private String tempDirectoryPath;
-
-    /**
-     * The artifact ID of the project.
-     */
-    @Parameter(defaultValue = EXPRESSION_ARTIFACT_ID, readonly = true, required = true)
-    private String artifactId;
-
-    /**
-     * The artifact repository to use.
-     */
-    @Parameter(property = "localRepository", readonly = true, required = true)
-    private ArtifactRepository localRepository;
-
-    /**
-     * OSGi {@code <Import-Package>} instructions for this UUF App.
-     */
-    @Parameter(property = EXPRESSION_INSTRUCTIONS, readonly = true, required = false)
-    private Map<String, String> instructions;
 
     @Parameter(property = "bundles", readonly = true, required = false)
     private List<Bundle> bundles;
@@ -162,24 +120,6 @@ public class AppMojo implements UUFMojo {
      */
     @Component(hint = "default")
     private BuildPluginManager pluginManager;
-
-    private Log log = new SystemStreamLog();
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setLog(Log log) {
-        this.log = log;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Log getLog() {
-        return log;
-    }
 
     /**
      * {@inheritDoc}

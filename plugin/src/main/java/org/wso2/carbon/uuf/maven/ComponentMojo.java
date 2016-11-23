@@ -25,7 +25,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
+import org.wso2.carbon.uuf.maven.util.ZipCreator;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -36,25 +38,17 @@ import java.util.Map;
  */
 @Mojo(name = "create-component", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
-public class ComponentMojo extends AbstractZipMojo {
+public class ComponentMojo extends UUFMojo {
+
+    protected static final String CONFIGURATION_IMPORT_PACKAGE = "Import-Package";
+    protected static final String FILE_CONFIG_YAML = "config.yaml";
+    protected static final String FILE_COMPONENT_YAML = "component.yaml";
 
     /**
      * OSGi {@code <Import-Package>} instructions for this UUF Component.
      */
     @Parameter(readonly = true, required = false)
-    private Map<String, String> instructions;
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getZipBaseDirectory() {
-        int lastIndex = artifactId.lastIndexOf(".");
-        if (lastIndex > -1) {
-            return artifactId.substring(lastIndex + 1);
-        }
-        return artifactId;
-    }
+    protected Map<String, String> instructions;
 
     /**
      * {@inheritDoc}
@@ -72,6 +66,9 @@ public class ComponentMojo extends AbstractZipMojo {
         if ((instructions != null) && !instructions.isEmpty()) {
             ConfigFileCreator.createOsgiImports(instructions.get(CONFIGURATION_IMPORT_PACKAGE), outputDirectoryPath);
         }
-        super.execute();
+
+        File archive = ZipCreator.createArchive(sourceDirectoryPath, artifactId, outputDirectoryPath, finalName);
+        project.getArtifact().setFile(archive);
+        projectHelper.attachArtifact(project, ZipCreator.ARCHIVE_FORMAT, null, archive);
     }
 }

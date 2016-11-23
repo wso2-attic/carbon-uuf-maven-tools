@@ -23,6 +23,9 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.wso2.carbon.uuf.maven.util.ZipCreator;
+
+import java.io.File;
 
 /**
  * UUF Theme creation Mojo that zip archive for the given theme project.
@@ -31,15 +34,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  */
 @Mojo(name = "create-theme", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
-public class ThemeMojo extends AbstractZipMojo {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    String getZipBaseDirectory() {
-        return artifactId;
-    }
+public class ThemeMojo extends UUFMojo {
 
     /**
      * {@inheritDoc}
@@ -51,6 +46,9 @@ public class ThemeMojo extends AbstractZipMojo {
                     "Packaging type of an UUF Theme should be '" + ARTIFACT_TYPE_UUF_THEME + "'. Instead found '" +
                             packaging + "'.");
         }
-        super.execute();
+
+        File archive = ZipCreator.createArchive(sourceDirectoryPath, artifactId, outputDirectoryPath, finalName);
+        project.getArtifact().setFile(archive);
+        projectHelper.attachArtifact(project, ZipCreator.ARCHIVE_FORMAT, null, archive);
     }
 }

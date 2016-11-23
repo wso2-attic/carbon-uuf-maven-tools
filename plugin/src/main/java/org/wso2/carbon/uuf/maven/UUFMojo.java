@@ -18,24 +18,62 @@
 
 package org.wso2.carbon.uuf.maven;
 
-import org.apache.maven.plugin.Mojo;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
 
 /**
  * Base interface for all the UUF archetypes Mojo's
  *
  * @since 1.0.0
  */
-public interface UUFMojo extends Mojo {
+public abstract class UUFMojo extends AbstractMojo {
 
-    String ARTIFACT_TYPE_UUF_APP = "carbon-feature";
-    String ARTIFACT_TYPE_UUF_COMPONENT = "uuf-component";
-    String ARTIFACT_TYPE_UUF_THEME = "uuf-theme";
+    public static final String ARTIFACT_TYPE_UUF_APP = "carbon-feature";
+    public static final String ARTIFACT_TYPE_UUF_COMPONENT = "uuf-component";
+    public static final String ARTIFACT_TYPE_UUF_THEME = "uuf-theme";
 
-    String EXPRESSION_PROJECT = "${project}";
-    String EXPRESSION_PROJECT_PACKAGING = "${project.packaging}";
-    String EXPRESSION_SOURCE_DIRECTORY_PATH = "${project.basedir}/src/main/";
-    String EXPRESSION_ARTIFACT_ID = "${project.artifactId}";
-    String EXPRESSION_INSTRUCTIONS = "instructions";
+    /**
+     * This Maven project.
+     */
+    @Parameter(defaultValue = "${project}", readonly = true, required = true)
+    protected MavenProject project;
 
-    String CONFIGURATION_IMPORT_PACKAGE = "Import-Package";
+    /**
+     * Packaging type of this Maven project.
+     */
+    @Parameter(defaultValue = "${project.packaging}", readonly = true, required = true)
+    protected String packaging;
+
+    /**
+     * Path to the directory where source files resides.
+     */
+    @Parameter(defaultValue = "${project.basedir}/src/main/", readonly = true, required = true)
+    protected String sourceDirectoryPath;
+
+    /**
+     * The output directory for UUF Maven plugin.
+     */
+    @Parameter(defaultValue = "${project.build.directory}/uuf/", readonly = true, required = true)
+    protected String outputDirectoryPath;
+
+    /**
+     * The artifact ID of this Maven project.
+     */
+    @Parameter(defaultValue = "${project.artifactId}", readonly = true, required = true)
+    protected String artifactId;
+
+    /**
+     * File name of the final artifact created by this Maven project.
+     */
+    @Parameter(defaultValue = "${project.build.finalName}", readonly = true, required = true)
+    protected String finalName;
+
+    /**
+     * Maven ProjectHelper.
+     */
+    @Component
+    protected MavenProjectHelper projectHelper;
 }
