@@ -58,7 +58,7 @@ public abstract class AbstractUUFMojo extends AbstractMojo {
     /**
      * The output directory for UUF Maven plugin.
      */
-    @Parameter(defaultValue = "${project.build.directory}/uuf/", readonly = true, required = true)
+    @Parameter(defaultValue = "${project.build.directory}", readonly = true, required = true)
     protected String outputDirectoryPath;
 
     /**
