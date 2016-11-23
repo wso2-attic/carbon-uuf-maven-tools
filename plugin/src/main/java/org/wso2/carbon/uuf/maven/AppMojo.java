@@ -211,13 +211,13 @@ public class AppMojo extends ComponentMojo {
         try {
             ConfigurationParser parser = new ConfigurationParser();
             rootNode.traverse(node -> {
-                String configFilePath = getFilePathIn(node.getArtifactId(), componentsDirectory, FILE_CONFIG_YAML);
+                String configFilePath = getFilePathIn(node.getArtifactId(), componentsDirectory, FILE_CONFIG);
                 Map configMap;
                 // Since we are in a lambda, we throw RuntimeExceptions.
                 try {
                     configMap = parser.parse(configFilePath);
                 } catch (ParsingException e) {
-                    throw new RuntimeException("Cannot parse '" + FILE_CONFIG_YAML + "' of " + node +
+                    throw new RuntimeException("Cannot parse '" + FILE_CONFIG + "' of " + node +
                                                        " which read from '" + configFilePath + "' path.", e);
                 }
                 if (configMap == null) {
@@ -227,7 +227,7 @@ public class AppMojo extends ComponentMojo {
                     configuration.merge(configMap);
                 } catch (IllegalArgumentException e) {
                     throw new RuntimeException(
-                            "Cannot merge configuration Map parsed from '" + FILE_CONFIG_YAML + "' of " + node +
+                            "Cannot merge configuration Map parsed from '" + FILE_CONFIG + "' of " + node +
                                     " which read from '" + configFilePath + "' path.", e);
                 }
             });

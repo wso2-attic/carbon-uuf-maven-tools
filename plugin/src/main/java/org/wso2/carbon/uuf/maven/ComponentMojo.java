@@ -24,6 +24,9 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.wso2.carbon.uuf.maven.exception.ParsingException;
+import org.wso2.carbon.uuf.maven.parser.ComponentManifestParser;
+import org.wso2.carbon.uuf.maven.parser.ConfigurationParser;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 import org.wso2.carbon.uuf.maven.util.ZipCreator;
 
@@ -41,8 +44,8 @@ import java.util.Map;
 public class ComponentMojo extends UUFMojo {
 
     protected static final String CONFIGURATION_IMPORT_PACKAGE = "Import-Package";
-    protected static final String FILE_CONFIG_YAML = "config.yaml";
-    protected static final String FILE_COMPONENT_YAML = "component.yaml";
+    protected static final String FILE_CONFIG = "config.yaml";
+    protected static final String FILE_COMPONENT_MANIFEST = "component.yaml";
 
     /**
      * OSGi {@code <Import-Package>} instructions for this UUF Component.
@@ -61,12 +64,27 @@ public class ComponentMojo extends UUFMojo {
                     "Packaging type of an UUF Component should be '" + ARTIFACT_TYPE_UUF_COMPONENT +
                             "'. Instead found '" + packaging + "'.");
         }
+        // Validation: Parse configuration file to make sure it is a valid YAML file.
+        String configFilePath = pathOf(sourceDirectoryPath, FILE_CONFIG);
+        try {
+            new ConfigurationParser().parse(configFilePath);
+        } catch (ParsingException e) {
+            throw new MojoExecutionException("Configuration file '" + configFilePath + "' of is invalid.", e);
+        }
+        // Validation: Parse component manifest file to make sure it is valid.
+        String componentManifestFilePath = pathOf(sourceDirectoryPath, FILE_COMPONENT_MANIFEST);
+        try {
+            new ComponentManifestParser().parse(componentManifestFilePath);
+        } catch (ParsingException e) {
+            throw new MojoExecutionException(
+                    "Component manifest file '" + componentManifestFilePath + "' of is invalid.", e);
+        }
 
-        // create OSGi imports file
+        // Create OSGi imports file.
         if ((instructions != null) && !instructions.isEmpty()) {
             ConfigFileCreator.createOsgiImports(instructions.get(CONFIGURATION_IMPORT_PACKAGE), outputDirectoryPath);
         }
-
+        // Create zip file.
         File archive = ZipCreator.createArchive(sourceDirectoryPath, artifactId, outputDirectoryPath, finalName);
         project.getArtifact().setFile(archive);
         projectHelper.attachArtifact(project, ZipCreator.ARCHIVE_FORMAT, null, archive);
