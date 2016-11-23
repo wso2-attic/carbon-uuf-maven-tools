@@ -27,15 +27,15 @@ import java.util.List;
  */
 public class ComponentManifest {
 
-    private API[] apis;
-    private Binding[] bindings;
+    private List<API> apis;
+    private List<Binding> bindings;
 
     /**
      * Returns the APIs entries of this component manifest.
      *
      * @return APIs of this component manifest
      */
-    public API[] getApis() {
+    public List<API> getApis() {
         return apis;
     }
 
@@ -44,7 +44,7 @@ public class ComponentManifest {
      *
      * @param apis APIs to be set
      */
-    public void setApis(API[] apis) {
+    public void setApis(List<API> apis) {
         this.apis = apis;
     }
 
@@ -53,7 +53,7 @@ public class ComponentManifest {
      *
      * @return bindings of this component manifest
      */
-    public Binding[] getBindings() {
+    public List<Binding> getBindings() {
         return bindings;
     }
 
@@ -62,7 +62,7 @@ public class ComponentManifest {
      *
      * @param bindings bindings to be set
      */
-    public void setBindings(Binding[] bindings) {
+    public void setBindings(List<Binding> bindings) {
         this.bindings = bindings;
     }
 
