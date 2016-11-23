@@ -31,9 +31,6 @@ public interface UUFMojo extends Mojo {
     String ARTIFACT_TYPE_UUF_COMPONENT = "uuf-component";
     String ARTIFACT_TYPE_UUF_THEME = "uuf-theme";
 
-    String DIRECTORY_COMPONENTS = "/components";
-    String DIRECTORY_THEMES = "/themes";
-
     String EXPRESSION_PROJECT = "${project}";
     String EXPRESSION_PROJECT_PACKAGING = "${project.packaging}";
     String EXPRESSION_SOURCE_DIRECTORY_PATH = "${project.basedir}/src/main/";
