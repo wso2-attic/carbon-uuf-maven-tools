@@ -41,7 +41,6 @@ import org.wso2.carbon.uuf.maven.serializer.ConfigurationSerializer;
 import org.wso2.carbon.uuf.maven.serializer.DependencyTreeSerializer;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -367,9 +366,5 @@ public class AppMojo extends ComponentMojo {
             }
             return pathOf(componentsDirectory, componentContext, fileName);
         }
-    }
-
-    private static String pathOf(String part1, String... parts) {
-        return Paths.get(part1, parts).toString();
     }
 }

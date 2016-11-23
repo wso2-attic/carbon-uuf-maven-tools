@@ -24,6 +24,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 
+import java.nio.file.Paths;
+
 /**
  * Base interface for all the UUF archetypes Mojo's
  *
@@ -76,4 +78,8 @@ public abstract class UUFMojo extends AbstractMojo {
      */
     @Component
     protected MavenProjectHelper projectHelper;
+
+    protected static String pathOf(String part1, String... parts) {
+        return Paths.get(part1, parts).toString();
+    }
 }
