@@ -35,6 +35,7 @@ import org.wso2.carbon.uuf.maven.exception.SerializationException;
 import org.wso2.carbon.uuf.maven.model.Bundle;
 import org.wso2.carbon.uuf.maven.model.Configuration;
 import org.wso2.carbon.uuf.maven.model.DependencyNode;
+import org.wso2.carbon.uuf.maven.parser.ComponentManifestParser;
 import org.wso2.carbon.uuf.maven.parser.ConfigurationParser;
 import org.wso2.carbon.uuf.maven.parser.DependencyTreeParser;
 import org.wso2.carbon.uuf.maven.serializer.ConfigurationSerializer;
@@ -125,17 +126,8 @@ public class AppMojo extends ComponentMojo {
      */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        // Validation: Packaging type should be 'carbon-feature'
-        if (!ARTIFACT_TYPE_UUF_APP.equals(packaging)) {
-            throw new MojoExecutionException(
-                    "Packaging type of an UUF App should be '" + ARTIFACT_TYPE_UUF_APP + "'. Instead found '" +
-                            packaging + "'.");
-        }
-        // Validation: Artifact ID should end with '.feature'
-        if (!artifactId.endsWith(APP_ARTIFACT_ID_TAIL)) {
-            throw new MojoExecutionException(
-                    "Artifact ID of an UUF App should end with '.feature' as it is packaged as a Carbon Feature.");
-        }
+        // Do validations.
+        validate();
 
         // Compute the App's fully qualified name by removing ".feature" from the artifact ID.
         String appFullyQualifiedName = artifactId.substring(0, (artifactId.length() - APP_ARTIFACT_ID_TAIL.length()));
@@ -172,6 +164,36 @@ public class AppMojo extends ComponentMojo {
         unpackDependencies(allThemeDependencies, allThemesDirectory);
         // 5. Create Carbon Feature.
         createCarbonFeature(appFullyQualifiedName);
+    }
+
+    private void validate() throws MojoExecutionException {
+        // Validation: Packaging type should be 'carbon-feature'
+        if (!ARTIFACT_TYPE_UUF_APP.equals(packaging)) {
+            throw new MojoExecutionException(
+                    "Packaging type of an UUF App should be '" + ARTIFACT_TYPE_UUF_APP + "'. Instead found '" +
+                            packaging + "'.");
+        }
+        // Validation: Artifact ID should end with '.feature'
+        if (!artifactId.endsWith(APP_ARTIFACT_ID_TAIL)) {
+            throw new MojoExecutionException(
+                    "Artifact ID of an UUF App should end with '.feature' as it is packaged as a Carbon Feature.");
+        }
+        // Validation: Parse configuration file to make sure it is a valid YAML file.
+        String configFilePath = pathOf(sourceDirectoryPath, FILE_CONFIG);
+        try {
+            new ConfigurationParser().parse(configFilePath);
+        } catch (ParsingException e) {
+            throw new MojoExecutionException("Configuration file '" + configFilePath + "' of this UUF App is invalid.",
+                                             e);
+        }
+        // Validation: Parse component manifest file to make sure it is valid.
+        String componentManifestFilePath = pathOf(sourceDirectoryPath, FILE_COMPONENT_MANIFEST);
+        try {
+            new ComponentManifestParser().parse(componentManifestFilePath);
+        } catch (ParsingException e) {
+            throw new MojoExecutionException(
+                    "Component manifest file '" + componentManifestFilePath + "' of this UUF App is invalid.", e);
+        }
     }
 
     private DependencyNode getDependencyTree(Set<Artifact> includes) throws MojoExecutionException {

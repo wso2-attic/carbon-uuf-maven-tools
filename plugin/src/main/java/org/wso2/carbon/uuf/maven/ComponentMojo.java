@@ -69,7 +69,8 @@ public class ComponentMojo extends UUFMojo {
         try {
             new ConfigurationParser().parse(configFilePath);
         } catch (ParsingException e) {
-            throw new MojoExecutionException("Configuration file '" + configFilePath + "' of is invalid.", e);
+            throw new MojoExecutionException(
+                    "Configuration file '" + configFilePath + "' of this UUF Component is invalid.", e);
         }
         // Validation: Parse component manifest file to make sure it is valid.
         String componentManifestFilePath = pathOf(sourceDirectoryPath, FILE_COMPONENT_MANIFEST);
@@ -77,7 +78,7 @@ public class ComponentMojo extends UUFMojo {
             new ComponentManifestParser().parse(componentManifestFilePath);
         } catch (ParsingException e) {
             throw new MojoExecutionException(
-                    "Component manifest file '" + componentManifestFilePath + "' of is invalid.", e);
+                    "Component manifest file '" + componentManifestFilePath + "' of this UUF Component is invalid.", e);
         }
 
         // Create OSGi imports file.
