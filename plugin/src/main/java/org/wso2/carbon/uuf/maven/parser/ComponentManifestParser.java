@@ -29,7 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Parser for manifest YAML file in an UUF Component.
+ * Parser for component manifest YAML file in an UUF Component.
  *
  * @since 1.0.0
  */

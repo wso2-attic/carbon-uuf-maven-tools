@@ -27,7 +27,7 @@ import org.apache.maven.project.MavenProjectHelper;
 import java.nio.file.Paths;
 
 /**
- * Base interface for all the UUF archetypes Mojo's
+ * Base class for all the UUF Mojos.
  *
  * @since 1.0.0
  */

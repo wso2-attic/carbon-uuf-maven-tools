@@ -21,7 +21,7 @@ package org.wso2.carbon.uuf.maven.model;
 import java.util.List;
 
 /**
- * Represent the component manifest file in an UUF Component.
+ * A bean class that represents the component manifest file in an UUF Component.
  *
  * @since 1.0.0
  */

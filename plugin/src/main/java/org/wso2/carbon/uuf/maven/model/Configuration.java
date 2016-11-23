@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represent the configurations of an UUF APP or Component.
+ * A bean class that represents the configurations of an UUF APP or Component.
  *
  * @since 1.0.0
  */

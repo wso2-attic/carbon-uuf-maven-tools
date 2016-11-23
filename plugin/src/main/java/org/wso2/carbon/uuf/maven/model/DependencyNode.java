@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Represents a node in the dependency tree.
+ * A bean class that represents a node in the dependency tree.
  *
  * @since 1.0.0
  */
