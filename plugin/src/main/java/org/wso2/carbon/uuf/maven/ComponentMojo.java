@@ -86,7 +86,14 @@ public class ComponentMojo extends AbstractUUFMojo {
             ConfigFileCreator.createOsgiImports(instructions.get(CONFIGURATION_IMPORT_PACKAGE), outputDirectoryPath);
         }
         // Create zip file.
-        File archive = ZipCreator.createArchive(sourceDirectoryPath, artifactId, outputDirectoryPath, finalName);
+        String baseDirectoryName;
+        int lastIndex = artifactId.lastIndexOf(".");
+        if (lastIndex > -1) {
+            baseDirectoryName = artifactId.substring(lastIndex + 1);
+        } else {
+            baseDirectoryName = artifactId;
+        }
+        File archive = ZipCreator.createArchive(sourceDirectoryPath, baseDirectoryName, outputDirectoryPath, finalName);
         project.getArtifact().setFile(archive);
         projectHelper.attachArtifact(project, ZipCreator.ARCHIVE_FORMAT, null, archive);
     }
