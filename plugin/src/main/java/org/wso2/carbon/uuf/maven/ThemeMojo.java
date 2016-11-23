@@ -36,7 +36,7 @@ import java.io.File;
  */
 @Mojo(name = "create-theme", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
-public class ThemeMojo extends UUFMojo {
+public class ThemeMojo extends AbstractUUFMojo {
 
     private static final String FILE_THEME = "theme.yaml";
 

@@ -41,7 +41,7 @@ import java.util.Map;
  */
 @Mojo(name = "create-component", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
-public class ComponentMojo extends UUFMojo {
+public class ComponentMojo extends AbstractUUFMojo {
 
     protected static final String CONFIGURATION_IMPORT_PACKAGE = "Import-Package";
     protected static final String FILE_CONFIG = "config.yaml";

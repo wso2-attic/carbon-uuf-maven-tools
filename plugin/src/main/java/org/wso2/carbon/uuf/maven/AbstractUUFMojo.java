@@ -31,7 +31,7 @@ import java.nio.file.Paths;
  *
  * @since 1.0.0
  */
-public abstract class UUFMojo extends AbstractMojo {
+public abstract class AbstractUUFMojo extends AbstractMojo {
 
     protected static final String ARTIFACT_TYPE_UUF_APP = "carbon-feature";
     protected static final String ARTIFACT_TYPE_UUF_COMPONENT = "uuf-component";
