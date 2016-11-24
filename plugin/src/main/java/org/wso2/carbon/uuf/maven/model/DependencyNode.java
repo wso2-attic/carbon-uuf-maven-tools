@@ -30,6 +30,9 @@ import java.util.function.Consumer;
  */
 public class DependencyNode {
 
+    private static final String ARTIFACT_ID_TAIL_UI = ".ui";
+    private static final String ARTIFACT_ID_TAIL_FEATURE = ".feature";
+
     private final String artifactId;
     private final String version;
     private final DependencyNode parent;
@@ -68,6 +71,28 @@ public class DependencyNode {
     }
 
     /**
+     * Returns the context path of the UUF Component which is reflected by this node.
+     *
+     * @return context path of the UUF Component
+     */
+    public String getContextPath() {
+        String correctedArtifactId;
+        if (artifactId.endsWith(ARTIFACT_ID_TAIL_FEATURE)) {
+            correctedArtifactId = artifactId.substring(0, (artifactId.length() - ARTIFACT_ID_TAIL_FEATURE.length()));
+        } else if (artifactId.endsWith(ARTIFACT_ID_TAIL_UI)) {
+            correctedArtifactId = artifactId.substring(0, (artifactId.length() - ARTIFACT_ID_TAIL_UI.length()));
+        } else {
+            correctedArtifactId = artifactId;
+        }
+        int indexOfLastDot = correctedArtifactId.lastIndexOf('.');
+        if (indexOfLastDot == -1) {
+            return correctedArtifactId;
+        } else {
+            return correctedArtifactId.substring(indexOfLastDot + 1);
+        }
+    }
+
+    /**
      * Returns the dependencies of the UUF Component which is reflected by this node.
      *
      * @return dependencies of the UUF Component
@@ -96,9 +121,9 @@ public class DependencyNode {
      * @param level level of the parent, where {@code 1} means immediate parent and {@code 2} means parent of that
      *              parent and so on
      * @return parent node
-     * @exception  IllegalStateException    if there is no parent in this node, which indicates that this is the root node
-     * @exception IllegalArgumentException if {@code level < 1}
-     * @exception NullPointerException if there is no parent
+     * @throws IllegalStateException    if there is no parent in this node, which indicates that this is the root node
+     * @throws IllegalArgumentException if {@code level < 1}
+     * @throws NullPointerException     if there is no parent
      */
     public DependencyNode getParent(int level) {
         if (parent == null) {

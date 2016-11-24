@@ -78,6 +78,8 @@ public class DependencyTreeSerializer {
                                                                          "getArtifactId", null)));
                 properties.add(new MethodProperty(new PropertyDescriptor("version", DependencyNode.class,
                                                                          "getVersion", null)));
+                properties.add(new MethodProperty(new PropertyDescriptor("contextPath", DependencyNode.class,
+                                                                         "getContextPath", null)));
                 properties.add(new MethodProperty(new PropertyDescriptor("dependencies", DependencyNode.class,
                                                                          "getDependencies", null)));
             } catch (IntrospectionException e) {
