@@ -44,6 +44,18 @@ public abstract class AbstractUUFMojo extends AbstractMojo {
     protected MavenProject project;
 
     /**
+     * The artifact ID of this Maven project.
+     */
+    @Parameter(defaultValue = "${project.artifactId}", readonly = true, required = true)
+    protected String artifactId;
+
+    /**
+     * The version of this Maven project.
+     */
+    @Parameter(defaultValue = "${project.version}", readonly = true, required = true)
+    protected String version;
+
+    /**
      * Packaging type of this Maven project.
      */
     @Parameter(defaultValue = "${project.packaging}", readonly = true, required = true)
@@ -60,12 +72,6 @@ public abstract class AbstractUUFMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "${project.build.directory}", readonly = true, required = true)
     protected String outputDirectoryPath;
-
-    /**
-     * The artifact ID of this Maven project.
-     */
-    @Parameter(defaultValue = "${project.artifactId}", readonly = true, required = true)
-    protected String artifactId;
 
     /**
      * File name of the final artifact created by this Maven project.
