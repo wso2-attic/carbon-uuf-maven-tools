@@ -58,6 +58,7 @@ public class ConfigFileCreator {
         }
 
         try {
+            createDirectory(Paths.get(outputDirectoryPath));
             String osgiImports = Arrays.stream(osgiImportsContent.trim().split(","))
                     .map(String::trim)
                     .filter(s -> !s.isEmpty())
@@ -66,8 +67,7 @@ public class ConfigFileCreator {
             writeFile(Paths.get(outputDirectoryPath, FILE_OSGI_IMPORTS), content);
         } catch (IOException e) {
             throw new MojoExecutionException(
-                    "Cannot create '" + FILE_OSGI_IMPORTS + "' file in '" + outputDirectoryPath + "'. " +
-                            e.getMessage(), e);
+                    "Cannot create '" + FILE_OSGI_IMPORTS + "' file in '" + outputDirectoryPath + "'.", e);
         }
     }
 
@@ -83,8 +83,8 @@ public class ConfigFileCreator {
         try {
             writeFile(Paths.get(outputDirectoryPath, FILE_CONFIG_YAML), configYamlContent);
         } catch (IOException e) {
-            throw new MojoExecutionException("Cannot create '" + FILE_CONFIG_YAML + "' file in '" + outputDirectoryPath
-                                                     + "'. " + e.getMessage(), e);
+            throw new MojoExecutionException(
+                    "Cannot create '" + FILE_CONFIG_YAML + "' file in '" + outputDirectoryPath + "'.", e);
         }
     }
 
@@ -101,8 +101,7 @@ public class ConfigFileCreator {
             writeFile(Paths.get(outputDirectoryPath, FILE_DEPENDENCY_TREE), dependencyTreeContent);
         } catch (IOException e) {
             throw new MojoExecutionException(
-                    "Cannot create '" + FILE_DEPENDENCY_TREE + "' file in '" + outputDirectoryPath + "'. " +
-                            e.getMessage(), e);
+                    "Cannot create '" + FILE_DEPENDENCY_TREE + "' file in '" + outputDirectoryPath + "'.", e);
         }
     }
 
@@ -123,7 +122,8 @@ public class ConfigFileCreator {
             writeFile(buildPropertiesFile, content);
             return buildPropertiesFile.toString();
         } catch (IOException e) {
-            throw new MojoExecutionException("Cannot create file '" + buildPropertiesFile + "'. " + e.getMessage(), e);
+            throw new MojoExecutionException(
+                    "Cannot create '" + FILE_FEATURE_PROPERTIES + "' file in '" + outputDirectoryPath + "'.", e);
         }
     }
 
@@ -143,7 +143,8 @@ public class ConfigFileCreator {
             String content = applyTemplate(FILE_P2_INF, featureName, featureName);
             writeFile(p2InfFile, content);
         } catch (IOException e) {
-            throw new MojoExecutionException("Cannot create file '" + p2InfFile + "'. " + e.getMessage(), e);
+            throw new MojoExecutionException(
+                    "Cannot create '" + FILE_P2_INF + "' file in '" + outputDirectoryPath + "'.", e);
         }
     }
 
