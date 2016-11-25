@@ -25,12 +25,15 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
+import org.wso2.carbon.uuf.maven.model.DependencyNode;
 import org.wso2.carbon.uuf.maven.parser.ComponentManifestParser;
 import org.wso2.carbon.uuf.maven.parser.ConfigurationParser;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 import org.wso2.carbon.uuf.maven.util.ZipCreator;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,6 +49,12 @@ public class ComponentMojo extends AbstractUUFMojo {
     protected static final String CONFIGURATION_IMPORT_PACKAGE = "Import-Package";
     protected static final String FILE_CONFIG = "config.yaml";
     protected static final String FILE_COMPONENT_MANIFEST = "component.yaml";
+
+    /**
+     * The temporary directory for UUF Maven plugin.
+     */
+    @Parameter(defaultValue = "${project.build.directory}/uuf-temp/", readonly = true, required = true)
+    protected String tempDirectoryPath;
 
     /**
      * OSGi {@code <Import-Package>} instructions for this UUF Component.
@@ -81,19 +90,20 @@ public class ComponentMojo extends AbstractUUFMojo {
                     "Component manifest file '" + componentManifestFilePath + "' of this UUF Component is invalid.", e);
         }
 
+        List<String> sourceDirectoryPaths = new ArrayList<>();
         // Create OSGi imports file.
         if ((instructions != null) && !instructions.isEmpty()) {
-            ConfigFileCreator.createOsgiImports(instructions.get(CONFIGURATION_IMPORT_PACKAGE), outputDirectoryPath);
+            String osgiImportsContent = instructions.get(CONFIGURATION_IMPORT_PACKAGE);
+            if ((osgiImportsContent != null) && !osgiImportsContent.trim().isEmpty()) {
+                ConfigFileCreator.createOsgiImports(osgiImportsContent, tempDirectoryPath);
+                sourceDirectoryPaths.add(tempDirectoryPath);
+            }
         }
         // Create zip file.
-        String baseDirectoryName;
-        int lastIndex = artifactId.lastIndexOf(".");
-        if (lastIndex > -1) {
-            baseDirectoryName = artifactId.substring(lastIndex + 1);
-        } else {
-            baseDirectoryName = artifactId;
-        }
-        File archive = ZipCreator.createArchive(sourceDirectoryPath, baseDirectoryName, outputDirectoryPath, finalName);
+        sourceDirectoryPaths.add(sourceDirectoryPath);
+        String baseDirectoryName = new DependencyNode(artifactId, version, null).getContextPath();
+        File archive = ZipCreator.createArchive(sourceDirectoryPaths, baseDirectoryName, outputDirectoryPath,
+                                                finalName);
         project.getArtifact().setFile(archive);
         projectHelper.attachArtifact(project, ZipCreator.ARCHIVE_FORMAT, null, archive);
     }

@@ -88,12 +88,6 @@ public class AppMojo extends ComponentMojo {
                readonly = true, required = true)
     private String outputDirectoryPath;
 
-    /**
-     * The temporary directory for UUF Maven plugin.
-     */
-    @Parameter(defaultValue = "${project.build.directory}/uuf-temp/", readonly = true, required = true)
-    private String tempDirectoryPath;
-
     @Parameter(property = "bundles", readonly = true, required = false)
     private List<Bundle> bundles;
 
@@ -151,8 +145,10 @@ public class AppMojo extends ComponentMojo {
         // 2.2 Create "osgi-imports" file for the "root" component.
         if ((instructions != null) && !instructions.isEmpty()) {
             String osgiImportsContent = instructions.get(CONFIGURATION_IMPORT_PACKAGE);
-            ConfigFileCreator.createOsgiImports(osgiImportsContent,
-                                                pathOf(allComponentsDirectory, DIRECTORY_ROOT_COMPONENT));
+            if ((osgiImportsContent != null) && !osgiImportsContent.trim().isEmpty()) {
+                ConfigFileCreator.createOsgiImports(osgiImportsContent,
+                                                    pathOf(allComponentsDirectory, DIRECTORY_ROOT_COMPONENT));
+            }
         }
         // 3.1. Create dependency tree.
         DependencyNode rootNode = getDependencyTree(allComponentDependencies);

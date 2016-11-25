@@ -25,6 +25,7 @@ import org.codehaus.plexus.archiver.zip.ZipArchiver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Utility for zip archive associated operations.
@@ -45,23 +46,29 @@ public class ZipCreator {
     /**
      * Creates a zip archive.
      *
-     * @param sourceDirectoryPath path to directory which has the files and sub-directories that need to be included in
-     *                            the creating zip archive
-     * @param baseDirectoryName   base directory of the creating zip archive, pass {@code null} for no base directory
-     * @param outputDirectoryPath path to the directory where the zip archive is created
-     * @param archiveFileName     filename of the creating zip archive without the ".zip" extension
+     * @param sourceDirectoryPaths path of directories those have the files and sub-directories to be added to the zip
+     * @param baseDirectoryName    base directory of the creating zip archive, pass {@code null} for no base directory
+     * @param outputDirectoryPath  path to the directory where the zip archive is created
+     * @param archiveFileName      filename of the creating zip archive without the ".zip" extension
      * @return created zip archive file
      * @throws MojoExecutionException if an error occurred when creating the zip archive
      */
-    public static File createArchive(String sourceDirectoryPath, String baseDirectoryName, String outputDirectoryPath,
+    public static File createArchive(List<String> sourceDirectoryPaths, String baseDirectoryName,
+                                     String outputDirectoryPath,
                                      String archiveFileName) throws MojoExecutionException {
-        Archiver zipArchiver = new ZipArchiver();
-        DefaultFileSet fileSet = new DefaultFileSet(new File(sourceDirectoryPath));
-        if (baseDirectoryName != null) {
-            fileSet.setPrefix(baseDirectoryName.endsWith("/") ? baseDirectoryName : (baseDirectoryName + "/"));
+        String correctedBaseDirectory;
+        if (baseDirectoryName == null) {
+            correctedBaseDirectory = null;
+        } else {
+            correctedBaseDirectory = baseDirectoryName.endsWith("/") ? baseDirectoryName : (baseDirectoryName + "/");
         }
-        fileSet.setExcludes(null);
-        zipArchiver.addFileSet(fileSet);
+
+        Archiver zipArchiver = new ZipArchiver();
+        for (String sourceDirectoryPath : sourceDirectoryPaths) {
+            DefaultFileSet fileSet = new DefaultFileSet(new File(sourceDirectoryPath));
+            fileSet.setPrefix(correctedBaseDirectory);
+            zipArchiver.addFileSet(fileSet);
+        }
 
         File outputZipFile = new File(outputDirectoryPath, (archiveFileName + ARCHIVE_EXTENSION));
         zipArchiver.setDestFile(outputZipFile);
@@ -69,7 +76,7 @@ public class ZipCreator {
             zipArchiver.createArchive();
         } catch (IOException e) {
             throw new MojoExecutionException("Cannot create zip archive '" + outputZipFile.getPath() +
-                                                     "' from directory '" + sourceDirectoryPath + "'.", e);
+                                                     "' from directories " + sourceDirectoryPaths + ".", e);
         }
         return outputZipFile;
     }

@@ -28,6 +28,7 @@ import org.wso2.carbon.uuf.maven.parser.ThemeConfigParser;
 import org.wso2.carbon.uuf.maven.util.ZipCreator;
 
 import java.io.File;
+import java.util.Collections;
 
 /**
  * UUF Theme creation Mojo that zip archive for the given theme project.
@@ -60,7 +61,8 @@ public class ThemeMojo extends AbstractUUFMojo {
                     "Configuration file '" + themeConfigFilePath + "' of this UUF Theme is invalid.", e);
         }
 
-        File archive = ZipCreator.createArchive(sourceDirectoryPath, artifactId, outputDirectoryPath, finalName);
+        File archive = ZipCreator.createArchive(Collections.singletonList(sourceDirectoryPath), artifactId,
+                                                outputDirectoryPath, finalName);
         project.getArtifact().setFile(archive);
         projectHelper.attachArtifact(project, ZipCreator.ARCHIVE_FORMAT, null, archive);
     }
