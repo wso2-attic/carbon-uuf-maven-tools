@@ -35,19 +35,17 @@ import java.nio.file.Paths;
  */
 public class ThemeConfigParser {
 
-    private final Yaml yaml = new Yaml();
-
     /**
      * Parses the specified theme config YAML file.
      *
      * @param themeConfigFilePath path to theme config file
-     * @return theme config or {@code null} if specified theme config file does not exists
+     * @return theme config
      * @throws ParsingException if cannot read or parsed the content of specified theme config file
      */
     public static ThemeConfig parse(String themeConfigFilePath) throws ParsingException {
         Path manifestFile = Paths.get(themeConfigFilePath);
         if (!Files.exists(manifestFile)) {
-            return null; // File does not exists.
+            throw new ParsingException("Mandatory theme config file '" + themeConfigFilePath + "' does not exists.");
         }
 
         try {
