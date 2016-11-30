@@ -39,7 +39,7 @@ public class DependencyTreeParserTest {
 
     @Test
     public void testParse() throws Exception {
-        DependencyNode rootNode = new DependencyTreeParser().parse(getDependencyTreeLines());
+        DependencyNode rootNode = DependencyTreeParser.parseLines(getDependencyTreeLines());
         Assert.assertEquals(rootNode.getDependencies().size(), 21);
         Assert.assertEquals(rootNode.getDependencies().get(0), new DependencyNode("snakeyaml", "1.16.0.wso2v1", null));
         Assert.assertEquals(rootNode.getDependencies().get(0).getDependencies().size(), 0);

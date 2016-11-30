@@ -41,7 +41,7 @@ public class DependencyTreeParser {
      * @return root node of the dependency tree
      * @throws ParsingException if cannot read or parse the content of the dependency tree file
      */
-    public DependencyNode parse(String dependencyTreeFilePath) throws ParsingException {
+    public static DependencyNode parse(String dependencyTreeFilePath) throws ParsingException {
         List<String> lines;
         try {
             lines = Files.readAllLines(Paths.get(dependencyTreeFilePath));
@@ -49,7 +49,7 @@ public class DependencyTreeParser {
             throw new ParsingException("Cannot read the content of dependency tree '" + dependencyTreeFilePath + "'.",
                                        e);
         }
-        return parse(lines);
+        return parseLines(lines);
     }
 
     /**
@@ -59,7 +59,7 @@ public class DependencyTreeParser {
      * @return root node of the dependency tree
      * @throws ParsingException if an error occurred when parsing the dependency tree
      */
-    DependencyNode parse(List<String> dependencyTreeLines) throws ParsingException {
+    static DependencyNode parseLines(List<String> dependencyTreeLines) throws ParsingException {
         // First line is the root node.
         DependencyNode rootNode = createDependencyNode(dependencyTreeLines.get(0), null);
 

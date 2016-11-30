@@ -216,7 +216,7 @@ public class AppMojo extends ComponentMojo {
                     "Cannot generate dependency tree for '" + artifactId + "'.", e);
         }
         try {
-            return new DependencyTreeParser().parse(dependencyTreeFilePath);
+            return DependencyTreeParser.parse(dependencyTreeFilePath);
         } catch (ParsingException e) {
             throw new MojoExecutionException(
                     "Cannot parse generated dependency tree in '" + dependencyTreeFilePath + "'.", e);
