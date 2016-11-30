@@ -84,6 +84,7 @@ public class DependencyNode {
         } else {
             correctedArtifactId = artifactId;
         }
+
         int indexOfLastDot = correctedArtifactId.lastIndexOf('.');
         if (indexOfLastDot == -1) {
             return correctedArtifactId;
