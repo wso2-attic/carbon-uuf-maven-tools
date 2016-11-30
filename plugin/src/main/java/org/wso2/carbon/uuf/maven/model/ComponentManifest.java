@@ -118,7 +118,7 @@ public class ComponentManifest {
      *
      * @since 1.0.0
      */
-    private static class Binding {
+    public static class Binding {
 
         /**
          * Binding combine mode prepend.
