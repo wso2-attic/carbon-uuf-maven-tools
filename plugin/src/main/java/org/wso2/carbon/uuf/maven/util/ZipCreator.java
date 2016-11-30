@@ -56,10 +56,8 @@ public class ZipCreator {
     public static File createArchive(List<String> sourceDirectoryPaths, String baseDirectoryName,
                                      String outputDirectoryPath,
                                      String archiveFileName) throws MojoExecutionException {
-        String correctedBaseDirectory;
-        if (baseDirectoryName == null) {
-            correctedBaseDirectory = null;
-        } else {
+        String correctedBaseDirectory = null;
+        if (baseDirectoryName != null) {
             correctedBaseDirectory = baseDirectoryName.endsWith("/") ? baseDirectoryName : (baseDirectoryName + "/");
         }
 
