@@ -35,8 +35,6 @@ import java.util.Map;
  */
 public class ConfigurationParser {
 
-    private final Yaml yaml = new Yaml();
-
     /**
      * Parses the specified config YAML file.
      *
@@ -44,25 +42,23 @@ public class ConfigurationParser {
      * @return configuration found in the file or {@code null} if specified config file does not exists
      * @throws ParsingException if cannot read or parse the content of the specified config file
      */
-    public Map parse(String configFilePath) throws ParsingException {
+    public static Map parse(String configFilePath) throws ParsingException {
         Path configFile = Paths.get(configFilePath);
         if (!Files.exists(configFile)) {
             return null; // File does not exists.
         }
-        String content;
+
         try {
-            content = new String(Files.readAllBytes(configFile), StandardCharsets.UTF_8);
+            String content = new String(Files.readAllBytes(configFile), StandardCharsets.UTF_8);
+            return parseString(content);
         } catch (IOException e) {
             throw new ParsingException("Cannot read the content of config file '" + configFilePath + "'.", e);
-        }
-        try {
-            return parseString(content);
         } catch (Exception e) {
             throw new ParsingException("Cannot parse the content of config file '" + configFilePath + "'.", e);
         }
     }
 
-    Map parseString(String config) throws Exception {
-        return yaml.loadAs(config, Map.class);
+    static Map parseString(String config) throws Exception {
+        return new Yaml().loadAs(config, Map.class);
     }
 }

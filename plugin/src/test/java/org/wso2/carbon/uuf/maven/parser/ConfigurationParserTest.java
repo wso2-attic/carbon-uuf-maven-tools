@@ -33,7 +33,7 @@ public class ConfigurationParserTest {
     public static Map<?, ?> parseConfigFile(String resourceConfigFilePath) throws Exception {
         String content = IOUtils.toString(ConfigurationParserTest.class.getResourceAsStream(resourceConfigFilePath),
                                           StandardCharsets.UTF_8.toString());
-        return new ConfigurationParser().parseString(content);
+        return ConfigurationParser.parseString(content);
     }
 
     @Test

@@ -76,7 +76,7 @@ public class ComponentMojo extends AbstractUUFMojo {
         // Validation: Parse configuration file to make sure it is a valid YAML file.
         String configFilePath = pathOf(sourceDirectoryPath, FILE_CONFIG);
         try {
-            new ConfigurationParser().parse(configFilePath);
+            ConfigurationParser.parse(configFilePath);
         } catch (ParsingException e) {
             throw new MojoExecutionException(
                     "Configuration file '" + configFilePath + "' of this UUF Component is invalid.", e);

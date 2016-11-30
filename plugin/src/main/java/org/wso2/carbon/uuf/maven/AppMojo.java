@@ -177,7 +177,7 @@ public class AppMojo extends ComponentMojo {
         // Validation: Parse configuration file to make sure it is a valid YAML file.
         String configFilePath = pathOf(sourceDirectoryPath, FILE_CONFIG);
         try {
-            new ConfigurationParser().parse(configFilePath);
+            ConfigurationParser.parse(configFilePath);
         } catch (ParsingException e) {
             throw new MojoExecutionException("Configuration file '" + configFilePath + "' of this UUF App is invalid.",
                                              e);
@@ -227,13 +227,12 @@ public class AppMojo extends ComponentMojo {
         Configuration configuration = new Configuration();
         // Create the final configuration by traversing through the dependency tree.
         try {
-            ConfigurationParser parser = new ConfigurationParser();
             rootNode.traverse(node -> {
                 String configFilePath = getFilePathIn(node.getArtifactId(), componentsDirectory, FILE_CONFIG);
                 Map configMap;
                 // Since we are in a lambda, we throw RuntimeExceptions.
                 try {
-                    configMap = parser.parse(configFilePath);
+                    configMap = ConfigurationParser.parse(configFilePath);
                 } catch (ParsingException e) {
                     throw new RuntimeException("Cannot parse '" + FILE_CONFIG + "' of " + node +
                                                        " which read from '" + configFilePath + "' path.", e);
