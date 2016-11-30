@@ -55,7 +55,7 @@ public class ThemeMojo extends AbstractUUFMojo {
         // Validation: Parse configuration file to make sure it is a valid YAML file.
         String themeConfigFilePath = pathOf(sourceDirectoryPath, FILE_THEME);
         try {
-            new ThemeConfigParser().parse(themeConfigFilePath);
+            ThemeConfigParser.parse(themeConfigFilePath);
         } catch (ParsingException e) {
             throw new MojoExecutionException(
                     "Configuration file '" + themeConfigFilePath + "' of this UUF Theme is invalid.", e);

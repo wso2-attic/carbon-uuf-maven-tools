@@ -44,25 +44,19 @@ public class ThemeConfigParser {
      * @return theme config or {@code null} if specified theme config file does not exists
      * @throws ParsingException if cannot read or parsed the content of specified theme config file
      */
-    public ThemeConfig parse(String themeConfigFilePath) throws ParsingException {
+    public static ThemeConfig parse(String themeConfigFilePath) throws ParsingException {
         Path manifestFile = Paths.get(themeConfigFilePath);
         if (!Files.exists(manifestFile)) {
             return null; // File does not exists.
         }
-        String content;
+
         try {
-            content = new String(Files.readAllBytes(manifestFile), StandardCharsets.UTF_8);
+            String content = new String(Files.readAllBytes(manifestFile), StandardCharsets.UTF_8);
+            return new Yaml().loadAs(content, ThemeConfig.class);
         } catch (IOException e) {
             throw new ParsingException("Cannot read the content of theme config file '" + manifestFile + "'.", e);
-        }
-        try {
-            return parseString(content);
         } catch (Exception e) {
             throw new ParsingException("Cannot parse the content of theme config file '" + manifestFile + "'.", e);
         }
-    }
-
-    ThemeConfig parseString(String themeConfig) throws Exception {
-        return yaml.loadAs(themeConfig, ThemeConfig.class);
     }
 }
