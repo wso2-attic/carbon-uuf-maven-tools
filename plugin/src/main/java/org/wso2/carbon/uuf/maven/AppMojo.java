@@ -128,7 +128,7 @@ public class AppMojo extends ComponentMojo {
         outputDirectoryPath += appFullyQualifiedName;
         // Categorize dependencies.
         @SuppressWarnings("unchecked")
-        Set<Artifact> allDependencies = ((Set<Artifact>) project.getArtifacts());
+        Set<Artifact> allDependencies = project.getArtifacts();
         Set<Artifact> allComponentDependencies = allDependencies.stream()
                 .filter(artifact -> ARTIFACT_TYPE_UUF_COMPONENT.equals(artifact.getClassifier()))
                 .collect(Collectors.toSet());
@@ -185,7 +185,7 @@ public class AppMojo extends ComponentMojo {
         // Validation: Parse component manifest file to make sure it is valid.
         String componentManifestFilePath = pathOf(sourceDirectoryPath, FILE_COMPONENT_MANIFEST);
         try {
-            new ComponentManifestParser().parse(componentManifestFilePath);
+            ComponentManifestParser.parse(componentManifestFilePath);
         } catch (ParsingException e) {
             throw new MojoExecutionException(
                     "Component manifest file '" + componentManifestFilePath + "' of this UUF App is invalid.", e);
@@ -300,10 +300,6 @@ public class AppMojo extends ComponentMojo {
                                     element(name("advice"),
                                             element(name("name"), "org.wso2.carbon.p2.category.type"),
                                             element(name("value"), "server")
-                                    ),
-                                    element(name("advice"),
-                                            element(name("name"), "org.eclipse.equinox.p2.type.group"),
-                                            element(name("value"), "false")
                                     )
                             ),
                             element(name("bundles"),

@@ -35,8 +35,6 @@ import java.nio.file.Paths;
  */
 public class ComponentManifestParser {
 
-    private final Yaml yaml = new Yaml();
-
     /**
      * Parses the specified component manifest YAML file.
      *
@@ -44,26 +42,20 @@ public class ComponentManifestParser {
      * @return component manifest in the file or {@code null} if specified component manifest file does not exists
      * @throws ParsingException if cannot read or parse the content of the specified component manifest file
      */
-    public ComponentManifest parse(String componentManifestFilePath) throws ParsingException {
+    public static ComponentManifest parse(String componentManifestFilePath) throws ParsingException {
         Path manifestFile = Paths.get(componentManifestFilePath);
         if (!Files.exists(manifestFile)) {
             return null; // File does not exists.
         }
-        String content;
+
         try {
-            content = new String(Files.readAllBytes(manifestFile), StandardCharsets.UTF_8);
+            String content = new String(Files.readAllBytes(manifestFile), StandardCharsets.UTF_8);
+            return new Yaml().loadAs(content, ComponentManifest.class);
         } catch (IOException e) {
             throw new ParsingException("Cannot read the content of component manifest file '" + manifestFile + "'.", e);
-        }
-        try {
-            return parseString(content);
         } catch (Exception e) {
             throw new ParsingException("Cannot parse the content of component manifest file '" + manifestFile + "'.",
                                        e);
         }
-    }
-
-    ComponentManifest parseString(String componentManifest) throws Exception {
-        return yaml.loadAs(componentManifest, ComponentManifest.class);
     }
 }

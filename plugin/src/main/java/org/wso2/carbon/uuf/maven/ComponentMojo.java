@@ -84,7 +84,7 @@ public class ComponentMojo extends AbstractUUFMojo {
         // Validation: Parse component manifest file to make sure it is valid.
         String componentManifestFilePath = pathOf(sourceDirectoryPath, FILE_COMPONENT_MANIFEST);
         try {
-            new ComponentManifestParser().parse(componentManifestFilePath);
+            ComponentManifestParser.parse(componentManifestFilePath);
         } catch (ParsingException e) {
             throw new MojoExecutionException(
                     "Component manifest file '" + componentManifestFilePath + "' of this UUF Component is invalid.", e);
