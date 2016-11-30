@@ -146,7 +146,7 @@ public class DependencyNode {
      * @param nodeConsumer consumer that consumes each node
      */
     public void traverse(Consumer<DependencyNode> nodeConsumer) {
-        dependencies.forEach(nodeConsumer);
+        dependencies.forEach(dependencyNode -> dependencyNode.traverse(nodeConsumer));
         nodeConsumer.accept(this);
     }
 
