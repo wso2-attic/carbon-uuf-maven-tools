@@ -48,7 +48,6 @@ public class Bundle {
         this.symbolicName = symbolicName;
     }
 
-
     /**
      * Returns the maven version for this artifact. <p> <b>Important:</b> This is not the OSGI version </p>
      *

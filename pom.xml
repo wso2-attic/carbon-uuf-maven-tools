@@ -17,7 +17,8 @@
  ~ under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.wso2.carbon.uuf.maven</groupId>
@@ -49,84 +50,82 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- dependencies for maven plugin -->
-            <dependency>
-                <groupId>org.apache.maven</groupId>
-                <artifactId>maven-plugin-api</artifactId>
-                <version>${maven-plugin-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- dependencies to annotations -->
-            <dependency>
-                <groupId>org.apache.maven.plugin-tools</groupId>
-                <artifactId>maven-plugin-annotations</artifactId>
-                <version>${maven-plugin-annotations.version}</version>
-                <scope>provided</scope>
-                <!-- annotations are needed only to build the plugin -->
-            </dependency>
-            <!-- dependencies for uuf plugin -->
-            <dependency>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>${maven-assembly-plugin.version}</version>
-            </dependency>
+            <!--Maven Core APIs-->
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-core</artifactId>
                 <version>${maven-core.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.maven.shared</groupId>
-                <artifactId>maven-dependency-tree</artifactId>
-                <version>${maven-dependency-tree.version}</version>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>${maven-plugin-api.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${maven-dependency-plugin.version}</version>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-annotations</artifactId>
+                <version>${maven-plugin-annotations.version}</version>
+                <scope>provided</scope><!-- Annotations are needed only to build the plugin -->
             </dependency>
+            <!--Mojo executor-->
             <dependency>
                 <groupId>org.twdata.maven</groupId>
                 <artifactId>mojo-executor</artifactId>
                 <version>${mojo-executor.version}</version>
             </dependency>
+            <!--Plexus Archiver-->
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-archiver</artifactId>
+                <version>${plexus-archiver.version}</version>
+            </dependency>
+            <!--Other-->
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.maven</groupId>
-                <artifactId>carbon-feature-plugin</artifactId>
-                <version>${carbon-feature-plugin.version}</version>
+                <groupId>org.wso2.orbit.org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${orbit.org.yaml.version}</version>
+            </dependency>
+            <!-- Test -->
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${testng.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito-core.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
     <properties>
+        <!--Maven Core APIs-->
+        <maven-core.version>3.0</maven-core.version>
         <maven-plugin-api.version>3.0</maven-plugin-api.version>
         <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
-        <maven-core.version>3.0</maven-core.version>
-
-        <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
-        <maven-dependency-tree.version>3.0</maven-dependency-tree.version>
-        <maven-dependency-plugin.version>2.7</maven-dependency-plugin.version>
-        <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
-        <carbon-feature-plugin.version>2.0.0</carbon-feature-plugin.version>
+        <!--Mojo executor-->
         <mojo-executor.version>2.2.0</mojo-executor.version>
-
-        <archetype.packaging.version>2.4</archetype.packaging.version>
+        <!--Plexus Archiver-->
+        <plexus-archiver.version>3.0</plexus-archiver.version>
+        <!--Other-->
+        <commons-io.version>2.1</commons-io.version>
+        <orbit.org.yaml.version>1.16.0.wso2v1</orbit.org.yaml.version>
+        <!--Test-->
+        <testng.version>6.9.4</testng.version>
+        <mockito-core.version>2.0.44-beta</mockito-core.version>
+        <!--Extensions-->
         <archetype.plugin.version>2.4</archetype.plugin.version>
 
-        <commons-io.version>2.1</commons-io.version>
-
-        <!--Test-->
-        <junit.version>3.8.1</junit.version>
+        <!--Plugins-->
+        <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
 
         <!-- Source and target Java version -->
         <wso2.maven.compiler.source>1.8</wso2.maven.compiler.source>

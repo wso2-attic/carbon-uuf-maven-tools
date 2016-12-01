@@ -18,9 +18,17 @@
 
 package org.wso2.carbon.uuf.maven;
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.wso2.carbon.uuf.maven.exception.ParsingException;
+import org.wso2.carbon.uuf.maven.parser.ThemeConfigParser;
+import org.wso2.carbon.uuf.maven.util.ZipCreator;
+
+import java.io.File;
+import java.util.Collections;
 
 /**
  * UUF Theme creation Mojo that zip archive for the given theme project.
@@ -29,10 +37,33 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  */
 @Mojo(name = "create-theme", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
-public class ThemeMojo extends AbstractZipMojo {
+public class ThemeMojo extends AbstractUUFMojo {
 
+    private static final String FILE_THEME = "theme.yaml";
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    String getZipBaseDirectory() {
-        return artifactId;
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        // Validation: Packaging type should be 'uuf-theme'.
+        if (!ARTIFACT_TYPE_UUF_THEME.equals(packaging)) {
+            throw new MojoExecutionException(
+                    "Packaging type of an UUF Theme should be '" + ARTIFACT_TYPE_UUF_THEME + "'. Instead found '" +
+                            packaging + "'.");
+        }
+        // Validation: Parse configuration file to make sure it is a valid YAML file.
+        String themeConfigFilePath = pathOf(sourceDirectoryPath, FILE_THEME);
+        try {
+            ThemeConfigParser.parse(themeConfigFilePath);
+        } catch (ParsingException e) {
+            throw new MojoExecutionException(
+                    "Configuration file '" + themeConfigFilePath + "' of this UUF Theme is invalid.", e);
+        }
+
+        File archive = ZipCreator.createArchive(Collections.singletonList(sourceDirectoryPath), artifactId,
+                                                outputDirectoryPath, finalName);
+        project.getArtifact().setFile(archive);
+        projectHelper.attachArtifact(project, ZipCreator.ARCHIVE_FORMAT, null, archive);
     }
 }
