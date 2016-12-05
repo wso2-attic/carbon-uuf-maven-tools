@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.wso2.carbon.uuf.maven</groupId>
         <artifactId>carbon-uuf</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0-m7</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
