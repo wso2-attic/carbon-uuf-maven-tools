@@ -38,49 +38,49 @@ public abstract class AbstractUUFMojo extends AbstractMojo {
     protected static final String ARTIFACT_TYPE_UUF_THEME = "uuf-theme";
 
     /**
-     * This Maven project.
+     * Associated Maven project with this Mojo.
      */
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     protected MavenProject project;
 
     /**
-     * The artifact ID of this Maven project.
+     * The artifact ID of the associated Maven project.
      */
     @Parameter(defaultValue = "${project.artifactId}", readonly = true, required = true)
     protected String artifactId;
 
     /**
-     * The version of this Maven project.
+     * The version of the associated Maven project.
      */
     @Parameter(defaultValue = "${project.version}", readonly = true, required = true)
     protected String version;
 
     /**
-     * Packaging type of this Maven project.
+     * Packaging type of the associated Maven project.
      */
     @Parameter(defaultValue = "${project.packaging}", readonly = true, required = true)
     protected String packaging;
 
     /**
-     * Path to the directory where source files resides.
+     * Path to the directory where source files of the associated Maven project resides.
      */
     @Parameter(defaultValue = "${project.basedir}/src/main/", readonly = true, required = true)
     protected String sourceDirectoryPath;
 
     /**
-     * The output directory for UUF Maven plugin.
+     * Path to the output directory of this Mojo.
      */
     @Parameter(defaultValue = "${project.build.directory}", readonly = true, required = true)
     protected String outputDirectoryPath;
 
     /**
-     * File name of the final artifact created by this Maven project.
+     * File name of the final artifact created by the associated Maven project.
      */
     @Parameter(defaultValue = "${project.build.finalName}", readonly = true, required = true)
     protected String finalName;
 
     /**
-     * Maven ProjectHelper.
+     * Project helper for the associated Maven project.
      */
     @Component
     protected MavenProjectHelper projectHelper;

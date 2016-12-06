@@ -37,8 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * UUF Component creation Mojo that generates the osgi-imports when this component uses any OSGi imports and creates the
- * component zip archive for the given component project.
+ * UUF Component creation Mojo.
  *
  * @since 1.0.0
  */
@@ -51,7 +50,7 @@ public class ComponentMojo extends AbstractUUFMojo {
     protected static final String FILE_COMPONENT_MANIFEST = "component.yaml";
 
     /**
-     * The temporary directory for UUF Maven plugin.
+     * Path to the temporary directory for UUF Maven plugin.
      */
     @Parameter(defaultValue = "${project.build.directory}/uuf-temp/", readonly = true, required = true)
     protected String tempDirectoryPath;

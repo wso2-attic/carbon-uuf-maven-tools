@@ -60,8 +60,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 /**
- * UUF Application creation Mojo that generates dependency.tree, p2.inf files and finally creates the carbon-feature for
- * the given app project.
+ * UUF Application creation Mojo.
  *
  * @since 1.0.0
  */
@@ -76,18 +75,21 @@ public class AppMojo extends ComponentMojo {
     private static final String APP_ARTIFACT_ID_TAIL = ".feature";
 
     /**
-     * The Maven session.
+     * The Maven session associated with this Mojo.
      */
     @Parameter(defaultValue = "${session}", readonly = true, required = true)
     private MavenSession session;
 
     /**
-     * The output directory for UUF Maven plugin.
+     * Path to the output directory of this Mojo
      */
     @Parameter(defaultValue = "${project.build.directory}/maven-shared-archive-resources/uufapps/",
                readonly = true, required = true)
     private String outputDirectoryPath;
 
+    /**
+     * Configured OSGi bundles.
+     */
     @Parameter(property = "bundles", readonly = true, required = false)
     private List<Bundle> bundles;
 

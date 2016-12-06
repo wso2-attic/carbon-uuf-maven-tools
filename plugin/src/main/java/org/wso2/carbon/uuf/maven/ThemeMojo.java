@@ -31,7 +31,7 @@ import java.io.File;
 import java.util.Collections;
 
 /**
- * UUF Theme creation Mojo that zip archive for the given theme project.
+ * UUF Theme creation Mojo.
  *
  * @since 1.0.0
  */
