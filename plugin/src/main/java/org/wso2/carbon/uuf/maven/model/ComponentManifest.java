@@ -123,15 +123,15 @@ public class ComponentManifest {
         /**
          * Binding combine mode prepend.
          */
-        public static final String MODE_PREPEND = "PREPEND";
+        public static final String MODE_PREPEND = "prepend";
         /**
          * Binging combine mode append.
          */
-        public static final String MODE_APPEND = "APPEND";
+        public static final String MODE_APPEND = "append";
         /**
          * Binding combine mode overwrite.
          */
-        public static final String MODE_OVERWRITE = "OVERWRITE";
+        public static final String MODE_OVERWRITE = "overwrite";
 
         private String zoneName;
         private String mode;
@@ -168,16 +168,15 @@ public class ComponentManifest {
          * Sets the mode of this binding.
          *
          * @param mode mode to be set
-         * @throws IllegalArgumentException if the {@code mode} is not {@link #MODE_PREPEND} or {@link #MODE_APPEND} or
-         *                                  {@link #MODE_OVERWRITE}
+         * @exception IllegalArgumentException if the {@code mode} is not {@link #MODE_PREPEND} or {@link #MODE_APPEND}
+         *                                     or {@link #MODE_OVERWRITE}
          * @see #MODE_PREPEND
          * @see #MODE_APPEND
          * @see #MODE_OVERWRITE
          */
         public void setMode(String mode) {
-            String capitalizedMode = mode.toUpperCase();
-            if (MODE_PREPEND.equals(capitalizedMode) || MODE_APPEND.equals(capitalizedMode) || MODE_OVERWRITE.equals(
-                    capitalizedMode)) {
+            if (MODE_PREPEND.equals(mode) || MODE_APPEND.equals(mode) || MODE_OVERWRITE.equals(
+                    mode)) {
                 this.mode = mode;
             } else {
                 throw new IllegalArgumentException(
