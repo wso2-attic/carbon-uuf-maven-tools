@@ -21,7 +21,7 @@ package org.wso2.carbon.uuf.maven.model;
 import java.util.List;
 
 /**
- * A bean class that represents the configuration of an UUF Theme.
+ * Bean class that represents the theme's config file of an UUF Theme.
  *
  * @since 1.0.0
  */
