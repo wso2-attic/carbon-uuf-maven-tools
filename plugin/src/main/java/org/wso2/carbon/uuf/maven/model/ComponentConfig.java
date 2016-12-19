@@ -22,27 +22,27 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A bean class that represents the component manifest file in an UUF Component.
+ * Bean class that represents the component's config file of an UUF Component.
  *
  * @since 1.0.0
  */
-public class ComponentManifest {
+public class ComponentConfig {
 
     private List<API> apis;
     private List<Binding> bindings;
     private Map<String, Object> config;
 
     /**
-     * Returns the APIs entries of this component manifest.
+     * Returns the APIs entries in this component's config.
      *
-     * @return APIs of this component manifest
+     * @return APIs in this component's config
      */
     public List<API> getApis() {
         return apis;
     }
 
     /**
-     * Sets the APIs of this component manifest.
+     * Sets the APIs in this component's config.
      *
      * @param apis APIs to be set
      */
@@ -51,16 +51,16 @@ public class ComponentManifest {
     }
 
     /**
-     * Returns the bindings entries of this component manifest.
+     * Returns the bindings entries in this component's config.
      *
-     * @return bindings of this component manifest
+     * @return bindings in this component's config
      */
     public List<Binding> getBindings() {
         return bindings;
     }
 
     /**
-     * Sets the bindings of this component manifest.
+     * Sets the bindings in this component's config.
      *
      * @param bindings bindings to be set
      */
@@ -69,16 +69,16 @@ public class ComponentManifest {
     }
 
     /**
-     * Returns the configurations of this component manifest.
+     * Returns the configurations in this component's config.
      *
-     * @return configurations of this component manifest
+     * @return configurations in this component's config
      */
     public Map<String, Object> getConfig() {
         return config;
     }
 
     /**
-     * Sets the configurations of this component manifest.
+     * Sets the configurations of this component's config.
      *
      * @param config configurations to be set
      */
@@ -87,7 +87,7 @@ public class ComponentManifest {
     }
 
     /**
-     * Represent an API entry in the component manifest file in an UUF Component.
+     * Bean class that represents an API entry in the component's config file of an UUF Component.
      *
      * @since 1.0.0
      */
@@ -134,7 +134,7 @@ public class ComponentManifest {
     }
 
     /**
-     * Represent a binding entry in thr component manifest file in an UUF Component.
+     * Bean class that represents a binding entry in the component's config file of an UUF Component.
      *
      * @since 1.0.0
      */
