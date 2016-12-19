@@ -19,6 +19,7 @@
 package org.wso2.carbon.uuf.maven.model;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * A bean class that represents the component manifest file in an UUF Component.
@@ -29,6 +30,7 @@ public class ComponentManifest {
 
     private List<API> apis;
     private List<Binding> bindings;
+    private Map<String, Object> config;
 
     /**
      * Returns the APIs entries of this component manifest.
@@ -64,6 +66,24 @@ public class ComponentManifest {
      */
     public void setBindings(List<Binding> bindings) {
         this.bindings = bindings;
+    }
+
+    /**
+     * Returns the configurations of this component manifest.
+     *
+     * @return configurations of this component manifest
+     */
+    public Map<String, Object> getConfig() {
+        return config;
+    }
+
+    /**
+     * Sets the configurations of this component manifest.
+     *
+     * @param config configurations to be set
+     */
+    public void setConfig(Map<String, Object> config) {
+        this.config = config;
     }
 
     /**
@@ -168,15 +188,16 @@ public class ComponentManifest {
          * Sets the mode of this binding.
          *
          * @param mode mode to be set
-         * @exception IllegalArgumentException if the {@code mode} is not {@link #MODE_PREPEND} or {@link #MODE_APPEND}
-         *                                     or {@link #MODE_OVERWRITE}
+         * @throws IllegalArgumentException if the {@code mode} is not {@link #MODE_PREPEND} or {@link #MODE_APPEND} or
+         *                                  {@link #MODE_OVERWRITE}
          * @see #MODE_PREPEND
          * @see #MODE_APPEND
          * @see #MODE_OVERWRITE
          */
         public void setMode(String mode) {
-            if (MODE_PREPEND.equals(mode) || MODE_APPEND.equals(mode) || MODE_OVERWRITE.equals(
-                    mode)) {
+            if (mode == null) {
+                this.mode = MODE_PREPEND; // default mode is prepend.
+            } else if (MODE_PREPEND.equals(mode) || MODE_APPEND.equals(mode) || MODE_OVERWRITE.equals(mode)) {
                 this.mode = mode;
             } else {
                 throw new IllegalArgumentException(
@@ -201,6 +222,30 @@ public class ComponentManifest {
          */
         public void setFragments(List<String> fragments) {
             this.fragments = fragments;
+        }
+
+        /**
+         * Combines the specified binding with this binding.
+         *
+         * @param other other binding to be merged
+         * @throws IllegalArgumentException if specified binding's zone name != this binding's zone name
+         */
+        public void merge(Binding other) {
+            if (!this.zoneName.equals(other.zoneName)) {
+                throw new IllegalArgumentException("Other binding's zone and this binding's zone are not equal.");
+            }
+
+            switch (other.mode) {
+                case MODE_PREPEND:
+                    this.fragments.addAll(0, other.fragments);
+                    break;
+                case MODE_APPEND:
+                    this.fragments.addAll(other.fragments);
+                    break;
+                case MODE_OVERWRITE:
+                    this.fragments = other.fragments;
+                    break;
+            }
         }
     }
 }
