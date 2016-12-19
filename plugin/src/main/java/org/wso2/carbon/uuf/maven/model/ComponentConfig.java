@@ -207,7 +207,7 @@ public class ComponentConfig {
         }
 
         /**
-         * Returns the names of the Fragments of this binding.
+         * Returns the names of the fragments of this binding.
          *
          * @return fragment names
          */
@@ -216,7 +216,7 @@ public class ComponentConfig {
         }
 
         /**
-         * Sets the names of the Fragments of this binding.
+         * Sets the names of the fragments of this binding.
          *
          * @param fragments names of the Fragments to be set
          */
