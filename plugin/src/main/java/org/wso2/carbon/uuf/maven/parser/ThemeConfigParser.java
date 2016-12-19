@@ -29,18 +29,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Parser for config file of an UUF Theme.
+ * Parser for theme configuration YAML file in an UUF Theme.
  *
  * @since 1.0.0
  */
 public class ThemeConfigParser {
 
     /**
-     * Parses the specified theme config YAML file.
+     * Parses the specified theme configuration YAML file.
      *
-     * @param themeConfigFilePath path to theme config file
-     * @return theme config
-     * @throws ParsingException if cannot read or parsed the content of specified theme config file
+     * @param themeConfigFilePath path to theme config YAML file
+     * @return theme's configurations or {@code null} if specified theme configuration file does not exists
+     * @throws ParsingException if cannot read or parse the content of the specified theme configuration file
      */
     public static ThemeConfig parse(String themeConfigFilePath) throws ParsingException {
         Path manifestFile = Paths.get(themeConfigFilePath);
@@ -52,9 +52,11 @@ public class ThemeConfigParser {
             String content = new String(Files.readAllBytes(manifestFile), StandardCharsets.UTF_8);
             return new Yaml().loadAs(content, ThemeConfig.class);
         } catch (IOException e) {
-            throw new ParsingException("Cannot read the content of theme config file '" + manifestFile + "'.", e);
+            throw new ParsingException("Cannot read the content of theme configuration file '" + manifestFile + "'.",
+                                       e);
         } catch (Exception e) {
-            throw new ParsingException("Cannot parse the content of theme config file '" + manifestFile + "'.", e);
+            throw new ParsingException("Cannot parse the content of theme configuration file '" + manifestFile + "'.",
+                                       e);
         }
     }
 }
