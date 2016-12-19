@@ -19,7 +19,7 @@
 package org.wso2.carbon.uuf.maven.parser;
 
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
-import org.wso2.carbon.uuf.maven.model.ComponentManifest;
+import org.wso2.carbon.uuf.maven.model.ComponentConfig;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
@@ -29,32 +29,33 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Parser for component manifest YAML file in an UUF Component.
+ * Parser for component configuration YAML file in an UUF Component.
  *
  * @since 1.0.0
  */
-public class ComponentManifestParser {
+public class ComponentConfigParser {
 
     /**
-     * Parses the specified component manifest YAML file.
+     * Parses the specified component configuration YAML file.
      *
-     * @param componentManifestFilePath path to component manifest YAML file
-     * @return component manifest in the file or {@code null} if specified component manifest file does not exists
-     * @throws ParsingException if cannot read or parse the content of the specified component manifest file
+     * @param componentConfigFilePath path to component config YAML file
+     * @return component's configurations or {@code null} if specified component configuration file does not exists
+     * @throws ParsingException if cannot read or parse the content of the specified component configuration file
      */
-    public static ComponentManifest parse(String componentManifestFilePath) throws ParsingException {
-        Path manifestFile = Paths.get(componentManifestFilePath);
-        if (!Files.exists(manifestFile)) {
+    public static ComponentConfig parse(String componentConfigFilePath) throws ParsingException {
+        Path configFIle = Paths.get(componentConfigFilePath);
+        if (!Files.exists(configFIle)) {
             return null; // File does not exists.
         }
 
         try {
-            String content = new String(Files.readAllBytes(manifestFile), StandardCharsets.UTF_8);
-            return new Yaml().loadAs(content, ComponentManifest.class);
+            String content = new String(Files.readAllBytes(configFIle), StandardCharsets.UTF_8);
+            return new Yaml().loadAs(content, ComponentConfig.class);
         } catch (IOException e) {
-            throw new ParsingException("Cannot read the content of component manifest file '" + manifestFile + "'.", e);
+            throw new ParsingException("Cannot read the content of component configuration file '" + configFIle + "'.",
+                                       e);
         } catch (Exception e) {
-            throw new ParsingException("Cannot parse the content of component manifest file '" + manifestFile + "'.",
+            throw new ParsingException("Cannot parse the content of component configuration file '" + configFIle + "'.",
                                        e);
         }
     }
