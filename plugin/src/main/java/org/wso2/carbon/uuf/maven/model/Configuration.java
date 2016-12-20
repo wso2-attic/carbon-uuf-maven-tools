@@ -40,6 +40,10 @@ public class Configuration {
      * @throws IllegalArgumentException if keys of the {@code rawMap} are not {@link String}s.
      */
     public void merge(Map<?, ?> rawMap) {
+        if (rawMap == null || rawMap.isEmpty()) {
+            return;
+        }
+
         for (Map.Entry<?, ?> newEntry : rawMap.entrySet()) {
             if (!(newEntry.getKey() instanceof String)) {
                 throw new IllegalArgumentException(
