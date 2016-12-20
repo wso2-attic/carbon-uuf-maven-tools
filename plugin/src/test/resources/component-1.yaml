@@ -1,0 +1,13 @@
+config:
+    appName: "test app 1"
+    pageSize: 10
+    users:
+        - "Kamal"
+        - "Amal"
+    devices:
+        android:
+            id: 12345
+            location: "Colombo"
+        windows:
+            id: 102030
+            location: "Kandy"

@@ -20,14 +20,16 @@ package org.wso2.carbon.uuf.maven.model;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.wso2.carbon.uuf.maven.parser.ConfigurationParserTest;
+import org.wso2.carbon.uuf.maven.parser.ComponentConfigParserTest;
 
+import java.util.List;
 import java.util.Map;
 
 public class ConfigurationTest {
 
     public static void mergeConfiguration(Configuration configuration, String resourceConfigFilePath) throws Exception {
-        configuration.merge(ConfigurationParserTest.parseConfigFile(resourceConfigFilePath));
+        ComponentConfig componentConfig = ComponentConfigParserTest.parseConfigFile(resourceConfigFilePath);
+        configuration.merge(componentConfig.getConfig());
     }
 
     @SuppressWarnings("unchecked")
@@ -35,37 +37,42 @@ public class ConfigurationTest {
     public void testMergeConfiguration() throws Exception {
         Configuration configuration = new Configuration();
 
-        mergeConfiguration(configuration, ConfigurationParserTest.RESOURCE_FILE_CONFIG_1);
+        mergeConfiguration(configuration, ComponentConfigParserTest.RESOURCE_FILE_COMPONENT_CONFIG_1);
         Map<String, Object> configMap = configuration.asMap();
         Assert.assertEquals(configMap.get("appName"), "test app 1");
-        Assert.assertTrue(configMap.get("menu") instanceof Map);
-        Map<String, ?> menuMap = (Map<String, ?>) configMap.get("menu");
-        Assert.assertEquals(menuMap.size(), 2);
-        Assert.assertTrue(menuMap.get("main") instanceof Map);
-        Map<String, ?> mainMenuMap = (Map<String, ?>) menuMap.get("main");
-        Assert.assertEquals(mainMenuMap.size(), 2);
-        Assert.assertTrue(mainMenuMap.get("Home") instanceof Map);
-        Map<String, ?> mainHomeMenuMap = (Map<String, ?>) mainMenuMap.get("Home");
-        Assert.assertEquals(mainHomeMenuMap.get("link"), "#home-1");
-        Assert.assertEquals(mainHomeMenuMap.get("icon"), "fw fw-home");
-        Assert.assertTrue(mainMenuMap.get("Pets") instanceof Map);
-        Map<String, ?> mainPetsMenuMap = (Map<String, ?>) mainMenuMap.get("Pets");
-        Assert.assertEquals(mainPetsMenuMap.size(), 2);
+        Assert.assertEquals(configMap.get("pageSize"), 10);
+        Assert.assertTrue(configMap.get("users") instanceof List);
+        List<String> users = (List<String>) configMap.get("users");
+        Assert.assertEquals(users.size(), 2);
+        Assert.assertEquals(users.get(0), "Kamal");
+        Assert.assertTrue(configMap.get("devices") instanceof Map);
+        Map<String, ?> devices = (Map<String, ?>) configMap.get("devices");
+        Assert.assertEquals(devices.size(), 2);
+        Assert.assertTrue(devices.get("android") instanceof Map);
+        Map<String, ?> androidDevice = (Map<String, ?>) devices.get("android");
+        Assert.assertEquals(androidDevice.get("id"), 12345);
+        Assert.assertEquals(androidDevice.get("location"), "Colombo");
+        Assert.assertEquals(androidDevice.get("locked"), null);
 
-        mergeConfiguration(configuration, ConfigurationParserTest.RESOURCE_FILE_CONFIG_2);
+
+        mergeConfiguration(configuration, ComponentConfigParserTest.RESOURCE_FILE_COMPONENT_CONFIG_2);
         configMap = configuration.asMap();
         Assert.assertEquals(configMap.get("appName"), "test app 2");
-        menuMap = (Map<String, ?>) configMap.get("menu");
-        Assert.assertEquals(menuMap.size(), 2);
-        mainMenuMap = (Map<String, ?>) menuMap.get("main");
-        Assert.assertEquals(mainMenuMap.size(), 3);
-        mainHomeMenuMap = (Map<String, ?>) mainMenuMap.get("Home");
-        Assert.assertEquals(mainHomeMenuMap.get("link"), "#home-2");
-        Assert.assertEquals(mainHomeMenuMap.get("icon"), "fw fw-home");
-        mainPetsMenuMap = (Map<String, ?>) mainMenuMap.get("Pets");
-        Assert.assertEquals(mainPetsMenuMap.size(), 3);
-        Assert.assertTrue(mainMenuMap.get("Devices") instanceof Map);
-        Map<String, ?> mainDevicesMenuMap = (Map<String, ?>) mainMenuMap.get("Devices");
-        Assert.assertEquals(mainDevicesMenuMap.size(), 2);
+        Assert.assertEquals(configMap.get("pageSize"), 10);
+        Assert.assertEquals(configMap.get("successMsg"), "Hoooooray!!!");
+        users = (List<String>) configMap.get("users");
+        Assert.assertEquals(users.size(), 3);
+        Assert.assertEquals(users.get(2), "Sirimal");
+        devices = (Map<String, ?>) configMap.get("devices");
+        Assert.assertEquals(devices.size(), 3);
+        androidDevice = (Map<String, ?>) devices.get("android");
+        Assert.assertEquals(androidDevice.get("id"), 12345);
+        Assert.assertEquals(androidDevice.get("location"), "Colombo");
+        Assert.assertEquals(androidDevice.get("locked"), true);
+        Assert.assertTrue(devices.get("ios") instanceof Map);
+        Map<String, ?> iosDevice = (Map<String, ?>) devices.get("ios");
+        Assert.assertEquals(iosDevice.get("id"), 9999);
+        Assert.assertEquals(iosDevice.get("location"), "Anuradhapura");
+        Assert.assertEquals(iosDevice.get("locked"), null);
     }
 }
