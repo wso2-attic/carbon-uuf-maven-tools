@@ -39,7 +39,7 @@ public class ThemeConfigParser {
      * Parses the specified theme configuration YAML file.
      *
      * @param themeConfigFilePath path to theme config YAML file
-     * @return theme's configurations or {@code null} if specified theme configuration file does not exists
+     * @return theme's configurations
      * @throws ParsingException if cannot read or parse the content of the specified theme configuration file
      */
     public static ThemeConfig parse(String themeConfigFilePath) throws ParsingException {

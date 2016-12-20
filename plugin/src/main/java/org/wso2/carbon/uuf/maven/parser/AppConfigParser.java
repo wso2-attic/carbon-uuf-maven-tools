@@ -39,13 +39,13 @@ public class AppConfigParser {
      * Parses the specified app configuration YAML file.
      *
      * @param appConfigFilePath path to app config YAML file
-     * @return app's configurations or {@code null} if specified app configuration file does not exists
+     * @return app's configurations
      * @throws ParsingException if cannot read or parse the content of the specified app configuration file
      */
     public static AppConfig parse(String appConfigFilePath) throws ParsingException {
         Path configFIle = Paths.get(appConfigFilePath);
         if (!Files.exists(configFIle)) {
-            return null; // File does not exists.
+            throw new ParsingException("Mandatory app config file '" + appConfigFilePath + "' does not exists.");
         }
 
         try {

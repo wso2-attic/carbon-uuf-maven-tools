@@ -39,13 +39,14 @@ public class ComponentConfigParser {
      * Parses the specified component configuration YAML file.
      *
      * @param componentConfigFilePath path to component config YAML file
-     * @return component's configurations or {@code null} if specified component configuration file does not exists
+     * @return component's configurations
      * @throws ParsingException if cannot read or parse the content of the specified component configuration file
      */
     public static ComponentConfig parse(String componentConfigFilePath) throws ParsingException {
         Path configFIle = Paths.get(componentConfigFilePath);
         if (!Files.exists(configFIle)) {
-            return null; // File does not exists.
+            throw new ParsingException(
+                    "Mandatory component config file '" + componentConfigFilePath + "' does not exists.");
         }
 
         try {
