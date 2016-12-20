@@ -50,7 +50,7 @@ public class ComponentConfigParser {
 
         try {
             String content = new String(Files.readAllBytes(configFIle), StandardCharsets.UTF_8);
-            return new Yaml().loadAs(content, ComponentConfig.class);
+            return parseString(content);
         } catch (IOException e) {
             throw new ParsingException("Cannot read the content of component configuration file '" + configFIle + "'.",
                                        e);
@@ -58,5 +58,9 @@ public class ComponentConfigParser {
             throw new ParsingException("Cannot parse the content of component configuration file '" + configFIle + "'.",
                                        e);
         }
+    }
+
+    static ComponentConfig parseString(String componentConfig) throws Exception {
+        return new Yaml().loadAs(componentConfig, ComponentConfig.class);
     }
 }
