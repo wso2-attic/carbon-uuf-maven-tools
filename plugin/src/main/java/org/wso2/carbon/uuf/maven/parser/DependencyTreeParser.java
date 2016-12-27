@@ -18,8 +18,8 @@
 
 package org.wso2.carbon.uuf.maven.parser;
 
+import org.wso2.carbon.uuf.maven.bean.DependencyNode;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
-import org.wso2.carbon.uuf.maven.model.DependencyNode;
 
 import java.io.IOException;
 import java.nio.file.Files;

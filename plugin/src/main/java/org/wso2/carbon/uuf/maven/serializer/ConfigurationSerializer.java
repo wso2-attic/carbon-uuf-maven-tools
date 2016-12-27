@@ -18,8 +18,8 @@
 
 package org.wso2.carbon.uuf.maven.serializer;
 
+import org.wso2.carbon.uuf.maven.bean.Configuration;
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
-import org.wso2.carbon.uuf.maven.model.Configuration;
 import org.yaml.snakeyaml.Yaml;
 
 /**

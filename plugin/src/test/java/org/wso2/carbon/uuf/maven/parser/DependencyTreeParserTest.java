@@ -20,7 +20,7 @@ package org.wso2.carbon.uuf.maven.parser;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.wso2.carbon.uuf.maven.model.DependencyNode;
+import org.wso2.carbon.uuf.maven.bean.DependencyNode;
 
 import java.util.ArrayList;
 import java.util.List;

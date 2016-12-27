@@ -20,6 +20,8 @@ package org.wso2.carbon.uuf.maven.model;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.wso2.carbon.uuf.maven.bean.ComponentConfig;
+import org.wso2.carbon.uuf.maven.bean.Configuration;
 import org.wso2.carbon.uuf.maven.parser.ComponentConfigParserTest;
 
 import java.util.List;

@@ -18,8 +18,8 @@
 
 package org.wso2.carbon.uuf.maven.parser;
 
+import org.wso2.carbon.uuf.maven.bean.AppConfig;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
-import org.wso2.carbon.uuf.maven.model.AppConfig;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;

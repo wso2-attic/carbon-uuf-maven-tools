@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.uuf.maven.model;
+package org.wso2.carbon.uuf.maven.bean;
 
 import java.util.Map;
 import java.util.regex.Pattern;

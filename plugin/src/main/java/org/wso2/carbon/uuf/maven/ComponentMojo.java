@@ -25,7 +25,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
-import org.wso2.carbon.uuf.maven.model.DependencyNode;
+import org.wso2.carbon.uuf.maven.bean.DependencyNode;
 import org.wso2.carbon.uuf.maven.model.Instructions;
 import org.wso2.carbon.uuf.maven.parser.ComponentConfigParser;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;

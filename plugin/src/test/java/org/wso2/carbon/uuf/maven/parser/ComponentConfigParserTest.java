@@ -21,7 +21,7 @@ package org.wso2.carbon.uuf.maven.parser;
 import org.apache.commons.io.IOUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.wso2.carbon.uuf.maven.model.ComponentConfig;
+import org.wso2.carbon.uuf.maven.bean.ComponentConfig;
 
 import java.nio.charset.StandardCharsets;
 

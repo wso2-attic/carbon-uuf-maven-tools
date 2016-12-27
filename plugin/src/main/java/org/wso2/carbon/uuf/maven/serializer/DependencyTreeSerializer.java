@@ -18,8 +18,8 @@
 
 package org.wso2.carbon.uuf.maven.serializer;
 
+import org.wso2.carbon.uuf.maven.bean.DependencyNode;
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
-import org.wso2.carbon.uuf.maven.model.DependencyNode;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.introspector.MethodProperty;
@@ -57,8 +57,7 @@ public class DependencyTreeSerializer {
     }
 
     /**
-     * {@link org.yaml.snakeyaml.representer.Representer} for {@link org.wso2.carbon.uuf.maven.model.DependencyNode}
-     * class.
+     * {@link org.yaml.snakeyaml.representer.Representer} for {@link DependencyNode} class.
      *
      * @implNote This class controls what properties will be serialized and the appearing order of those serialized
      * properties in the output YAML when serializing DependencyNode.
