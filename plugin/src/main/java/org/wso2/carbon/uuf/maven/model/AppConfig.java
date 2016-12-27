@@ -19,6 +19,7 @@
 package org.wso2.carbon.uuf.maven.model;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Bean class that represents the app's config file of an UUF App.
@@ -27,11 +28,43 @@ import java.util.Map;
  */
 public class AppConfig {
 
+    public static final Pattern HTTP_STATUS_CODES_PATTERN = Pattern.compile("[1-9][0-9][0-9]");
+
+    private String contextPath;
     private String theme;
     private String loginPageUri;
-    private String loginRedirectUri;
-    private Map<String, MenuItem[]> menus;
     private Map<String, String> errorPages;
+    private Map<String, MenuItem[]> menus;
+    private SecurityConfig security;
+
+    /**
+     * Returns the client-side context path in this app's config.
+     *
+     * @return client-side context path in this app's config.
+     */
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    /**
+     * Sets the client-side context path in this app's config.
+     *
+     * @param contextPath client-side context path to be set
+     * @throws IllegalArgumentException if {@code contextPath} is empty or doesn't start with a '/'.
+     */
+    public void setContextPath(String contextPath) {
+        if (contextPath == null) {
+            return;
+        }
+
+        if (contextPath.isEmpty()) {
+            throw new IllegalArgumentException("Value of 'contextPath' cannot be empty.");
+        } else if (contextPath.charAt(0) != '/') {
+            throw new IllegalArgumentException("Value of 'contextPath' must start with a '/'. Instead found '" +
+                                                       contextPath.charAt(0) + "' at the beginning.");
+        }
+        this.contextPath = contextPath;
+    }
 
     /**
      * Returns the theme name in this app's config.
@@ -46,8 +79,16 @@ public class AppConfig {
      * Sets the theme name in this app's config.
      *
      * @param theme theme name to be set
+     * @throws IllegalArgumentException if {@code theme} is an empty string
      */
     public void setTheme(String theme) {
+        if (theme == null) {
+            return;
+        }
+
+        if (theme.isEmpty()) {
+            throw new IllegalArgumentException("Value of 'theme' cannot be empty.");
+        }
         this.theme = theme;
     }
 
@@ -64,27 +105,58 @@ public class AppConfig {
      * Sets the login page URI in this app's config.
      *
      * @param loginPageUri URI of the login page to be set
+     * @throws IllegalArgumentException if {@code loginPageUri} is empty or doesn't start with a '/'.
      */
     public void setLoginPageUri(String loginPageUri) {
+        if (loginPageUri == null) {
+            return;
+        }
+        if (loginPageUri.isEmpty()) {
+            throw new IllegalArgumentException("Value of 'loginPageUri' cannot be empty.");
+        }
+        if (loginPageUri.charAt(0) != '/') {
+            throw new IllegalArgumentException("Value of 'loginPageUri' must start with a '/'. Instead found '" +
+                                                       loginPageUri.charAt(0) + "' at the beginning.");
+        }
         this.loginPageUri = loginPageUri;
     }
 
     /**
-     * Returns the login redirect URI in this app's config.
+     * Returns the error pages URIs in this app's config.
      *
-     * @return URI of the login redirect page in this app's config
+     * @return URIs of error pages in this app's config
      */
-    public String getLoginRedirectUri() {
-        return loginRedirectUri;
+    public Map<String, String> getErrorPages() {
+        return errorPages;
     }
 
     /**
-     * Sets the login redirect URI in this app's config.
+     * Sets the error pages URIs in this app's config.
      *
-     * @param loginRedirectUri URI of the login redirect page in this app's config
+     * @param errorPages URIs of error pages to be set
+     * @throws IllegalArgumentException if an error page URI is empty or doesn't start with a '/'.
      */
-    public void setLoginRedirectUri(String loginRedirectUri) {
-        this.loginRedirectUri = loginRedirectUri;
+    public void setErrorPages(Map<String, String> errorPages) {
+        for (Map.Entry<String, String> entry : errorPages.entrySet()) {
+            String httpStatusCode = entry.getKey();
+            String errorPageUri = entry.getValue();
+
+            if (!httpStatusCode.equals("default") && !HTTP_STATUS_CODES_PATTERN.matcher(httpStatusCode).matches()) {
+                throw new IllegalArgumentException(
+                        "HTTP status code must be between 100 and 999. Instead found '" + httpStatusCode +
+                                "' for error page URI '" + errorPageUri + "'.");
+            }
+
+            if (errorPageUri.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Error page URI for HTTP status code '" + httpStatusCode + "' cannot be empty.");
+            } else if (errorPageUri.charAt(0) != '/') {
+                throw new IllegalArgumentException("Error page URI for HTTP status code '" + httpStatusCode +
+                                                           "' must start with a '/'. Instead found '" +
+                                                           errorPageUri.charAt(0) + "' at the beginning.");
+            }
+        }
+        this.errorPages = errorPages;
     }
 
     /**
@@ -106,21 +178,21 @@ public class AppConfig {
     }
 
     /**
-     * Returns the error pages URIs in this app's config.
+     * Returns the security related configurations in this app's config.
      *
-     * @return URIs of error pages in this app's config
+     * @return security related configurations in this app's config
      */
-    public Map<String, String> getErrorPages() {
-        return errorPages;
+    public SecurityConfig getSecurity() {
+        return security;
     }
 
     /**
-     * Sets the error pages URIs in this app's config.
+     * Sets the security related configurations in this app's config.
      *
-     * @param errorPages URIs of error pages to be set
+     * @param security security configs to be set
      */
-    public void setErrorPages(Map<String, String> errorPages) {
-        this.errorPages = errorPages;
+    public void setSecurity(SecurityConfig security) {
+        this.security = security;
     }
 
     /**
