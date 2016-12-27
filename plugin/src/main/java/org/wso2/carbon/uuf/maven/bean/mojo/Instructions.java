@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.uuf.maven.model;
+package org.wso2.carbon.uuf.maven.bean.mojo;
 
 /**
  * Bean class that represent OSGi bundling instructions specified inside a {@code <configurations>} tag in a POM file.
