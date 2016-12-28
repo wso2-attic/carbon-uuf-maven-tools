@@ -119,7 +119,7 @@
         <commons-io.version>2.1</commons-io.version>
         <orbit.org.yaml.version>1.16.0.wso2v1</orbit.org.yaml.version>
         <!--Test-->
-        <testng.version>6.9.4</testng.version>
+        <testng.version>6.9.5</testng.version>
         <mockito-core.version>2.0.44-beta</mockito-core.version>
         <!--Extensions-->
         <archetype.plugin.version>2.4</archetype.plugin.version>
