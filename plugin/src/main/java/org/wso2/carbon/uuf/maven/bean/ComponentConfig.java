@@ -111,6 +111,13 @@ public class ComponentConfig {
          * @param className name of the class to be set
          */
         public void setClassName(String className) {
+            if (className == null) {
+                throw new IllegalArgumentException(
+                        "Class name of an API entry in the component's config cannot be null.");
+            } else if (className.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Class name of an API entry in the component's config cannot be a empty.");
+            }
             this.className = className;
         }
 
@@ -129,6 +136,17 @@ public class ComponentConfig {
          * @param uri URI to be set
          */
         public void setUri(String uri) {
+            if (uri == null) {
+                throw new IllegalArgumentException(
+                        "URI of an API entry in the component's config cannot be null.");
+            } else if (uri.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "URI of an API entry in the component's config cannot be a empty.");
+            } else if (uri.charAt(0) != '/') {
+                throw new IllegalArgumentException(
+                        "URI of an API entry in the component's config must start with a '/'. Instead found '" +
+                                uri.charAt(0) + "' at the beginning.");
+            }
             this.uri = uri;
         }
     }
@@ -172,6 +190,13 @@ public class ComponentConfig {
          * @param zoneName zone name to be set
          */
         public void setZoneName(String zoneName) {
+            if (zoneName == null) {
+                throw new IllegalArgumentException(
+                        "Zone name of a binding entry in the component's config cannot be null.");
+            } else if (zoneName.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Zone name of a binding entry in the component's config cannot be a empty.");
+            }
             this.zoneName = zoneName;
         }
 
@@ -201,8 +226,8 @@ public class ComponentConfig {
                 this.mode = mode;
             } else {
                 throw new IllegalArgumentException(
-                        "Binding mode should be either '" + MODE_PREPEND + "', '" + MODE_APPEND + "' or '" +
-                                MODE_OVERWRITE + "'. Instead found '" + mode + "'.");
+                        "Mode of a binding entry in the component's config should be either '" + MODE_PREPEND + "', '" +
+                                MODE_APPEND + "' or '" + MODE_OVERWRITE + "'. Instead found '" + mode + "'.");
             }
         }
 
@@ -222,30 +247,6 @@ public class ComponentConfig {
          */
         public void setFragments(List<String> fragments) {
             this.fragments = fragments;
-        }
-
-        /**
-         * Combines the specified binding with this binding.
-         *
-         * @param other other binding to be merged
-         * @throws IllegalArgumentException if specified binding's zone name != this binding's zone name
-         */
-        public void merge(Binding other) {
-            if (!this.zoneName.equals(other.zoneName)) {
-                throw new IllegalArgumentException("Other binding's zone and this binding's zone are not equal.");
-            }
-
-            switch (other.mode) {
-                case MODE_PREPEND:
-                    this.fragments.addAll(0, other.fragments);
-                    break;
-                case MODE_APPEND:
-                    this.fragments.addAll(other.fragments);
-                    break;
-                case MODE_OVERWRITE:
-                    this.fragments = other.fragments;
-                    break;
-            }
         }
     }
 }
