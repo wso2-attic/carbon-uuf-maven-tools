@@ -30,7 +30,7 @@ import java.util.Map;
  */
 public class ConfigurationTest {
 
-    public static void mergeConfiguration(Configuration configuration, String resourceConfigFilePath) throws Exception {
+    private static void mergeConfiguration(Configuration configuration, String resourceConfigFilePath) throws Exception {
         ComponentConfig componentConfig = ComponentConfigParserTest.parseConfigFile(resourceConfigFilePath);
         configuration.merge(componentConfig.getConfig());
     }
@@ -40,7 +40,7 @@ public class ConfigurationTest {
     public void testMergeConfiguration() throws Exception {
         Configuration configuration = new Configuration();
 
-        mergeConfiguration(configuration, ComponentConfigParserTest.RESOURCE_FILE_COMPONENT_CONFIG_1);
+        mergeConfiguration(configuration, "/component.yaml");
         Map<String, Object> configMap = configuration.getOther();
         Assert.assertEquals(configMap.get("appName"), "test app 1");
         Assert.assertEquals(configMap.get("pageSize"), 10);
@@ -58,7 +58,7 @@ public class ConfigurationTest {
         Assert.assertEquals(androidDevice.get("locked"), null);
 
 
-        mergeConfiguration(configuration, ComponentConfigParserTest.RESOURCE_FILE_COMPONENT_CONFIG_2);
+        mergeConfiguration(configuration, "/root-component.yaml");
         configMap = configuration.getOther();
         Assert.assertEquals(configMap.get("appName"), "test app 2");
         Assert.assertEquals(configMap.get("pageSize"), 10);
