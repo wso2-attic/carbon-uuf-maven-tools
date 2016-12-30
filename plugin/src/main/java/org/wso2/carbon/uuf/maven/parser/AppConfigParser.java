@@ -50,11 +50,15 @@ public class AppConfigParser {
 
         try {
             String content = new String(Files.readAllBytes(configFIle), StandardCharsets.UTF_8);
-            return new Yaml().loadAs(content, AppConfig.class);
+            return parseString(content);
         } catch (IOException e) {
             throw new ParsingException("Cannot read the content of app configuration file '" + configFIle + "'.", e);
         } catch (Exception e) {
             throw new ParsingException("Cannot parse the content of app configuration file '" + configFIle + "'.", e);
         }
+    }
+
+    static AppConfig parseString(String appConfig) {
+        return new Yaml().loadAs(appConfig, AppConfig.class);
     }
 }
