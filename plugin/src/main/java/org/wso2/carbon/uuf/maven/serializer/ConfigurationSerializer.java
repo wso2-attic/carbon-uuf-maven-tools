@@ -40,7 +40,7 @@ public class ConfigurationSerializer {
      */
     public String serialize(Configuration configuration) throws SerializationException {
         try {
-            return yaml.dumpAsMap(configuration.asMap());
+            return yaml.dump(configuration);
         } catch (Exception e) {
             throw new SerializationException("Cannot serialize config " + configuration + ".", e);
         }
