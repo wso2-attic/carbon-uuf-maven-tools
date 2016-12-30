@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.uuf.maven.bean;
 
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -34,7 +35,7 @@ public class AppConfig {
     private String theme;
     private String loginPageUri;
     private Map<String, String> errorPages;
-    private Map<String, MenuItem[]> menus;
+    private Map<String, List<MenuItem>> menus;
     private SecurityConfig security;
 
     /**
@@ -53,15 +54,15 @@ public class AppConfig {
      * @throws IllegalArgumentException if {@code contextPath} is empty or doesn't start with a '/'.
      */
     public void setContextPath(String contextPath) {
-        if (contextPath == null) {
-            return;
-        }
-
-        if (contextPath.isEmpty()) {
-            throw new IllegalArgumentException("Value of 'contextPath' cannot be empty.");
-        } else if (contextPath.charAt(0) != '/') {
-            throw new IllegalArgumentException("Value of 'contextPath' must start with a '/'. Instead found '" +
-                                                       contextPath.charAt(0) + "' at the beginning.");
+        if (contextPath != null) {
+            if (contextPath.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Context path configured with 'contextPath' key in the app's config cannot be empty.");
+            } else if (contextPath.charAt(0) != '/') {
+                throw new IllegalArgumentException(
+                        "Context path configured with 'contextPath' key in the app's config must start with a '/'. " +
+                                "Instead found '" + contextPath.charAt(0) + "' at the beginning.");
+            }
         }
         this.contextPath = contextPath;
     }
@@ -82,12 +83,11 @@ public class AppConfig {
      * @throws IllegalArgumentException if {@code theme} is an empty string
      */
     public void setTheme(String theme) {
-        if (theme == null) {
-            return;
-        }
-
-        if (theme.isEmpty()) {
-            throw new IllegalArgumentException("Value of 'theme' cannot be empty.");
+        if (theme != null) {
+            if (theme.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Theme name configured with 'theme' key in the app's config cannot be empty.");
+            }
         }
         this.theme = theme;
     }
@@ -108,15 +108,16 @@ public class AppConfig {
      * @throws IllegalArgumentException if {@code loginPageUri} is empty or doesn't start with a '/'.
      */
     public void setLoginPageUri(String loginPageUri) {
-        if (loginPageUri == null) {
-            return;
-        }
-        if (loginPageUri.isEmpty()) {
-            throw new IllegalArgumentException("Value of 'loginPageUri' cannot be empty.");
-        }
-        if (loginPageUri.charAt(0) != '/') {
-            throw new IllegalArgumentException("Value of 'loginPageUri' must start with a '/'. Instead found '" +
-                                                       loginPageUri.charAt(0) + "' at the beginning.");
+        if (loginPageUri != null) {
+            if (loginPageUri.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Login page URI configured with 'loginPageUri' key in the app's config cannot be empty.");
+            }
+            if (loginPageUri.charAt(0) != '/') {
+                throw new IllegalArgumentException(
+                        "Login page URI configured with 'loginPageUri' key in the app's config must start with a '/'." +
+                                " Instead found '" + loginPageUri.charAt(0) + "' at the beginning.");
+            }
         }
         this.loginPageUri = loginPageUri;
     }
@@ -137,23 +138,27 @@ public class AppConfig {
      * @throws IllegalArgumentException if an error page URI is empty or doesn't start with a '/'.
      */
     public void setErrorPages(Map<String, String> errorPages) {
-        for (Map.Entry<String, String> entry : errorPages.entrySet()) {
-            String httpStatusCode = entry.getKey();
-            String errorPageUri = entry.getValue();
+        if (errorPages != null) {
+            for (Map.Entry<String, String> entry : errorPages.entrySet()) {
+                String httpStatusCode = entry.getKey();
+                String errorPageUri = entry.getValue();
 
-            if (!httpStatusCode.equals("default") && !HTTP_STATUS_CODES_PATTERN.matcher(httpStatusCode).matches()) {
-                throw new IllegalArgumentException(
-                        "HTTP status code must be between 100 and 999. Instead found '" + httpStatusCode +
-                                "' for error page URI '" + errorPageUri + "'.");
-            }
+                if (!httpStatusCode.equals("default") && !HTTP_STATUS_CODES_PATTERN.matcher(httpStatusCode).matches()) {
+                    throw new IllegalArgumentException(
+                            "HTTP status code of an error page entry in the app's config must be between 100 and 999." +
+                                    " Instead found '" + httpStatusCode + "' for URI '" + errorPageUri + "'.");
+                }
 
-            if (errorPageUri.isEmpty()) {
-                throw new IllegalArgumentException(
-                        "Error page URI for HTTP status code '" + httpStatusCode + "' cannot be empty.");
-            } else if (errorPageUri.charAt(0) != '/') {
-                throw new IllegalArgumentException("Error page URI for HTTP status code '" + httpStatusCode +
-                                                           "' must start with a '/'. Instead found '" +
-                                                           errorPageUri.charAt(0) + "' at the beginning.");
+                if (errorPageUri.isEmpty()) {
+                    throw new IllegalArgumentException(
+                            "URI of an error page entry in the app's config cannot be empty. " +
+                                    "Found an empty URI for HTTP status code '" + httpStatusCode + "'.");
+                } else if (errorPageUri.charAt(0) != '/') {
+                    throw new IllegalArgumentException(
+                            "URI of an error page entry in the app's config must start with a '/'. Instead found '" +
+                                    errorPageUri.charAt(0) + "' at the beginning of the URI for HTTP status code '" +
+                                    httpStatusCode + "'.");
+                }
             }
         }
         this.errorPages = errorPages;
@@ -164,7 +169,7 @@ public class AppConfig {
      *
      * @return menus in this app's config
      */
-    public Map<String, MenuItem[]> getMenus() {
+    public Map<String, List<MenuItem>> getMenus() {
         return menus;
     }
 
@@ -173,7 +178,7 @@ public class AppConfig {
      *
      * @param menus menus to be set
      */
-    public void setMenus(Map<String, MenuItem[]> menus) {
+    public void setMenus(Map<String, List<MenuItem>> menus) {
         this.menus = menus;
     }
 
@@ -205,7 +210,7 @@ public class AppConfig {
         private String text;
         private String link;
         private String icon;
-        private MenuItem[] submenus;
+        private List<MenuItem> submenus;
 
         /**
          * Returns the text of this menu item.
@@ -266,7 +271,7 @@ public class AppConfig {
          *
          * @return sub-menus of this menu item
          */
-        public MenuItem[] getSubmenus() {
+        public List<MenuItem> getSubmenus() {
             return submenus;
         }
 
@@ -275,7 +280,7 @@ public class AppConfig {
          *
          * @param submenus sub-menus to be set
          */
-        public void setSubmenus(MenuItem[] submenus) {
+        public void setSubmenus(List<MenuItem> submenus) {
             this.submenus = submenus;
         }
     }
@@ -354,25 +359,33 @@ public class AppConfig {
      */
     public static class PatternsConfig {
 
-        private String[] allow;
-        private String[] deny;
+        private List<String> accept;
+        private List<String> reject;
 
         /**
          * Returns allowing URI patterns of this URI pattern configuration.
          *
          * @return allowing URI patterns
          */
-        public String[] getAllow() {
-            return allow;
+        public List<String> getAccept() {
+            return accept;
         }
 
         /**
          * Sets the allowing URI patterns of this URI pattern configuration.
          *
-         * @param allow allowing URI patterns to be set
+         * @param accept allowing URI patterns to be set
          */
-        public void setAllow(String[] allow) {
-            this.allow = allow;
+        public void setAccept(List<String> accept) {
+            if (accept != null) {
+                for (String uriPattern : accept) {
+                    if (uriPattern.isEmpty()) {
+                        throw new IllegalArgumentException("Accepting URI pattern cannot be empty.");
+                    }
+                    // TODO: 12/29/16 Check whether uriPattern is a valid pattern.
+                }
+            }
+            this.accept = accept;
         }
 
         /**
@@ -380,17 +393,25 @@ public class AppConfig {
          *
          * @return denying URI patterns
          */
-        public String[] getDeny() {
-            return deny;
+        public List<String> getReject() {
+            return reject;
         }
 
         /**
          * Sets the denying URI patterns of this URI pattern configuration.
          *
-         * @param deny denying URI patterns to be set
+         * @param reject denying URI patterns to be set
          */
-        public void setDeny(String[] deny) {
-            this.deny = deny;
+        public void setReject(List<String> reject) {
+            if (reject != null) {
+                for (String uriPattern : reject) {
+                    if (uriPattern.isEmpty()) {
+                        throw new IllegalArgumentException("Rejecting URI pattern cannot be empty.");
+                    }
+                    // TODO: 12/29/16 Check whether uriPattern is a valid pattern.
+                }
+            }
+            this.reject = reject;
         }
     }
 }
