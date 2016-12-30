@@ -30,6 +30,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
+import org.wso2.carbon.uuf.maven.bean.AppConfig;
 import org.wso2.carbon.uuf.maven.bean.ComponentConfig;
 import org.wso2.carbon.uuf.maven.bean.Configuration;
 import org.wso2.carbon.uuf.maven.bean.DependencyNode;
@@ -45,7 +46,6 @@ import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -155,7 +155,7 @@ public class AppMojo extends ComponentMojo {
         // 3.1. Create dependency tree.
         DependencyNode rootNode = getDependencyTree(allComponentDependencies);
         // 3.2. Create the final configuration.
-        createConfigFile(rootNode, allComponentsDirectory);
+        createConfigurationFile(rootNode, allComponentsDirectory);
         // 3.3 Create dependency tree file.
         createDependencyTree(rootNode, allComponentsDirectory);
         // 4. Unpack UUF Theme dependencies.
@@ -185,13 +185,7 @@ public class AppMojo extends ComponentMojo {
                                                      artifactId + "' UUF App is invalid.", e);
         }
         // Validation: Parse app configuration file to make sure it is valid.
-        String appConfigFilePath = pathOf(sourceDirectoryPath, FILE_APP_CONFIG);
-        try {
-            AppConfigParser.parse(componentConfigFilePath);
-        } catch (ParsingException e) {
-            throw new MojoExecutionException("App configuration file '" + componentConfigFilePath + "' of '" +
-                                                     artifactId + "' UUF App is invalid.", e);
-        }
+        parseAppConfigFile();
     }
 
     private DependencyNode getDependencyTree(Set<Artifact> includes) throws MojoExecutionException {
@@ -225,23 +219,23 @@ public class AppMojo extends ComponentMojo {
         }
     }
 
-    private void createConfigFile(DependencyNode rootNode, String componentsDirectory) throws MojoExecutionException {
-        Configuration configuration = new Configuration();
+    private void createConfigurationFile(DependencyNode rootNode, String componentsDirectory)
+            throws MojoExecutionException {
+        Configuration configuration = new Configuration(parseAppConfigFile());
         // Create the final configuration by traversing through the dependency tree.
         try {
             rootNode.traverse(node -> {
                 String configFilePath = getFilePathIn(node.getArtifactId(), componentsDirectory, FILE_COMPONENT_CONFIG);
-                Map configMap;
                 // Since we are in a lambda, we throw RuntimeExceptions.
+                ComponentConfig componentConfig;
                 try {
-                    ComponentConfig componentConfig = ComponentConfigParser.parse(configFilePath);
-                    configMap = (componentConfig == null) ? null : componentConfig.getConfig();
+                    componentConfig = ComponentConfigParser.parse(configFilePath);
                 } catch (ParsingException e) {
                     throw new RuntimeException("Cannot parse '" + FILE_COMPONENT_CONFIG + "' of " + node +
                                                        " which read from '" + configFilePath + "' path.", e);
                 }
                 try {
-                    configuration.merge(configMap);
+                    configuration.merge(componentConfig.getConfig());
                 } catch (IllegalArgumentException e) {
                     throw new RuntimeException(
                             "Cannot merge configuration Map parsed from '" + FILE_COMPONENT_CONFIG + "' of " + node +
@@ -377,6 +371,16 @@ public class AppMojo extends ComponentMojo {
                 componentContext = componentArtifactId;
             }
             return pathOf(componentsDirectory, componentContext, fileName);
+        }
+    }
+
+    private AppConfig parseAppConfigFile() throws MojoExecutionException {
+        String appConfigFilePath = pathOf(sourceDirectoryPath, FILE_APP_CONFIG);
+        try {
+            return AppConfigParser.parse(appConfigFilePath);
+        } catch (ParsingException e) {
+            throw new MojoExecutionException("App configuration file '" + appConfigFilePath + "' of '" +
+                                                     artifactId + "' UUF App is invalid.", e);
         }
     }
 }
