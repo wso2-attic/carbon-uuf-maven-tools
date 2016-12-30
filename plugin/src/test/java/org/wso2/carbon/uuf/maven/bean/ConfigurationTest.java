@@ -16,17 +16,18 @@
  * under the License.
  */
 
-package org.wso2.carbon.uuf.maven.model;
+package org.wso2.carbon.uuf.maven.bean;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.wso2.carbon.uuf.maven.bean.ComponentConfig;
-import org.wso2.carbon.uuf.maven.bean.Configuration;
 import org.wso2.carbon.uuf.maven.parser.ComponentConfigParserTest;
 
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Test cases for configuration bean.
+ */
 public class ConfigurationTest {
 
     public static void mergeConfiguration(Configuration configuration, String resourceConfigFilePath) throws Exception {
@@ -40,7 +41,7 @@ public class ConfigurationTest {
         Configuration configuration = new Configuration();
 
         mergeConfiguration(configuration, ComponentConfigParserTest.RESOURCE_FILE_COMPONENT_CONFIG_1);
-        Map<String, Object> configMap = configuration.asMap();
+        Map<String, Object> configMap = configuration.getOther();
         Assert.assertEquals(configMap.get("appName"), "test app 1");
         Assert.assertEquals(configMap.get("pageSize"), 10);
         Assert.assertTrue(configMap.get("users") instanceof List);
@@ -58,7 +59,7 @@ public class ConfigurationTest {
 
 
         mergeConfiguration(configuration, ComponentConfigParserTest.RESOURCE_FILE_COMPONENT_CONFIG_2);
-        configMap = configuration.asMap();
+        configMap = configuration.getOther();
         Assert.assertEquals(configMap.get("appName"), "test app 2");
         Assert.assertEquals(configMap.get("pageSize"), 10);
         Assert.assertEquals(configMap.get("successMsg"), "Hoooooray!!!");
