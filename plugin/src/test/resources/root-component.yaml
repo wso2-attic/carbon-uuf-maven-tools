@@ -1,3 +1,6 @@
+# test
+apis: []
+bindings: []
 config:
     appName: "test app 2"
     users:
