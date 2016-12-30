@@ -30,8 +30,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class ComponentConfigParserTest {
 
-    public static final String RESOURCE_FILE_COMPONENT_CONFIG_1 = "/component-1.yaml";
-    public static final String RESOURCE_FILE_COMPONENT_CONFIG_2 = "/component-2.yaml";
+    private static final String RESOURCE_FILE_COMPONENT_CONFIG = "/component.yaml";
 
     public static ComponentConfig parseConfigFile(String resourceConfigFilePath) throws Exception {
         String content = IOUtils.toString(ComponentConfigParserTest.class.getResourceAsStream(resourceConfigFilePath),
@@ -42,14 +41,9 @@ public class ComponentConfigParserTest {
     @Test
     public void testParse() throws Exception {
         try {
-            parseConfigFile(RESOURCE_FILE_COMPONENT_CONFIG_1);
+            parseConfigFile(RESOURCE_FILE_COMPONENT_CONFIG);
         } catch (Exception e) {
-            Assert.fail("Cannot parse config file '" + RESOURCE_FILE_COMPONENT_CONFIG_1 + "'.", e);
-        }
-        try {
-            parseConfigFile(RESOURCE_FILE_COMPONENT_CONFIG_2);
-        } catch (Exception e) {
-            Assert.fail("Cannot parse config file '" + RESOURCE_FILE_COMPONENT_CONFIG_2 + "'.", e);
+            Assert.fail("Cannot parse config file '" + RESOURCE_FILE_COMPONENT_CONFIG + "'.", e);
         }
     }
 }
