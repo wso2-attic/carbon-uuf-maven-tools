@@ -44,8 +44,17 @@ public class ThemeConfig {
      * Sets the CSS relative paths of this theme configuration.
      *
      * @param css CSS relative paths to be set
+     * @throws IllegalArgumentException if a CSS file relative path starts with a '/'
      */
     public void setCss(List<String> css) {
+        if (css != null) {
+            for (String relativePath : css) {
+                if (relativePath.charAt(0) == '/') {
+                    throw new IllegalArgumentException(
+                            "CSS file relative path cannot start with a '/'. '" + relativePath + "' is incorrect.");
+                }
+            }
+        }
         this.css = css;
     }
 
@@ -55,6 +64,7 @@ public class ThemeConfig {
      * @return header JS relative paths
      */
     public List<String> getHeadJs() {
+
         return headJs;
     }
 
@@ -62,8 +72,18 @@ public class ThemeConfig {
      * Sets the head JS relative paths of this theme configuration.
      *
      * @param headJs head JS relative paths to be set
+     * @throws IllegalArgumentException if a header JS file relative path starts with a '/'
      */
     public void setHeadJs(List<String> headJs) {
+        if (headJs != null) {
+            for (String relativePath : headJs) {
+                if (relativePath.charAt(0) == '/') {
+                    throw new IllegalArgumentException(
+                            "Header JS file relative path cannot start with a '/'. '" + relativePath +
+                                    "' is incorrect.");
+                }
+            }
+        }
         this.headJs = headJs;
     }
 
@@ -80,8 +100,17 @@ public class ThemeConfig {
      * Sets the footer JS relative paths of this theme configuration.
      *
      * @param js footer JS relative paths to be set
+     * @throws IllegalArgumentException if a JS file relative path starts with a '/'
      */
     public void setJs(List<String> js) {
+        if (js != null) {
+            for (String relativePath : js) {
+                if (relativePath.charAt(0) == '/') {
+                    throw new IllegalArgumentException(
+                            "JS file relative path cannot start with a '/'. '" + relativePath + "' is incorrect.");
+                }
+            }
+        }
         this.js = js;
     }
 }
