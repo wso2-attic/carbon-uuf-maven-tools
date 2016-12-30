@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 public class ConfigFileCreator {
 
     private static final String FILE_OSGI_IMPORTS = "osgi-imports";
-    private static final String FILE_CONFIG_YAML = "config.yaml";
+    private static final String FILE_CONFIGURATION_YAML = "configuration.yaml";
     private static final String FILE_DEPENDENCY_TREE = "dependency-tree.yaml";
     private static final String FILE_FEATURE_PROPERTIES = "feature.properties";
     private static final String FILE_P2_INF = "p2.inf";
@@ -74,17 +74,17 @@ public class ConfigFileCreator {
     /**
      * Creates the config file with the specified content in the specified path.
      *
-     * @param configYamlContent   content of the config file to be written
-     * @param outputDirectoryPath path to the directory that config file to be created
+     * @param configurationYamlContent content of the config file to be written
+     * @param outputDirectoryPath      path to the directory that config file to be created
      * @throws MojoExecutionException if an error occurred when creating the config file
      */
-    public static void createConfigYaml(String configYamlContent, String outputDirectoryPath)
+    public static void createConfigurationYaml(String configurationYamlContent, String outputDirectoryPath)
             throws MojoExecutionException {
         try {
-            writeFile(Paths.get(outputDirectoryPath, FILE_CONFIG_YAML), configYamlContent);
+            writeFile(Paths.get(outputDirectoryPath, FILE_CONFIGURATION_YAML), configurationYamlContent);
         } catch (IOException e) {
             throw new MojoExecutionException(
-                    "Cannot create '" + FILE_CONFIG_YAML + "' file in '" + outputDirectoryPath + "'.", e);
+                    "Cannot create '" + FILE_CONFIGURATION_YAML + "' file in '" + outputDirectoryPath + "'.", e);
         }
     }
 

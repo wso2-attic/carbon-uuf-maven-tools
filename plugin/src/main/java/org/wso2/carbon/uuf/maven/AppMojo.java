@@ -254,7 +254,7 @@ public class AppMojo extends ComponentMojo {
         } catch (SerializationException e) {
             throw new MojoExecutionException("Cannot serialize configuration " + configuration + ".", e);
         }
-        ConfigFileCreator.createConfigYaml(content, componentsDirectory);
+        ConfigFileCreator.createConfigurationYaml(content, componentsDirectory);
     }
 
     private void createDependencyTree(DependencyNode rootNode, String componentsDirectory)
