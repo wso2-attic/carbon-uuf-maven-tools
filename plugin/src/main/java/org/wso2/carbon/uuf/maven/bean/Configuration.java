@@ -29,13 +29,12 @@ import java.util.Map;
  */
 public class Configuration extends AppConfig {
 
-    private final Map<String, Object> otherConfigurations;
+    private final Map<String, Object> otherConfigurations = new HashMap<>();
 
     /**
      * Creates a new instance. Used for unit tests.
      */
     Configuration() {
-        this.otherConfigurations = new HashMap<>();
     }
 
     /**
@@ -44,7 +43,6 @@ public class Configuration extends AppConfig {
      * @param appConfig app config to be used to fill the creating instance
      */
     public Configuration(AppConfig appConfig) {
-        this();
         setContextPath(appConfig.getContextPath());
         setTheme(appConfig.getTheme());
         setLoginPageUri(appConfig.getLoginPageUri());
