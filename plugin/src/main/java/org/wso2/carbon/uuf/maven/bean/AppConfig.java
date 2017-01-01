@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  */
 public class AppConfig {
 
-    public static final Pattern HTTP_STATUS_CODES_PATTERN = Pattern.compile("[1-9][0-9][0-9]");
+    private static final Pattern HTTP_STATUS_CODES_PATTERN = Pattern.compile("[1-9][0-9][0-9]");
 
     private String contextPath;
     private String theme;
@@ -201,7 +201,7 @@ public class AppConfig {
     }
 
     /**
-     * Bean class that represents a menu item in the app's config file of an UUF Component.
+     * Bean class that represents a menu item in the app's config file of an UUF App.
      *
      * @since 1.0.0
      */
@@ -286,7 +286,7 @@ public class AppConfig {
     }
 
     /**
-     * Bean class that represents security related configurations in the app's config file of an UUF Component.
+     * Bean class that represents security related configurations in the app's config file of an UUF App.
      *
      * @since 1.0.0
      */
@@ -352,8 +352,7 @@ public class AppConfig {
     }
 
     /**
-     * Bean class that represents security related URI patterns configurations in the app's config file of an UUF
-     * Component.
+     * Bean class that represents security related URI patterns configurations in the app's config file of an UUF App.
      *
      * @since 1.0.0
      */
