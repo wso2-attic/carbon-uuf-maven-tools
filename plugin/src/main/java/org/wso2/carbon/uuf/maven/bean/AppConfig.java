@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.uuf.maven.bean;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -34,9 +35,9 @@ public class AppConfig {
     private String contextPath;
     private String theme;
     private String loginPageUri;
-    private Map<String, String> errorPages;
-    private Map<String, List<MenuItem>> menus;
-    private SecurityConfig security;
+    private Map<String, String> errorPages = Collections.emptyMap();
+    private Map<String, List<MenuItem>> menus = Collections.emptyMap();
+    private SecurityConfig security = new SecurityConfig();
 
     /**
      * Returns the client-side context path in this app's config.
@@ -138,7 +139,9 @@ public class AppConfig {
      * @throws IllegalArgumentException if an error page URI is empty or doesn't start with a '/'.
      */
     public void setErrorPages(Map<String, String> errorPages) {
-        if (errorPages != null) {
+        if (errorPages == null) {
+            this.errorPages = Collections.emptyMap();
+        } else {
             for (Map.Entry<String, String> entry : errorPages.entrySet()) {
                 String httpStatusCode = entry.getKey();
                 String errorPageUri = entry.getValue();
@@ -160,8 +163,8 @@ public class AppConfig {
                                     httpStatusCode + "'.");
                 }
             }
+            this.errorPages = errorPages;
         }
-        this.errorPages = errorPages;
     }
 
     /**
@@ -179,7 +182,7 @@ public class AppConfig {
      * @param menus menus to be set
      */
     public void setMenus(Map<String, List<MenuItem>> menus) {
-        this.menus = menus;
+        this.menus = (menus == null) ? Collections.emptyMap() : menus;
     }
 
     /**
@@ -197,7 +200,7 @@ public class AppConfig {
      * @param security security configs to be set
      */
     public void setSecurity(SecurityConfig security) {
-        this.security = security;
+        this.security = (security == null) ? new SecurityConfig() : security;
     }
 
     /**
@@ -281,7 +284,7 @@ public class AppConfig {
          * @param submenus sub-menus to be set
          */
         public void setSubmenus(List<MenuItem> submenus) {
-            this.submenus = submenus;
+            this.submenus = (submenus == null) ? Collections.emptyList() : submenus;
         }
     }
 
@@ -292,9 +295,9 @@ public class AppConfig {
      */
     public static class SecurityConfig {
 
-        private PatternsConfig csrfPatterns;
-        private PatternsConfig xssPatterns;
-        private Map<String, String> responseHeaders;
+        private PatternsConfig csrfPatterns = new PatternsConfig();
+        private PatternsConfig xssPatterns = new PatternsConfig();
+        private Map<String, String> responseHeaders = Collections.emptyMap();
 
         /**
          * Returns CSRF URI patterns of this security configuration.
@@ -311,7 +314,7 @@ public class AppConfig {
          * @param csrfPatterns CSRF URI patterns to be set
          */
         public void setCsrfPatterns(PatternsConfig csrfPatterns) {
-            this.csrfPatterns = csrfPatterns;
+            this.csrfPatterns = (csrfPatterns == null) ? new PatternsConfig() : csrfPatterns;
         }
 
         /**
@@ -329,7 +332,7 @@ public class AppConfig {
          * @param xssPatterns XSS URI patterns to be set
          */
         public void setXssPatterns(PatternsConfig xssPatterns) {
-            this.xssPatterns = xssPatterns;
+            this.xssPatterns = (xssPatterns == null) ? new PatternsConfig() : xssPatterns;
         }
 
         /**
@@ -347,7 +350,7 @@ public class AppConfig {
          * @param responseHeaders HTTP response headers to be set
          */
         public void setResponseHeaders(Map<String, String> responseHeaders) {
-            this.responseHeaders = responseHeaders;
+            this.responseHeaders = (responseHeaders == null) ? Collections.emptyMap() : responseHeaders;
         }
     }
 
@@ -358,8 +361,8 @@ public class AppConfig {
      */
     public static class PatternsConfig {
 
-        private List<String> accept;
-        private List<String> reject;
+        private List<String> accept = Collections.emptyList();
+        private List<String> reject = Collections.emptyList();
 
         /**
          * Returns allowing URI patterns of this URI pattern configuration.
@@ -376,15 +379,17 @@ public class AppConfig {
          * @param accept allowing URI patterns to be set
          */
         public void setAccept(List<String> accept) {
-            if (accept != null) {
+            if (accept == null) {
+                this.accept = Collections.emptyList();
+            } else {
                 for (String uriPattern : accept) {
                     if (uriPattern.isEmpty()) {
                         throw new IllegalArgumentException("Accepting URI pattern cannot be empty.");
                     }
                     // TODO: 12/29/16 Check whether uriPattern is a valid pattern.
                 }
+                this.accept = accept;
             }
-            this.accept = accept;
         }
 
         /**
@@ -402,15 +407,17 @@ public class AppConfig {
          * @param reject denying URI patterns to be set
          */
         public void setReject(List<String> reject) {
-            if (reject != null) {
+            if (reject == null) {
+                this.reject = Collections.emptyList();
+            } else {
                 for (String uriPattern : reject) {
                     if (uriPattern.isEmpty()) {
                         throw new IllegalArgumentException("Rejecting URI pattern cannot be empty.");
                     }
                     // TODO: 12/29/16 Check whether uriPattern is a valid pattern.
                 }
+                this.reject = reject;
             }
-            this.reject = reject;
         }
     }
 }
