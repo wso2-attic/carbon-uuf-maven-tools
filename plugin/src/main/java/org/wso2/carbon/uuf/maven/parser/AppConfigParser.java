@@ -48,14 +48,18 @@ public class AppConfigParser {
             throw new ParsingException("Mandatory app config file '" + appConfigFilePath + "' does not exists.");
         }
 
+        AppConfig appConfig;
         try {
             String content = new String(Files.readAllBytes(configFIle), StandardCharsets.UTF_8);
-            return parseString(content);
+            appConfig = parseString(content);
         } catch (IOException e) {
             throw new ParsingException("Cannot read the content of app configuration file '" + configFIle + "'.", e);
         } catch (Exception e) {
             throw new ParsingException("Cannot parse the content of app configuration file '" + configFIle + "'.", e);
         }
+
+        // Parsed app config can be null if the configuration file is empty or has comments only.
+        return (appConfig == null) ? new AppConfig() : appConfig;
     }
 
     static AppConfig parseString(String appConfig) {

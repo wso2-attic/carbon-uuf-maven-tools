@@ -49,9 +49,10 @@ public class ComponentConfigParser {
                     "Mandatory component config file '" + componentConfigFilePath + "' does not exists.");
         }
 
+        ComponentConfig componentConfig;
         try {
             String content = new String(Files.readAllBytes(configFIle), StandardCharsets.UTF_8);
-            return parseString(content);
+            componentConfig = parseString(content);
         } catch (IOException e) {
             throw new ParsingException("Cannot read the content of component configuration file '" + configFIle + "'.",
                                        e);
@@ -59,6 +60,9 @@ public class ComponentConfigParser {
             throw new ParsingException("Cannot parse the content of component configuration file '" + configFIle + "'.",
                                        e);
         }
+
+        // Parsed component config can be null if the configuration file is empty or has comments only.
+        return (componentConfig == null) ? new ComponentConfig() : componentConfig;
     }
 
     static ComponentConfig parseString(String componentConfig) throws Exception {
