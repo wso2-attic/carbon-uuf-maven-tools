@@ -39,8 +39,6 @@ import java.util.Set;
  */
 public class DependencyTreeSerializer {
 
-    private final Yaml yaml = new Yaml(new DependencyNodeRepresenter());
-
     /**
      * Serialize the specified dependency tree to YAML.
      *
@@ -48,7 +46,8 @@ public class DependencyTreeSerializer {
      * @return YAML representation of the dependency tree
      * @throws SerializationException if an error occurred during serialization
      */
-    public String serialize(DependencyNode rootNode) throws SerializationException {
+    public static String serialize(DependencyNode rootNode) throws SerializationException {
+        Yaml yaml = new Yaml(new DependencyNodeRepresenter());
         try {
             return yaml.dumpAs(rootNode, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
         } catch (Exception e) {

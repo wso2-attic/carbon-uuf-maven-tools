@@ -247,10 +247,9 @@ public class AppMojo extends ComponentMojo {
             throw new MojoExecutionException("Cannot create final configuration for " + rootNode + ".", e);
         }
         // Now create the app's configuration file by serializing the final configuration.
-        ConfigurationSerializer serializer = new ConfigurationSerializer();
         String content;
         try {
-            content = serializer.serialize(configuration);
+            content = ConfigurationSerializer.serialize(configuration);
         } catch (SerializationException e) {
             throw new MojoExecutionException("Cannot serialize configuration " + configuration + ".", e);
         }
@@ -261,7 +260,7 @@ public class AppMojo extends ComponentMojo {
             throws MojoExecutionException {
         String content;
         try {
-            content = new DependencyTreeSerializer().serialize(rootNode);
+            content = DependencyTreeSerializer.serialize(rootNode);
         } catch (SerializationException e) {
             throw new MojoExecutionException(
                     "Cannot serialize dependency tree where root node is " + rootNode + ".", e);
