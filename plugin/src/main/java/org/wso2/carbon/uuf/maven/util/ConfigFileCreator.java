@@ -84,8 +84,8 @@ public class ConfigFileCreator {
      * Creates the bundle-dependencies.yaml file in the given output directory path.
      *
      * @param bundles the list of bundles instance used with creating the bundle-dependencies.yaml
-     * @param outputDirectoryPath output location path use with creating yaml file.
-     * @throws MojoExecutionException thrown when an error occurs while creating or writing the yaml file.
+     * @param outputDirectoryPath output location path use with creating yaml file
+     * @throws MojoExecutionException thrown when an error occurs while creating or writing the yaml file
      */
     public static void createBundleDependenciesYaml(List<Bundle> bundles, String outputDirectoryPath)
             throws MojoExecutionException {

@@ -51,7 +51,7 @@ public class ConfigurationSerializer {
      * Serializes the given data configuration object as it is and returns the YAML representation value.
      *
      * @param data any data object to be serialized
-     * @return YAML representation of the given data configuration.
+     * @return YAML representation of the given data configuration
      */
     public static String serialize(Object data) {
         Representer representer = new Representer();

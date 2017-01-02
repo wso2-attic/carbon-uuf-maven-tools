@@ -150,7 +150,7 @@ public class AppMojo extends ComponentMojo {
         }
         // 3.1. Create dependency tree.
         DependencyNode rootNode = getDependencyTree(allComponentDependencies);
-        // 3.2. Read the bundle-dependencies.yaml file of all the components and add the entries the "bundles" instance
+        // 3.2. Read the bundle-dependencies.yaml file of all the components and add the entries the "bundles" instance.
         addComponentBundleDependencies(rootNode, allComponentsDirectory);
         // 3.3. Create the final configuration.
         createConfigFile(rootNode, allComponentsDirectory);
@@ -167,7 +167,7 @@ public class AppMojo extends ComponentMojo {
      * "bundles" instance which is later used by the carbon-feature-plugin to create the feature.
      *
      * @param rootNode the current app's dependency node (i.e the root node of the app)
-     * @param componentsDirectory the "components" directory within the app.
+     * @param componentsDirectory the "components" directory within the app
      * @throws MojoExecutionException thrown on error while reading/populating the bundle dependencies
      */
     private void addComponentBundleDependencies(DependencyNode rootNode, String componentsDirectory)

@@ -29,6 +29,7 @@ public class BundleListConfig {
 
     /**
      * Sets given bundle list instance read from yaml or uuf-maven plugin configuration.
+     *
      * @param bundles list of bundles
      */
     public void setBundles(List<Bundle> bundles) {
@@ -37,6 +38,7 @@ public class BundleListConfig {
 
     /**
      * Returns the bundle list held by this configuration instance.
+     *
      * @return bundle list
      */
     public List<Bundle> getBundles() {

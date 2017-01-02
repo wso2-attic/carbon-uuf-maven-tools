@@ -65,10 +65,10 @@ public class ConfigurationParser {
     /**
      * A generic parse method that parses the given yaml content file and de-serialize the content into given bean type.
      *
-     * @param configFilePath path to yaml file.
-     * @param type type of the bean class to be used when de-serializing.
-     * @param <T> type of the bean class to be used when de-serializing.
-     * @return returns the populated bean instance.
+     * @param configFilePath path to yaml file
+     * @param type type of the bean class to be used when de-serializing
+     * @param <T> type of the bean class to be used when de-serializing
+     * @return returns the populated bean instance
      * @throws ParsingException thrown when the given yaml file cannot be parsed properly
      */
     public static <T> T parse(String configFilePath, Class<T> type) throws ParsingException {

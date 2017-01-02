@@ -106,7 +106,7 @@ public class ComponentMojo extends AbstractUUFMojo {
                 sourceDirectoryPaths.add(tempDirectoryPath);
             }
         }
-        // Create component level bundle-dependencies.yaml file
+        // Create component level bundle-dependencies.yaml file.
         if (bundles != null && !bundles.isEmpty()) {
             ConfigFileCreator.createBundleDependenciesYaml(bundles, tempDirectoryPath);
             sourceDirectoryPaths.add(tempDirectoryPath);
