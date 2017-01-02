@@ -36,7 +36,7 @@ public class AppConfig {
     private String theme;
     private String loginPageUri;
     private Map<String, String> errorPages = Collections.emptyMap();
-    private Map<String, List<MenuItem>> menus = Collections.emptyMap();
+    private List<Menu> menus = Collections.emptyList();
     private SecurityConfig security = new SecurityConfig();
 
     /**
@@ -172,7 +172,7 @@ public class AppConfig {
      *
      * @return menus in this app's config
      */
-    public Map<String, List<MenuItem>> getMenus() {
+    public List<Menu> getMenus() {
         return menus;
     }
 
@@ -181,8 +181,8 @@ public class AppConfig {
      *
      * @param menus menus to be set
      */
-    public void setMenus(Map<String, List<MenuItem>> menus) {
-        this.menus = (menus == null) ? Collections.emptyMap() : menus;
+    public void setMenus(List<Menu> menus) {
+        this.menus = (menus == null) ? Collections.emptyList() : menus;
     }
 
     /**
@@ -204,6 +204,63 @@ public class AppConfig {
     }
 
     /**
+     * Bean class that represents a menu in the app's config file of an UUF App.
+     *
+     * @since 1.0.0
+     */
+    public static class Menu {
+
+        private String name;
+        private List<MenuItem> items;
+
+        /**
+         * Returns the name of this menu.
+         *
+         * @return text of this menu
+         */
+        public String getName() {
+            return name;
+        }
+
+        /**
+         * Sets the name of this menu.
+         *
+         * @param name name to be set
+         */
+        public void setName(String name) {
+            if (name == null) {
+                throw new IllegalArgumentException("Name of a menu cannot be null.");
+            } else if (name.isEmpty()) {
+                throw new IllegalArgumentException("Name of a menu cannot be empty.");
+            }
+            this.name = name;
+        }
+
+        /**
+         * Returns the menu items of this menu.
+         *
+         * @return menu items of this menu
+         */
+        public List<MenuItem> getItems() {
+            return items;
+        }
+
+        /**
+         * Sets the menu items of this menu.
+         *
+         * @param items menu items to be set
+         */
+        public void setItems(List<MenuItem> items) {
+            if (items == null) {
+                throw new IllegalArgumentException("Items of a menu cannot be null.");
+            } else if (items.isEmpty()) {
+                throw new IllegalArgumentException("Items of a menu cannot be empty list.");
+            }
+            this.items = items;
+        }
+    }
+
+    /**
      * Bean class that represents a menu item in the app's config file of an UUF App.
      *
      * @since 1.0.0
@@ -213,7 +270,7 @@ public class AppConfig {
         private String text;
         private String link;
         private String icon;
-        private List<MenuItem> submenus;
+        private List<MenuItem> submenus = Collections.emptyList();
 
         /**
          * Returns the text of this menu item.
@@ -230,6 +287,9 @@ public class AppConfig {
          * @param text text to be set
          */
         public void setText(String text) {
+            if (text == null) {
+                throw new IllegalArgumentException("Text of a menu item cannot be null.");
+            }
             this.text = text;
         }
 
@@ -248,6 +308,9 @@ public class AppConfig {
          * @param link link to be set
          */
         public void setLink(String link) {
+            if (link == null) {
+                throw new IllegalArgumentException("Link of a menu item cannot be null.");
+            }
             this.link = link;
         }
 
