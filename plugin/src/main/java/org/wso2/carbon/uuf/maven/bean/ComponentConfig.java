@@ -109,6 +109,7 @@ public class ComponentConfig {
          * Sets the name of the class of this API.
          *
          * @param className name of the class to be set
+         * @throws IllegalArgumentException if class name is null or empty
          */
         public void setClassName(String className) {
             if (className == null) {
@@ -134,14 +135,13 @@ public class ComponentConfig {
          * Sets the URI of this API.
          *
          * @param uri URI to be set
+         * @throws IllegalArgumentException if URI is null or empty or doesn't start with a '/'
          */
         public void setUri(String uri) {
             if (uri == null) {
-                throw new IllegalArgumentException(
-                        "URI of an API entry in the component's config cannot be null.");
+                throw new IllegalArgumentException("URI of an API entry in the component's config cannot be null.");
             } else if (uri.isEmpty()) {
-                throw new IllegalArgumentException(
-                        "URI of an API entry in the component's config cannot be a empty.");
+                throw new IllegalArgumentException("URI of an API entry in the component's config cannot be a empty.");
             } else if (uri.charAt(0) != '/') {
                 throw new IllegalArgumentException(
                         "URI of an API entry in the component's config must start with a '/'. Instead found '" +
@@ -188,6 +188,7 @@ public class ComponentConfig {
          * Sets the zone name of this binding.
          *
          * @param zoneName zone name to be set
+         * @throws IllegalArgumentException if zone name is null or empty
          */
         public void setZoneName(String zoneName) {
             if (zoneName == null) {
