@@ -404,10 +404,10 @@ public class AppMojo extends ComponentMojo {
             // root component
             return pathOf(componentsDirectory, DIRECTORY_ROOT_COMPONENT, fileName);
         } else {
-            int lastIndex = artifactId.lastIndexOf(".");
+            int lastIndex = componentArtifactId.lastIndexOf(".");
             String componentContext;
             if (lastIndex > -1) {
-                componentContext = artifactId.substring(lastIndex + 1);
+                componentContext = componentArtifactId.substring(lastIndex + 1);
             } else {
                 componentContext = componentArtifactId;
             }
