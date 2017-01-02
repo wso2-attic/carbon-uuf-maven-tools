@@ -33,6 +33,7 @@ import org.twdata.maven.mojoexecutor.MojoExecutor;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
 import org.wso2.carbon.uuf.maven.model.Bundle;
+import org.wso2.carbon.uuf.maven.model.BundleListConfig;
 import org.wso2.carbon.uuf.maven.model.Configuration;
 import org.wso2.carbon.uuf.maven.model.DependencyNode;
 import org.wso2.carbon.uuf.maven.parser.ComponentManifestParser;
@@ -42,8 +43,9 @@ import org.wso2.carbon.uuf.maven.serializer.ConfigurationSerializer;
 import org.wso2.carbon.uuf.maven.serializer.DependencyTreeSerializer;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -86,12 +88,6 @@ public class AppMojo extends ComponentMojo {
     @Parameter(defaultValue = "${project.build.directory}/maven-shared-archive-resources/uufapps/",
                readonly = true, required = true)
     private String outputDirectoryPath;
-
-    /**
-     * Configured OSGi bundles.
-     */
-    @Parameter(property = "bundles", readonly = true, required = false)
-    private List<Bundle> bundles;
 
     /**
      * Maven Dependency Plugin version to use.
@@ -144,7 +140,7 @@ public class AppMojo extends ComponentMojo {
         unpackDependencies(allComponentDependencies, allComponentsDirectory);
         // 2.1. Create "root" component.
         copyFiles(sourceDirectoryPath, pathOf(allComponentsDirectory, DIRECTORY_ROOT_COMPONENT));
-        // 2.2 Create "osgi-imports" file for the "root" component.
+        // 2.2. Create "osgi-imports" file for the "root" component.
         if ((instructions != null) && !instructions.isEmpty()) {
             String osgiImportsContent = instructions.get(CONFIGURATION_IMPORT_PACKAGE);
             if ((osgiImportsContent != null) && !osgiImportsContent.trim().isEmpty()) {
@@ -154,14 +150,51 @@ public class AppMojo extends ComponentMojo {
         }
         // 3.1. Create dependency tree.
         DependencyNode rootNode = getDependencyTree(allComponentDependencies);
-        // 3.2. Create the final configuration.
+        // 3.2. Read the bundle-dependencies.yaml file of all the components and add the entries the "bundles" instance
+        addComponentBundleDependencies(rootNode, allComponentsDirectory);
+        // 3.3. Create the final configuration.
         createConfigFile(rootNode, allComponentsDirectory);
-        // 3.3 Create dependency tree file.
+        // 3.4. Create dependency tree file.
         createDependencyTree(rootNode, allComponentsDirectory);
         // 4. Unpack UUF Theme dependencies.
         unpackDependencies(allThemeDependencies, allThemesDirectory);
         // 5. Create Carbon Feature.
         createCarbonFeature(appFullyQualifiedName);
+    }
+
+    /**
+     * This method reads the bundle dependencies coming from all the components and add them to the application's
+     * "bundles" instance which is later used by the carbon-feature-plugin to create the feature.
+     *
+     * @param rootNode the current app's dependency node (i.e the root node of the app)
+     * @param componentsDirectory the "components" directory within the app.
+     * @throws MojoExecutionException thrown on error while reading/populating the bundle dependencies
+     */
+    private void addComponentBundleDependencies(DependencyNode rootNode, String componentsDirectory)
+            throws MojoExecutionException {
+        try {
+            rootNode.traverse(node -> {
+                String bundleDependenciesFilePath = getFilePathIn(node.getArtifactId(), componentsDirectory,
+                        FILE_BUNDLE_DEPENDENCIES);
+                if (!Files.exists(Paths.get(bundleDependenciesFilePath))) {
+                    return;
+                }
+                try {
+                    BundleListConfig bundleListConfig = ConfigurationParser.parse(bundleDependenciesFilePath,
+                            BundleListConfig.class);
+                    if (bundleListConfig == null) {
+                        return;
+                    }
+                    bundleListConfig.getBundles().forEach(bundles::add);
+                } catch (ParsingException e) {
+                    throw new RuntimeException("Cannot parse '" + FILE_BUNDLE_DEPENDENCIES + "' of " + node +
+                            " which read from '" + bundleDependenciesFilePath + "' path.", e);
+                }
+            });
+        } catch (Exception e) {
+            throw new MojoExecutionException(
+                    "Cannot add component level bundle dependencies for " + rootNode + ".", e);
+        }
     }
 
     private void validate() throws MojoExecutionException {
@@ -256,10 +289,9 @@ public class AppMojo extends ComponentMojo {
                     "Cannot create final configuration for " + rootNode + ".", e);
         }
         // Now create the app's configuration file by serializing the final configuration.
-        ConfigurationSerializer serializer = new ConfigurationSerializer();
         String content;
         try {
-            content = serializer.serialize(configuration);
+            content = ConfigurationSerializer.serialize(configuration);
         } catch (SerializationException e) {
             throw new MojoExecutionException("Cannot serialize configuration " + configuration + ".", e);
         }

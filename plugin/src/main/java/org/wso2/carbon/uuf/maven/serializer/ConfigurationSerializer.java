@@ -19,8 +19,11 @@
 package org.wso2.carbon.uuf.maven.serializer;
 
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
+import org.wso2.carbon.uuf.maven.model.BundleListConfig;
 import org.wso2.carbon.uuf.maven.model.Configuration;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
 
 /**
  * YAML serializer for {@link Configuration} model.
@@ -29,20 +32,30 @@ import org.yaml.snakeyaml.Yaml;
  */
 public class ConfigurationSerializer {
 
-    private final Yaml yaml = new Yaml();
-
     /**
-     * Serializes the specified config into a YAML.
+     * Serializes the given application configuration into a YAML.
      *
      * @param configuration config to serialize
      * @return YAML representation of the config
      * @throws SerializationException if an error occurred during serialization
      */
-    public String serialize(Configuration configuration) throws SerializationException {
+    public static String serialize(Configuration configuration) throws SerializationException {
         try {
-            return yaml.dumpAsMap(configuration.asMap());
+            return new Yaml().dumpAsMap(configuration.asMap());
         } catch (Exception e) {
             throw new SerializationException("Cannot serialize config " + configuration + ".", e);
         }
+    }
+
+    /**
+     * Serializes the given data configuration object as it is and returns the YAML representation value.
+     *
+     * @param data any data object to be serialized
+     * @return YAML representation of the given data configuration.
+     */
+    public static String serialize(Object data) {
+        Representer representer = new Representer();
+        representer.addClassTag(BundleListConfig.class, Tag.MAP);
+        return new Yaml(representer).dump(data);
     }
 }

@@ -61,4 +61,28 @@ public class ConfigurationParser {
     static Map parseString(String config) throws Exception {
         return new Yaml().loadAs(config, Map.class);
     }
+
+    /**
+     * A generic parse method that parses the given yaml content file and de-serialize the content into given bean type.
+     *
+     * @param configFilePath path to yaml file.
+     * @param type type of the bean class to be used when de-serializing.
+     * @param <T> type of the bean class to be used when de-serializing.
+     * @return returns the populated bean instance.
+     * @throws ParsingException thrown when the given yaml file cannot be parsed properly
+     */
+    public static <T> T parse(String configFilePath, Class<T> type) throws ParsingException {
+        Path configFile = Paths.get(configFilePath);
+        if (!Files.exists(configFile)) {
+            return null;
+        }
+        try {
+            String content = new String(Files.readAllBytes(configFile), StandardCharsets.UTF_8);
+            return new Yaml().loadAs(content, type);
+        } catch (IOException e) {
+            throw new ParsingException("Cannot read the content of config file '" + configFilePath + "'.", e);
+        } catch (Exception e) {
+            throw new ParsingException("Cannot parse the content of config file '" + configFilePath + "'.", e);
+        }
+    }
 }

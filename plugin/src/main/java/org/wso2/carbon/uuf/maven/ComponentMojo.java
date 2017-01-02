@@ -25,6 +25,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
+import org.wso2.carbon.uuf.maven.model.Bundle;
 import org.wso2.carbon.uuf.maven.model.DependencyNode;
 import org.wso2.carbon.uuf.maven.parser.ComponentManifestParser;
 import org.wso2.carbon.uuf.maven.parser.ConfigurationParser;
@@ -48,6 +49,7 @@ public class ComponentMojo extends AbstractUUFMojo {
     protected static final String CONFIGURATION_IMPORT_PACKAGE = "Import-Package";
     protected static final String FILE_CONFIG = "config.yaml";
     protected static final String FILE_COMPONENT_MANIFEST = "component.yaml";
+    public static final String FILE_BUNDLE_DEPENDENCIES = "bundle-dependencies.yaml";
 
     /**
      * Path to the temporary directory for UUF Maven plugin.
@@ -60,6 +62,12 @@ public class ComponentMojo extends AbstractUUFMojo {
      */
     @Parameter(readonly = true, required = false)
     protected Map<String, String> instructions;
+
+    /**
+     * Configured OSGi bundles.
+     */
+    @Parameter(property = "bundles", readonly = true, required = false)
+    protected List<Bundle> bundles;
 
     /**
      * {@inheritDoc}
@@ -97,6 +105,11 @@ public class ComponentMojo extends AbstractUUFMojo {
                 ConfigFileCreator.createOsgiImports(osgiImportsContent, tempDirectoryPath);
                 sourceDirectoryPaths.add(tempDirectoryPath);
             }
+        }
+        // Create component level bundle-dependencies.yaml file
+        if (bundles != null && !bundles.isEmpty()) {
+            ConfigFileCreator.createBundleDependenciesYaml(bundles, tempDirectoryPath);
+            sourceDirectoryPaths.add(tempDirectoryPath);
         }
         // Create zip file.
         sourceDirectoryPaths.add(sourceDirectoryPath);

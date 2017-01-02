@@ -20,6 +20,12 @@ package org.wso2.carbon.uuf.maven.util;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.wso2.carbon.uuf.maven.model.Bundle;
+import org.wso2.carbon.uuf.maven.model.BundleListConfig;
+import org.wso2.carbon.uuf.maven.serializer.ConfigurationSerializer;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +35,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.wso2.carbon.uuf.maven.ComponentMojo.FILE_BUNDLE_DEPENDENCIES;
 
 /**
  * Utility class that creates various configuration files needed by the UUF project creation Mojo's.
@@ -68,6 +77,30 @@ public class ConfigFileCreator {
         } catch (IOException e) {
             throw new MojoExecutionException(
                     "Cannot create '" + FILE_OSGI_IMPORTS + "' file in '" + outputDirectoryPath + "'.", e);
+        }
+    }
+
+    /**
+     * Creates the bundle-dependencies.yaml file in the given output directory path.
+     *
+     * @param bundles the list of bundles instance used with creating the bundle-dependencies.yaml
+     * @param outputDirectoryPath output location path use with creating yaml file.
+     * @throws MojoExecutionException thrown when an error occurs while creating or writing the yaml file.
+     */
+    public static void createBundleDependenciesYaml(List<Bundle> bundles, String outputDirectoryPath)
+            throws MojoExecutionException {
+        if (bundles == null || bundles.isEmpty()) {
+           return;
+        }
+        try {
+            createDirectory(Paths.get(outputDirectoryPath));
+            BundleListConfig bundleListConfig = new BundleListConfig();
+            bundleListConfig.setBundles(bundles);
+            String content = ConfigurationSerializer.serialize(bundleListConfig);
+            writeFile(Paths.get(outputDirectoryPath, FILE_BUNDLE_DEPENDENCIES), content);
+        } catch (IOException e) {
+            throw new MojoExecutionException(
+                    "Cannot create '" + FILE_BUNDLE_DEPENDENCIES + "' file in '" + outputDirectoryPath + "'.", e);
         }
     }
 
