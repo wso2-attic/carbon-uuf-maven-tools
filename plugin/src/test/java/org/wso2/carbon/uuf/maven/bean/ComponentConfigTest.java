@@ -21,6 +21,8 @@ package org.wso2.carbon.uuf.maven.bean;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.Collections;
+
 /**
  * Test cases for component's config bean.
  */
@@ -60,5 +62,10 @@ public class ComponentConfigTest {
         binding.setMode("prepend");
         binding.setMode("append");
         binding.setMode("overwrite");
+
+        Assert.assertThrows(IllegalArgumentException.class, () -> binding.setFragments(null));
+
+        binding.setFragments(Collections.emptyList());
+        binding.setFragments(Collections.singletonList("foo"));
     }
 }
