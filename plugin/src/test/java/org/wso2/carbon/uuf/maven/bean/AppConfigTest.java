@@ -80,6 +80,30 @@ public class AppConfigTest {
     }
 
     @Test
+    public void testMenuValidations() {
+        AppConfig.Menu menu = new AppConfig.Menu();
+        Assert.assertThrows(IllegalArgumentException.class, () -> menu.setName(null));
+        Assert.assertThrows(IllegalArgumentException.class, () -> menu.setName(""));
+        Assert.assertThrows(IllegalArgumentException.class, () -> menu.setItems(null));
+        Assert.assertThrows(IllegalArgumentException.class, () -> menu.setItems(Collections.emptyList()));
+
+        menu.setName("main");
+        menu.setItems(Collections.singletonList(new AppConfig.MenuItem()));
+
+        AppConfig.MenuItem menuItem = new AppConfig.MenuItem();
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuItem.setText(null));
+        Assert.assertThrows(IllegalArgumentException.class, () -> menuItem.setLink(null));
+
+        menuItem.setText("Home");
+        menuItem.setLink("#");
+        menuItem.setIcon(null);
+        menuItem.setIcon("fw fw-user");
+        menuItem.setSubmenus(null);
+        menuItem.setSubmenus(Collections.emptyList());
+        menuItem.setSubmenus(Collections.singletonList(new AppConfig.MenuItem()));
+    }
+
+    @Test
     public void testSecurityConfigValidations() {
         AppConfig.PatternsConfig patternsConfig = new AppConfig.PatternsConfig();
         Assert.assertThrows(IllegalArgumentException.class,
