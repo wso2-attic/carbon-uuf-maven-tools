@@ -48,10 +48,9 @@ public class ThemeConfigParser {
             throw new ParsingException("Mandatory theme config file '" + themeConfigFilePath + "' does not exists.");
         }
 
-        ThemeConfig themeConfig;
         try {
             String content = new String(Files.readAllBytes(manifestFile), StandardCharsets.UTF_8);
-            themeConfig = new Yaml().loadAs(content, ThemeConfig.class);
+            return new Yaml().loadAs(content, ThemeConfig.class);
         } catch (IOException e) {
             throw new ParsingException("Cannot read the content of theme configuration file '" + manifestFile + "'.",
                                        e);
@@ -59,8 +58,5 @@ public class ThemeConfigParser {
             throw new ParsingException("Cannot parse the content of theme configuration file '" + manifestFile + "'.",
                                        e);
         }
-
-        // Parsed theme config can be null if the configuration file is empty or has comments only.
-        return (themeConfig == null) ? new ThemeConfig() : themeConfig;
     }
 }

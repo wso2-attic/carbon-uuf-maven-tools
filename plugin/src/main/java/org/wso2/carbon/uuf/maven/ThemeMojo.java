@@ -23,6 +23,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.wso2.carbon.uuf.maven.bean.ThemeConfig;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
 import org.wso2.carbon.uuf.maven.parser.ThemeConfigParser;
 import org.wso2.carbon.uuf.maven.util.ZipCreator;
@@ -54,11 +55,17 @@ public class ThemeMojo extends AbstractUUFMojo {
         }
         // Validation: Parse configuration file to make sure it is a valid YAML file.
         String themeConfigFilePath = pathOf(sourceDirectoryPath, FILE_THEME);
+        ThemeConfig themeConfig;
         try {
-            ThemeConfigParser.parse(themeConfigFilePath);
+            themeConfig = ThemeConfigParser.parse(themeConfigFilePath);
         } catch (ParsingException e) {
             throw new MojoExecutionException(
                     "Configuration file '" + themeConfigFilePath + "' of this UUF Theme is invalid.", e);
+        }
+        if (themeConfig == null) {
+            // theme.yaml file is empty or has comments only.
+            throw new MojoExecutionException(
+                    "Configuration file '" + themeConfigFilePath + "' of this UUF Theme is empty.");
         }
 
         File archive = ZipCreator.createArchive(Collections.singletonList(sourceDirectoryPath), artifactId,
