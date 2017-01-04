@@ -19,10 +19,12 @@
 package org.wso2.carbon.uuf.maven.parser;
 
 import org.apache.commons.io.IOUtils;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.wso2.carbon.uuf.maven.bean.AppConfig;
 import org.wso2.carbon.uuf.maven.bean.ComponentConfig;
 import org.wso2.carbon.uuf.maven.bean.ThemeConfig;
+import org.wso2.carbon.uuf.maven.exception.ParsingException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -33,17 +35,24 @@ import java.nio.charset.StandardCharsets;
 public class YamlFileParserTest {
 
     @Test
-    public void testAppConfiguration() throws Exception {
+    public void test() {
+        Assert.assertThrows(ParsingException.class, () -> YamlFileParser.parse("", AppConfig.class));
+        Assert.assertThrows(ParsingException.class, () -> YamlFileParser.parse("", ComponentConfig.class));
+        Assert.assertThrows(ParsingException.class, () -> YamlFileParser.parse("", ThemeConfig.class));
+    }
+
+    @Test
+    public void testAppConfiguration() {
         YamlFileParser.parseString(readResourceFile("/app.yaml"), AppConfig.class);
     }
 
     @Test
-    public ComponentConfig testComponentConfiguration() throws Exception {
+    public ComponentConfig testComponentConfiguration() {
         return YamlFileParser.parseString(readResourceFile("/component.yaml"), ComponentConfig.class);
     }
 
     @Test
-    public ComponentConfig testRootComponentConfiguration() throws Exception {
+    public ComponentConfig testRootComponentConfiguration() {
         return YamlFileParser.parseString(readResourceFile("/root-component.yaml"), ComponentConfig.class);
     }
 
@@ -52,8 +61,13 @@ public class YamlFileParserTest {
         YamlFileParser.parseString(readResourceFile("/theme.yaml"), ThemeConfig.class);
     }
 
-    private static String readResourceFile(String resourceFileName) throws IOException {
-        return IOUtils.toString(YamlFileParserTest.class.getResourceAsStream(resourceFileName),
-                                StandardCharsets.UTF_8.toString());
+    private static String readResourceFile(String resourceFileName) {
+        try {
+            return IOUtils.toString(YamlFileParserTest.class.getResourceAsStream(resourceFileName),
+                                    StandardCharsets.UTF_8.toString());
+        } catch (IOException e) {
+            Assert.fail("Cannot read test resource '" + resourceFileName + "'.", e);
+            return null;
+        }
     }
 }
