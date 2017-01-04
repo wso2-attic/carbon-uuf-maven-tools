@@ -64,7 +64,6 @@ public class ThemeConfig {
      * @return header JS relative paths
      */
     public List<String> getHeadJs() {
-
         return headJs;
     }
 
