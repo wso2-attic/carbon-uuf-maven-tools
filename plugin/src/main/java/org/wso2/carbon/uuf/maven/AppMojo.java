@@ -177,26 +177,14 @@ public class AppMojo extends ComponentMojo {
         }
         // Validation: Parse component configuration file to make sure it is valid.
         String componentConfigFilePath = pathOf(sourceDirectoryPath, FILE_COMPONENT_CONFIG);
-        ComponentConfig componentConfig;
         try {
-            componentConfig = YamlFileParser.parse(componentConfigFilePath, ComponentConfig.class);
+            YamlFileParser.parse(componentConfigFilePath, ComponentConfig.class);
         } catch (ParsingException e) {
             throw new MojoExecutionException("Component configuration file '" + componentConfigFilePath + "' of '" +
                                                      artifactId + "' UUF App is invalid.", e);
         }
-        if (componentConfig == null) {
-            // component.yaml file is empty or has comments only.
-            throw new MojoExecutionException("Component configuration file '" + componentConfigFilePath + "' of '" +
-                                                     artifactId + "' UUF App is empty.");
-        }
         // Validation: Parse app configuration file to make sure it is valid.
-        String appConfigFilePath = pathOf(sourceDirectoryPath, FILE_APP_CONFIG);
-        AppConfig appConfig = parseAppConfig(appConfigFilePath);
-        if (appConfig == null) {
-            // app.yaml file is empty or has comments only.
-            throw new MojoExecutionException("App configuration file '" + appConfigFilePath + "' of '" +
-                                                     artifactId + "' UUF App is empty.");
-        }
+        parseAppConfig();
     }
 
     private DependencyNode getDependencyTree(Set<Artifact> includes) throws MojoExecutionException {
@@ -232,7 +220,7 @@ public class AppMojo extends ComponentMojo {
 
     private void createConfigurationFile(DependencyNode rootNode, String componentsDirectory)
             throws MojoExecutionException {
-        Configuration configuration = new Configuration(parseAppConfig(pathOf(sourceDirectoryPath, FILE_APP_CONFIG)));
+        Configuration configuration = new Configuration(parseAppConfig());
         // Create the final configuration by traversing through the dependency tree.
         try {
             rootNode.traverse(node -> {
@@ -384,7 +372,8 @@ public class AppMojo extends ComponentMojo {
         }
     }
 
-    private AppConfig parseAppConfig(String appConfigFilePath) throws MojoExecutionException {
+    private AppConfig parseAppConfig() throws MojoExecutionException {
+        String appConfigFilePath = pathOf(sourceDirectoryPath, FILE_APP_CONFIG);
         try {
             return YamlFileParser.parse(appConfigFilePath, AppConfig.class);
         } catch (ParsingException e) {

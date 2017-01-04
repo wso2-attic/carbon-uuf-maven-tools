@@ -55,17 +55,11 @@ public class ThemeMojo extends AbstractUUFMojo {
         }
         // Validation: Parse configuration file to make sure it is a valid YAML file.
         String themeConfigFilePath = pathOf(sourceDirectoryPath, FILE_THEME);
-        ThemeConfig themeConfig;
         try {
-            themeConfig = YamlFileParser.parse(themeConfigFilePath, ThemeConfig.class);
+            YamlFileParser.parse(themeConfigFilePath, ThemeConfig.class);
         } catch (ParsingException e) {
             throw new MojoExecutionException("Theme configuration file '" + themeConfigFilePath + "' of '" +
                                                      artifactId + "' UUF Theme is invalid.", e);
-        }
-        if (themeConfig == null) {
-            // theme.yaml file is empty or has comments only.
-            throw new MojoExecutionException("Theme configuration file '" + themeConfigFilePath + "' of '" +
-                                                     artifactId + "' UUF Theme is empty.");
         }
 
         File archive = ZipCreator.createArchive(Collections.singletonList(sourceDirectoryPath), artifactId,

@@ -28,7 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Parser for YAML configuration files in an UUF apps, themes, and component.
+ * Parser for YAML configuration files in an UUF apps, themes, and components.
  *
  * @since 1.0.0
  */
@@ -48,16 +48,24 @@ public class YamlFileParser {
         if (!Files.exists(configurationFile)) {
             throw new ParsingException("Mandatory configuration file '" + configurationFile + "' does not exists.");
         }
+
+        T loadedBean;
         try {
             String content = new String(Files.readAllBytes(configurationFile), StandardCharsets.UTF_8);
-            return parseString(content, type);
+            loadedBean = parseString(content, type);
         } catch (IOException e) {
             throw new ParsingException("Cannot read the content of configuration file '" + configurationFile + "'.",
                                        e);
         } catch (Exception e) {
-            throw new ParsingException("Cannot parse the content of configuration file '" + configurationFile + "'.",
+            throw new ParsingException("Cannot parse the configuration file '" + configurationFile + "'.",
                                        e);
         }
+        if (loadedBean == null) {
+            // Either configuration file is empty or has comments only.
+            throw new ParsingException(
+                    "Cannot parse the configuration file '" + configurationFile + "' as it is empty.");
+        }
+        return loadedBean;
     }
 
     static <T> T parseString(String configFileContent, Class<T> type) {

@@ -72,17 +72,11 @@ public class ComponentMojo extends AbstractUUFMojo {
         }
         // Validation: Parse component configuration file to make sure it is valid.
         String componentConfigFilePath = pathOf(sourceDirectoryPath, FILE_COMPONENT_CONFIG);
-        ComponentConfig componentConfig;
         try {
-            componentConfig = YamlFileParser.parse(componentConfigFilePath, ComponentConfig.class);
+            YamlFileParser.parse(componentConfigFilePath, ComponentConfig.class);
         } catch (ParsingException e) {
             throw new MojoExecutionException("Component configuration file '" + componentConfigFilePath + "' of '" +
                                                      artifactId + "' UUF Component is invalid.", e);
-        }
-        if (componentConfig == null) {
-            // component.yaml file is empty or has comments only.
-            throw new MojoExecutionException("Component configuration file '" + componentConfigFilePath + "' of '" +
-                                                     artifactId + "' UUF Component is empty.");
         }
 
         List<String> sourceDirectoryPaths = new ArrayList<>();
