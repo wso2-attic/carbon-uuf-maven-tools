@@ -28,7 +28,7 @@ import org.wso2.carbon.uuf.maven.bean.ComponentConfig;
 import org.wso2.carbon.uuf.maven.bean.DependencyNode;
 import org.wso2.carbon.uuf.maven.bean.mojo.Instructions;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
-import org.wso2.carbon.uuf.maven.parser.ComponentConfigParser;
+import org.wso2.carbon.uuf.maven.parser.YamlFileParser;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 import org.wso2.carbon.uuf.maven.util.ZipCreator;
 
@@ -74,7 +74,7 @@ public class ComponentMojo extends AbstractUUFMojo {
         String componentConfigFilePath = pathOf(sourceDirectoryPath, FILE_COMPONENT_CONFIG);
         ComponentConfig componentConfig;
         try {
-            componentConfig = ComponentConfigParser.parse(componentConfigFilePath);
+            componentConfig = YamlFileParser.parse(componentConfigFilePath, ComponentConfig.class);
         } catch (ParsingException e) {
             throw new MojoExecutionException("Component configuration file '" + componentConfigFilePath + "' of '" +
                                                      artifactId + "' UUF Component is invalid.", e);

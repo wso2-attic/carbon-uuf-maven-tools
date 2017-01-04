@@ -37,9 +37,8 @@ import org.wso2.carbon.uuf.maven.bean.DependencyNode;
 import org.wso2.carbon.uuf.maven.bean.mojo.Bundle;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
-import org.wso2.carbon.uuf.maven.parser.AppConfigParser;
-import org.wso2.carbon.uuf.maven.parser.ComponentConfigParser;
 import org.wso2.carbon.uuf.maven.parser.DependencyTreeParser;
+import org.wso2.carbon.uuf.maven.parser.YamlFileParser;
 import org.wso2.carbon.uuf.maven.serializer.ConfigurationSerializer;
 import org.wso2.carbon.uuf.maven.serializer.DependencyTreeSerializer;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
@@ -180,7 +179,7 @@ public class AppMojo extends ComponentMojo {
         String componentConfigFilePath = pathOf(sourceDirectoryPath, FILE_COMPONENT_CONFIG);
         ComponentConfig componentConfig;
         try {
-            componentConfig = ComponentConfigParser.parse(componentConfigFilePath);
+            componentConfig = YamlFileParser.parse(componentConfigFilePath, ComponentConfig.class);
         } catch (ParsingException e) {
             throw new MojoExecutionException("Component configuration file '" + componentConfigFilePath + "' of '" +
                                                      artifactId + "' UUF App is invalid.", e);
@@ -241,7 +240,7 @@ public class AppMojo extends ComponentMojo {
                 // Since we are in a lambda, we throw RuntimeExceptions.
                 ComponentConfig componentConfig;
                 try {
-                    componentConfig = ComponentConfigParser.parse(configFilePath);
+                    componentConfig = YamlFileParser.parse(configFilePath, ComponentConfig.class);
                 } catch (ParsingException e) {
                     throw new RuntimeException("Cannot parse '" + FILE_COMPONENT_CONFIG + "' of " + node +
                                                        " which read from '" + configFilePath + "' path.", e);
@@ -387,7 +386,7 @@ public class AppMojo extends ComponentMojo {
 
     private AppConfig parseAppConfig(String appConfigFilePath) throws MojoExecutionException {
         try {
-            return AppConfigParser.parse(appConfigFilePath);
+            return YamlFileParser.parse(appConfigFilePath, AppConfig.class);
         } catch (ParsingException e) {
             throw new MojoExecutionException("App configuration file '" + appConfigFilePath + "' of '" +
                                                      artifactId + "' UUF App is invalid.", e);

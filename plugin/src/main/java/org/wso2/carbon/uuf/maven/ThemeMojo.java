@@ -25,7 +25,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.wso2.carbon.uuf.maven.bean.ThemeConfig;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
-import org.wso2.carbon.uuf.maven.parser.ThemeConfigParser;
+import org.wso2.carbon.uuf.maven.parser.YamlFileParser;
 import org.wso2.carbon.uuf.maven.util.ZipCreator;
 
 import java.io.File;
@@ -57,7 +57,7 @@ public class ThemeMojo extends AbstractUUFMojo {
         String themeConfigFilePath = pathOf(sourceDirectoryPath, FILE_THEME);
         ThemeConfig themeConfig;
         try {
-            themeConfig = ThemeConfigParser.parse(themeConfigFilePath);
+            themeConfig = YamlFileParser.parse(themeConfigFilePath, ThemeConfig.class);
         } catch (ParsingException e) {
             throw new MojoExecutionException("Theme configuration file '" + themeConfigFilePath + "' of '" +
                                                      artifactId + "' UUF Theme is invalid.", e);
