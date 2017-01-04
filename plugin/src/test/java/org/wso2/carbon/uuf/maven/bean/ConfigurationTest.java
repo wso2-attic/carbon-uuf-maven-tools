@@ -20,7 +20,7 @@ package org.wso2.carbon.uuf.maven.bean;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.wso2.carbon.uuf.maven.parser.ComponentConfigParserTest;
+import org.wso2.carbon.uuf.maven.parser.YamlFileParserTest;
 
 import java.util.List;
 import java.util.Map;
@@ -30,17 +30,12 @@ import java.util.Map;
  */
 public class ConfigurationTest {
 
-    private static void mergeConfiguration(Configuration configuration, String resourceConfigFilePath) throws Exception {
-        ComponentConfig componentConfig = ComponentConfigParserTest.parseConfigFile(resourceConfigFilePath);
-        configuration.merge(componentConfig.getConfig());
-    }
-
     @SuppressWarnings("unchecked")
     @Test
     public void testMergeConfiguration() throws Exception {
         Configuration configuration = new Configuration();
 
-        mergeConfiguration(configuration, "/component.yaml");
+        configuration.merge(new YamlFileParserTest().testComponentConfiguration().getConfig());
         Map<String, Object> configMap = configuration.getOther();
         Assert.assertEquals(configMap.get("appName"), "test app 1");
         Assert.assertEquals(configMap.get("pageSize"), 10);
@@ -58,7 +53,7 @@ public class ConfigurationTest {
         Assert.assertEquals(androidDevice.get("locked"), null);
 
 
-        mergeConfiguration(configuration, "/root-component.yaml");
+        configuration.merge(new YamlFileParserTest().testRootComponentConfiguration().getConfig());
         configMap = configuration.getOther();
         Assert.assertEquals(configMap.get("appName"), "test app 2");
         Assert.assertEquals(configMap.get("pageSize"), 10);
