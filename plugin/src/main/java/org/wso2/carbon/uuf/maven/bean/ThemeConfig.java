@@ -77,9 +77,8 @@ public class ThemeConfig {
         if (headJs != null) {
             for (String relativePath : headJs) {
                 if (relativePath.charAt(0) == '/') {
-                    throw new IllegalArgumentException(
-                            "Header JS file relative path cannot start with a '/'. '" + relativePath +
-                                    "' is incorrect.");
+                    throw new IllegalArgumentException("Header JS file relative path cannot start with a '/'. '" +
+                                                               relativePath + "' is incorrect.");
                 }
             }
         }
