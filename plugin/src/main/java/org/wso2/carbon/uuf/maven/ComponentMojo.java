@@ -24,6 +24,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.wso2.carbon.uuf.maven.bean.ComponentConfig;
 import org.wso2.carbon.uuf.maven.bean.DependencyNode;
 import org.wso2.carbon.uuf.maven.bean.mojo.Instructions;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
@@ -71,11 +72,17 @@ public class ComponentMojo extends AbstractUUFMojo {
         }
         // Validation: Parse component configuration file to make sure it is valid.
         String componentConfigFilePath = pathOf(sourceDirectoryPath, FILE_COMPONENT_CONFIG);
+        ComponentConfig componentConfig;
         try {
-            ComponentConfigParser.parse(componentConfigFilePath);
+            componentConfig = ComponentConfigParser.parse(componentConfigFilePath);
         } catch (ParsingException e) {
             throw new MojoExecutionException("Component configuration file '" + componentConfigFilePath + "' of '" +
                                                      artifactId + "' UUF Component is invalid.", e);
+        }
+        if (componentConfig == null) {
+            // component.yaml file is empty or has comments only.
+            throw new MojoExecutionException("Component configuration file '" + componentConfigFilePath + "' of '" +
+                                                     artifactId + "' UUF Component is empty.");
         }
 
         List<String> sourceDirectoryPaths = new ArrayList<>();
