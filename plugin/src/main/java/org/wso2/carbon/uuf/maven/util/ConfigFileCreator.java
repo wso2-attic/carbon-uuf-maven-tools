@@ -40,6 +40,7 @@ public class ConfigFileCreator {
 
     private static final String FILE_CONFIGURATION_YAML = "configuration.yaml";
     private static final String FILE_DEPENDENCY_TREE = "dependency-tree.yaml";
+    private static final String FILE_OSGI_IMPORTS = "osgi-imports";
     private static final String TEMPLATE_FEATURE_PROPERTIES = "feature.properties";
     private static final String TEMPLATE_P2_INF = "p2.inf";
     private static final String TEMPLATE_GENERATED_FILE = "generated-file";
@@ -64,10 +65,10 @@ public class ConfigFileCreator {
                     .filter(s -> !s.isEmpty())
                     .collect(Collectors.joining("\n"));
             String content = applyTemplate(TEMPLATE_GENERATED_FILE, osgiImports);
-            writeFile(Paths.get(outputDirectoryPath, TEMPLATE_GENERATED_FILE), content);
+            writeFile(Paths.get(outputDirectoryPath, FILE_OSGI_IMPORTS), content);
         } catch (IOException e) {
             throw new MojoExecutionException(
-                    "Cannot create '" + TEMPLATE_GENERATED_FILE + "' file in '" + outputDirectoryPath + "'.", e);
+                    "Cannot create '" + FILE_OSGI_IMPORTS + "' file in '" + outputDirectoryPath + "'.", e);
         }
     }
 
