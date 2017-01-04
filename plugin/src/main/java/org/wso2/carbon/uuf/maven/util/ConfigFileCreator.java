@@ -38,11 +38,11 @@ import java.util.stream.Collectors;
  */
 public class ConfigFileCreator {
 
-    private static final String FILE_OSGI_IMPORTS = "osgi-imports";
     private static final String FILE_CONFIGURATION_YAML = "configuration.yaml";
     private static final String FILE_DEPENDENCY_TREE = "dependency-tree.yaml";
-    private static final String FILE_FEATURE_PROPERTIES = "feature.properties";
-    private static final String FILE_P2_INF = "p2.inf";
+    private static final String TEMPLATE_FEATURE_PROPERTIES = "feature.properties";
+    private static final String TEMPLATE_P2_INF = "p2.inf";
+    private static final String TEMPLATE_GENERATED_FILE = "generated-file";
 
     /**
      * Creates the OSGI imports file with the specified content in the specified path.
@@ -63,11 +63,11 @@ public class ConfigFileCreator {
                     .map(String::trim)
                     .filter(s -> !s.isEmpty())
                     .collect(Collectors.joining("\n"));
-            String content = applyTemplate(FILE_OSGI_IMPORTS, osgiImports);
-            writeFile(Paths.get(outputDirectoryPath, FILE_OSGI_IMPORTS), content);
+            String content = applyTemplate(TEMPLATE_GENERATED_FILE, osgiImports);
+            writeFile(Paths.get(outputDirectoryPath, TEMPLATE_GENERATED_FILE), content);
         } catch (IOException e) {
             throw new MojoExecutionException(
-                    "Cannot create '" + FILE_OSGI_IMPORTS + "' file in '" + outputDirectoryPath + "'.", e);
+                    "Cannot create '" + TEMPLATE_GENERATED_FILE + "' file in '" + outputDirectoryPath + "'.", e);
         }
     }
 
@@ -81,7 +81,8 @@ public class ConfigFileCreator {
     public static void createConfigurationYaml(String configurationYamlContent, String outputDirectoryPath)
             throws MojoExecutionException {
         try {
-            writeFile(Paths.get(outputDirectoryPath, FILE_CONFIGURATION_YAML), configurationYamlContent);
+            String content = applyTemplate(TEMPLATE_GENERATED_FILE, configurationYamlContent);
+            writeFile(Paths.get(outputDirectoryPath, FILE_CONFIGURATION_YAML), content);
         } catch (IOException e) {
             throw new MojoExecutionException(
                     "Cannot create '" + FILE_CONFIGURATION_YAML + "' file in '" + outputDirectoryPath + "'.", e);
@@ -98,7 +99,8 @@ public class ConfigFileCreator {
     public static void createDependencyTree(String dependencyTreeContent, String outputDirectoryPath)
             throws MojoExecutionException {
         try {
-            writeFile(Paths.get(outputDirectoryPath, FILE_DEPENDENCY_TREE), dependencyTreeContent);
+            String content = applyTemplate(TEMPLATE_GENERATED_FILE, dependencyTreeContent);
+            writeFile(Paths.get(outputDirectoryPath, FILE_DEPENDENCY_TREE), content);
         } catch (IOException e) {
             throw new MojoExecutionException(
                     "Cannot create '" + FILE_DEPENDENCY_TREE + "' file in '" + outputDirectoryPath + "'.", e);
@@ -115,15 +117,15 @@ public class ConfigFileCreator {
      */
     public static String createFeatureProperties(String outputDirectoryPath) throws MojoExecutionException {
         Path outputDirectory = Paths.get(outputDirectoryPath);
-        Path buildPropertiesFile = outputDirectory.resolve(FILE_FEATURE_PROPERTIES);
+        Path buildPropertiesFile = outputDirectory.resolve(TEMPLATE_FEATURE_PROPERTIES);
         try {
             createDirectory(outputDirectory);
-            String content = readTemplate(FILE_FEATURE_PROPERTIES);
+            String content = readTemplate(TEMPLATE_FEATURE_PROPERTIES);
             writeFile(buildPropertiesFile, content);
             return buildPropertiesFile.toString();
         } catch (IOException e) {
             throw new MojoExecutionException(
-                    "Cannot create '" + FILE_FEATURE_PROPERTIES + "' file in '" + outputDirectoryPath + "'.", e);
+                    "Cannot create '" + TEMPLATE_FEATURE_PROPERTIES + "' file in '" + outputDirectoryPath + "'.", e);
         }
     }
 
@@ -137,14 +139,14 @@ public class ConfigFileCreator {
      */
     public static void createP2Inf(String featureName, String outputDirectoryPath) throws MojoExecutionException {
         Path outputDirectory = Paths.get(outputDirectoryPath);
-        Path p2InfFile = outputDirectory.resolve(FILE_P2_INF);
+        Path p2InfFile = outputDirectory.resolve(TEMPLATE_P2_INF);
         try {
             createDirectory(outputDirectory);
-            String content = applyTemplate(FILE_P2_INF, featureName, featureName);
+            String content = applyTemplate(TEMPLATE_P2_INF, featureName, featureName);
             writeFile(p2InfFile, content);
         } catch (IOException e) {
             throw new MojoExecutionException(
-                    "Cannot create '" + FILE_P2_INF + "' file in '" + outputDirectoryPath + "'.", e);
+                    "Cannot create '" + TEMPLATE_P2_INF + "' file in '" + outputDirectoryPath + "'.", e);
         }
     }
 
@@ -158,19 +160,19 @@ public class ConfigFileCreator {
         }
     }
 
-    private static String readTemplate(String template) throws IOException {
-        try (InputStream featureProperties = ConfigFileCreator.class.getResourceAsStream("/templates/" + template)) {
-            if (featureProperties == null) {
-                throw new IOException("Cannot find template file '" + template + "' in classpath resources.");
+    private static String readTemplate(String templateName) throws IOException {
+        try (InputStream inputStream = ConfigFileCreator.class.getResourceAsStream("/templates/" + templateName)) {
+            if (inputStream == null) {
+                throw new IOException("Cannot find template file '" + templateName + "' in classpath resources.");
             }
-            return IOUtils.toString(featureProperties, StandardCharsets.UTF_8.name());
+            return IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
         } catch (IOException e) {
-            throw new IOException("Cannot read template file '" + template + "' from classpath resources.", e);
+            throw new IOException("Cannot read template file '" + templateName + "' from classpath resources.", e);
         }
     }
 
-    private static String applyTemplate(String template, String... variables) throws IOException {
-        return String.format(readTemplate(template), variables);
+    private static String applyTemplate(String templateName, String... variables) throws IOException {
+        return String.format(readTemplate(templateName), variables);
     }
 
     private static void writeFile(Path file, String content) throws IOException {
