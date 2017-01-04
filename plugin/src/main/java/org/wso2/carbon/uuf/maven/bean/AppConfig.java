@@ -84,11 +84,9 @@ public class AppConfig {
      * @throws IllegalArgumentException if {@code theme} is an empty string
      */
     public void setTheme(String theme) {
-        if (theme != null) {
-            if (theme.isEmpty()) {
-                throw new IllegalArgumentException(
-                        "Theme name configured with 'theme' key in the app's config cannot be empty.");
-            }
+        if (theme != null && theme.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Theme name configured with 'theme' key in the app's config cannot be empty.");
         }
         this.theme = theme;
     }
