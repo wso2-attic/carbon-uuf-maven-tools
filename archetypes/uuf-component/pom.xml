@@ -19,7 +19,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>uuf-component-archetype</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-m9</version>
     <packaging>maven-archetype</packaging>
 
     <name>WSO2 UUF Maven Tools - Archetypes - Component</name>
@@ -29,7 +29,7 @@
     <parent>
         <groupId>org.wso2.carbon.uuf.maven</groupId>
         <artifactId>org.wso2.carbon.uuf.maven.archetypes</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0-m9</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 </project>

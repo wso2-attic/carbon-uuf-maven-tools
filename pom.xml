@@ -17,13 +17,12 @@
  ~ under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.wso2.carbon.uuf.maven</groupId>
     <artifactId>carbon-uuf</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-m9</version>
     <packaging>pom</packaging>
 
     <name>WSO2 UUF Maven Tools</name>
@@ -45,7 +44,7 @@
         <url>https://github.com/wso2/carbon-uuf-maven-tools.git</url>
         <developerConnection>scm:git:https://github.com/wso2/carbon-uuf-maven-tools.git</developerConnection>
         <connection>scm:git:https://github.com/wso2/carbon-uuf-maven-tools.git</connection>
-        <tag>HEAD</tag>
+        <tag>v1.0.0-m9</tag>
     </scm>
 
     <dependencyManagement>
