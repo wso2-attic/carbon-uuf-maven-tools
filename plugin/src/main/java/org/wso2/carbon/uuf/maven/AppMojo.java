@@ -44,6 +44,7 @@ import org.wso2.carbon.uuf.maven.serializer.YamlSerializer;
 import org.wso2.carbon.uuf.maven.serializer.DependencyTreeSerializer;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -277,6 +278,13 @@ public class AppMojo extends ComponentMojo {
                         return;
                     }
                     bundleListConfig.getBundles().forEach(bundles::add);
+                    //delete the file after reading its content to prevent it from getting packed with the app
+                    try {
+                        Files.delete(Paths.get(bundleDependenciesFilePath));
+                    } catch (IOException e) {
+                        throw new RuntimeException("Cannot delete '" + FILE_BUNDLE_DEPENDENCIES + "' of " + node +
+                                                   " which read from '" + bundleDependenciesFilePath + "' path.", e);
+                    }
                 } catch (ParsingException e) {
                     throw new RuntimeException("Cannot parse '" + FILE_BUNDLE_DEPENDENCIES + "' of " + node +
                             " which read from '" + bundleDependenciesFilePath + "' path.", e);
