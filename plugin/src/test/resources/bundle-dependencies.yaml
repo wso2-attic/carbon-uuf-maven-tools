@@ -7,3 +7,4 @@ bundles:
   version: 1.0.0-SNAPSHOT
 - symbolicName: org.wso2.carbon.uuf.sample.test4
   version: 1.0.0-SNAPSHOT
+  
