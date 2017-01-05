@@ -1,0 +1,32 @@
+# test
+theme : "org.wso2.carbon.uuf.sample.theme.default"
+menus :
+  - name: "main"
+    items:
+      - text: "Home"
+        link: "#"
+        icon: "fw-home"
+      - text: "Pets"
+        submenus:
+          - text: "See all our amazing pets"
+            link: "pets"
+          - text: "Add a new pets"
+            link: "pets/new"
+            icon: "fw fw-add"
+          - text: "Pet of the month"
+            link: "pets/snowball"
+          - text: "Order new pets"
+            link: "pets/order"
+errorPages:
+  404: "/foundation/error/404"
+  default: "/foundation/error/default"
+loginPageUri: "/simple-auth/login"
+security:
+  csrfPatterns:
+    accept: []
+    reject: []
+  xssPatterns:
+    accept: []
+    reject: []
+  responseHeaders:
+    "Some Header": "some Value"

@@ -24,18 +24,18 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.wso2.carbon.uuf.maven.bean.ComponentConfig;
+import org.wso2.carbon.uuf.maven.bean.DependencyNode;
+import org.wso2.carbon.uuf.maven.bean.mojo.Bundle;
+import org.wso2.carbon.uuf.maven.bean.mojo.Instructions;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
-import org.wso2.carbon.uuf.maven.model.Bundle;
-import org.wso2.carbon.uuf.maven.model.DependencyNode;
-import org.wso2.carbon.uuf.maven.parser.ComponentManifestParser;
-import org.wso2.carbon.uuf.maven.parser.ConfigurationParser;
+import org.wso2.carbon.uuf.maven.parser.YamlFileParser;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 import org.wso2.carbon.uuf.maven.util.ZipCreator;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * UUF Component creation Mojo.
@@ -43,12 +43,10 @@ import java.util.Map;
  * @since 1.0.0
  */
 @Mojo(name = "create-component", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
-      threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
+        threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class ComponentMojo extends AbstractUUFMojo {
 
-    protected static final String CONFIGURATION_IMPORT_PACKAGE = "Import-Package";
-    protected static final String FILE_CONFIG = "config.yaml";
-    protected static final String FILE_COMPONENT_MANIFEST = "component.yaml";
+    protected static final String FILE_COMPONENT_CONFIG = "component.yaml";
     public static final String FILE_BUNDLE_DEPENDENCIES = "bundle-dependencies.yaml";
 
     /**
@@ -58,10 +56,11 @@ public class ComponentMojo extends AbstractUUFMojo {
     protected String tempDirectoryPath;
 
     /**
-     * OSGi {@code <Import-Package>} instructions for this UUF Component.
+     * OSGi bundling instructions.
      */
     @Parameter(readonly = true, required = false)
-    protected Map<String, String> instructions;
+    protected Instructions instructions;
+
 
     /**
      * Configured OSGi bundles.
@@ -80,31 +79,21 @@ public class ComponentMojo extends AbstractUUFMojo {
                     "Packaging type of an UUF Component should be '" + ARTIFACT_TYPE_UUF_COMPONENT +
                             "'. Instead found '" + packaging + "'.");
         }
-        // Validation: Parse configuration file to make sure it is a valid YAML file.
-        String configFilePath = pathOf(sourceDirectoryPath, FILE_CONFIG);
+        // Validation: Parse component configuration file to make sure it is valid.
+        String componentConfigFilePath = pathOf(sourceDirectoryPath, FILE_COMPONENT_CONFIG);
         try {
-            ConfigurationParser.parse(configFilePath);
+            YamlFileParser.parse(componentConfigFilePath, ComponentConfig.class);
         } catch (ParsingException e) {
-            throw new MojoExecutionException(
-                    "Configuration file '" + configFilePath + "' of this UUF Component is invalid.", e);
-        }
-        // Validation: Parse component manifest file to make sure it is valid.
-        String componentManifestFilePath = pathOf(sourceDirectoryPath, FILE_COMPONENT_MANIFEST);
-        try {
-            ComponentManifestParser.parse(componentManifestFilePath);
-        } catch (ParsingException e) {
-            throw new MojoExecutionException(
-                    "Component manifest file '" + componentManifestFilePath + "' of this UUF Component is invalid.", e);
+            throw new MojoExecutionException("Component configuration file '" + componentConfigFilePath + "' of '" +
+                    artifactId + "' UUF Component is invalid.", e);
         }
 
         List<String> sourceDirectoryPaths = new ArrayList<>();
         // Create OSGi imports file.
-        if ((instructions != null) && !instructions.isEmpty()) {
-            String osgiImportsContent = instructions.get(CONFIGURATION_IMPORT_PACKAGE);
-            if ((osgiImportsContent != null) && !osgiImportsContent.trim().isEmpty()) {
-                ConfigFileCreator.createOsgiImports(osgiImportsContent, tempDirectoryPath);
-                sourceDirectoryPaths.add(tempDirectoryPath);
-            }
+        if ((instructions != null) &&
+                (instructions.getImportPackage() != null) && (!instructions.getImportPackage().isEmpty())) {
+            ConfigFileCreator.createOsgiImports(instructions.getImportPackage(), tempDirectoryPath);
+            sourceDirectoryPaths.add(tempDirectoryPath);
         }
         // Create component level bundle-dependencies.yaml file.
         if (bundles != null && !bundles.isEmpty()) {
@@ -115,7 +104,7 @@ public class ComponentMojo extends AbstractUUFMojo {
         sourceDirectoryPaths.add(sourceDirectoryPath);
         String baseDirectoryName = new DependencyNode(artifactId, version, null).getContextPath();
         File archive = ZipCreator.createArchive(sourceDirectoryPaths, baseDirectoryName, outputDirectoryPath,
-                                                finalName);
+                finalName);
         project.getArtifact().setFile(archive);
         projectHelper.attachArtifact(project, ZipCreator.ARCHIVE_FORMAT, null, archive);
     }

@@ -16,30 +16,61 @@
  * under the License.
  */
 
-package org.wso2.carbon.uuf.maven.model;
+package org.wso2.carbon.uuf.maven.bean;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * A bean class that represents the configurations of an UUF APP or Component.
+ * A bean class that represents the final configuration of an UUF App.
  *
  * @since 1.0.0
  */
-public class Configuration {
+public class Configuration extends AppConfig {
 
-    private final Map<String, Object> map = new HashMap<>();
-    private final Map<String, Object> unmodifiableMap = Collections.unmodifiableMap(map);
+    private final Map<String, Object> otherConfigurations = new HashMap<>();
 
     /**
-     * Merges the specified new {@link Map} with the map of this Configuration.
+     * Creates a new instance. Used for unit tests.
+     */
+    Configuration() {
+    }
+
+    /**
+     * Creates a new instance with values from the specified app config.
+     *
+     * @param appConfig app config to be used to fill the creating instance
+     */
+    public Configuration(AppConfig appConfig) {
+        setContextPath(appConfig.getContextPath());
+        setTheme(appConfig.getTheme());
+        setLoginPageUri(appConfig.getLoginPageUri());
+        setErrorPages(appConfig.getErrorPages());
+        setMenus(appConfig.getMenus());
+        setSecurity(appConfig.getSecurity());
+    }
+
+    /**
+     * Return the business-logic related configurations that are configured for the app.
+     *
+     * @return business-logic related configurations
+     */
+    public Map<String, Object> getOther() {
+        return otherConfigurations;
+    }
+
+    /**
+     * Merges the specified new configuration {@link Map} with this configuration.
      *
      * @param rawMap map to merge
-     * @throws IllegalArgumentException if keys of the {@code rawMap} are not {@link String}s.
+     * @throws IllegalArgumentException if keys of the {@code rawMap} are not strings.
      */
     public void merge(Map<?, ?> rawMap) {
+        if (rawMap == null || rawMap.isEmpty()) {
+            return;
+        }
+
         for (Map.Entry<?, ?> newEntry : rawMap.entrySet()) {
             if (!(newEntry.getKey() instanceof String)) {
                 throw new IllegalArgumentException(
@@ -47,7 +78,7 @@ public class Configuration {
                                 newEntry.getKey().getClass().getName() + "' key.");
             }
 
-            map.compute((String) newEntry.getKey(), (key, oldValue) -> {
+            otherConfigurations.compute((String) newEntry.getKey(), (key, oldValue) -> {
                 Object newValue = newEntry.getValue();
                 if (oldValue == null) {
                     return newValue; // There is no old value, so just add the new value.
@@ -101,22 +132,5 @@ public class Configuration {
             }
         }
         return oldList;
-    }
-
-    /**
-     * Returns this Configuration object as a Map.
-     *
-     * @return unmodifiable map
-     */
-    public Map<String, Object> asMap() {
-        return unmodifiableMap;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return map.toString();
     }
 }

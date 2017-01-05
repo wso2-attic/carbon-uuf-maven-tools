@@ -15,7 +15,8 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.wso2.carbon.uuf.maven.model;
+
+package org.wso2.carbon.uuf.maven.bean.mojo;
 
 import java.util.List;
 

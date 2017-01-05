@@ -18,12 +18,11 @@
 
 package org.wso2.carbon.uuf.maven.serializer;
 
+import org.wso2.carbon.uuf.maven.bean.Configuration;
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
-import org.wso2.carbon.uuf.maven.model.BundleListConfig;
-import org.wso2.carbon.uuf.maven.model.Configuration;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.nodes.Tag;
-import org.yaml.snakeyaml.representer.Representer;
 
 /**
  * YAML serializer for {@link Configuration} model.
@@ -33,29 +32,20 @@ import org.yaml.snakeyaml.representer.Representer;
 public class ConfigurationSerializer {
 
     /**
-     * Serializes the given application configuration into a YAML.
+     * Serializes the specified config into a YAML.
      *
-     * @param configuration config to serialize
+     * @param data config data to serialize
      * @return YAML representation of the config
      * @throws SerializationException if an error occurred during serialization
      */
-    public static String serialize(Configuration configuration) throws SerializationException {
+    public static String serialize(Object data) throws SerializationException {
+        DumperOptions dumperOptions = new DumperOptions();
+        dumperOptions.setAllowReadOnlyProperties(true);
+        Yaml yaml = new Yaml(dumperOptions);
         try {
-            return new Yaml().dumpAsMap(configuration.asMap());
+            return yaml.dumpAs(data, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
         } catch (Exception e) {
-            throw new SerializationException("Cannot serialize config " + configuration + ".", e);
+            throw new SerializationException("Cannot serialize config " + data + ".", e);
         }
-    }
-
-    /**
-     * Serializes the given data configuration object as it is and returns the YAML representation value.
-     *
-     * @param data any data object to be serialized
-     * @return YAML representation of the given data configuration
-     */
-    public static String serialize(Object data) {
-        Representer representer = new Representer();
-        representer.addClassTag(BundleListConfig.class, Tag.MAP);
-        return new Yaml(representer).dump(data);
     }
 }

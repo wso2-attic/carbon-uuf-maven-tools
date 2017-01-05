@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.uuf.maven.model;
+package org.wso2.carbon.uuf.maven.bean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +44,25 @@ public class DependencyNode {
      * @param artifactId artifact ID of the UUF Component reflected by this node
      * @param version    version of the UUF Component reflected by this node
      * @param parent     parent node of the creating node; can be {@code null} if the creating node is root node
+     * @throws IllegalArgumentException if {@code artifactId} is null or empty, if {@code version} is null or empty
      */
     public DependencyNode(String artifactId, String version, DependencyNode parent) {
-        this.artifactId = artifactId;
-        this.version = version;
+        if (artifactId == null) {
+            throw new IllegalArgumentException("Artifact ID of a dependency node cannot be null.");
+        } else if (artifactId.isEmpty()) {
+            throw new IllegalArgumentException("Artifact ID of a dependency node cannot be empty.");
+        } else {
+            this.artifactId = artifactId;
+        }
+
+        if (version == null) {
+            throw new IllegalArgumentException("Version of a dependency node cannot be null.");
+        } else if (version.isEmpty()) {
+            throw new IllegalArgumentException("Version of a dependency node cannot be empty.");
+        } else {
+            this.version = version;
+        }
+
         this.parent = parent;
         this.dependencies = new ArrayList<>();
     }

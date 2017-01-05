@@ -16,31 +16,33 @@
  * under the License.
  */
 
-package org.wso2.carbon.uuf.maven.model;
+package org.wso2.carbon.uuf.maven.bean;
 
 import java.util.List;
+import java.util.Map;
 
 /**
- * A bean class that represents the component manifest file in an UUF Component.
+ * Bean class that represents the component's config file of an UUF Component.
  *
  * @since 1.0.0
  */
-public class ComponentManifest {
+public class ComponentConfig {
 
     private List<API> apis;
     private List<Binding> bindings;
+    private Map<String, Object> config;
 
     /**
-     * Returns the APIs entries of this component manifest.
+     * Returns the APIs entries in this component's config.
      *
-     * @return APIs of this component manifest
+     * @return APIs in this component's config
      */
     public List<API> getApis() {
         return apis;
     }
 
     /**
-     * Sets the APIs of this component manifest.
+     * Sets the APIs in this component's config.
      *
      * @param apis APIs to be set
      */
@@ -49,16 +51,16 @@ public class ComponentManifest {
     }
 
     /**
-     * Returns the bindings entries of this component manifest.
+     * Returns the bindings entries in this component's config.
      *
-     * @return bindings of this component manifest
+     * @return bindings in this component's config
      */
     public List<Binding> getBindings() {
         return bindings;
     }
 
     /**
-     * Sets the bindings of this component manifest.
+     * Sets the bindings in this component's config.
      *
      * @param bindings bindings to be set
      */
@@ -67,7 +69,25 @@ public class ComponentManifest {
     }
 
     /**
-     * Represent an API entry in the component manifest file in an UUF Component.
+     * Returns the configurations in this component's config.
+     *
+     * @return configurations in this component's config
+     */
+    public Map<String, Object> getConfig() {
+        return config;
+    }
+
+    /**
+     * Sets the configurations of this component's config.
+     *
+     * @param config configurations to be set
+     */
+    public void setConfig(Map<String, Object> config) {
+        this.config = config;
+    }
+
+    /**
+     * Bean class that represents an API entry in the component's config file of an UUF Component.
      *
      * @since 1.0.0
      */
@@ -89,8 +109,16 @@ public class ComponentManifest {
          * Sets the name of the class of this API.
          *
          * @param className name of the class to be set
+         * @throws IllegalArgumentException if class name is null or empty
          */
         public void setClassName(String className) {
+            if (className == null) {
+                throw new IllegalArgumentException(
+                        "Class name of an API entry in the component's config cannot be null.");
+            } else if (className.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Class name of an API entry in the component's config cannot be a empty.");
+            }
             this.className = className;
         }
 
@@ -107,14 +135,24 @@ public class ComponentManifest {
          * Sets the URI of this API.
          *
          * @param uri URI to be set
+         * @throws IllegalArgumentException if URI is null or empty or doesn't start with a '/'
          */
         public void setUri(String uri) {
+            if (uri == null) {
+                throw new IllegalArgumentException("URI of an API entry in the component's config cannot be null.");
+            } else if (uri.isEmpty()) {
+                throw new IllegalArgumentException("URI of an API entry in the component's config cannot be a empty.");
+            } else if (uri.charAt(0) != '/') {
+                throw new IllegalArgumentException(
+                        "URI of an API entry in the component's config must start with a '/'. Instead found '" +
+                                uri.charAt(0) + "' at the beginning.");
+            }
             this.uri = uri;
         }
     }
 
     /**
-     * Represent a binding entry in thr component manifest file in an UUF Component.
+     * Bean class that represents a binding entry in the component's config file of an UUF Component.
      *
      * @since 1.0.0
      */
@@ -150,8 +188,16 @@ public class ComponentManifest {
          * Sets the zone name of this binding.
          *
          * @param zoneName zone name to be set
+         * @throws IllegalArgumentException if zone name is null or empty
          */
         public void setZoneName(String zoneName) {
+            if (zoneName == null) {
+                throw new IllegalArgumentException(
+                        "Zone name of a binding entry in the component's config cannot be null.");
+            } else if (zoneName.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Zone name of a binding entry in the component's config cannot be a empty.");
+            }
             this.zoneName = zoneName;
         }
 
@@ -168,25 +214,26 @@ public class ComponentManifest {
          * Sets the mode of this binding.
          *
          * @param mode mode to be set
-         * @exception IllegalArgumentException if the {@code mode} is not {@link #MODE_PREPEND} or {@link #MODE_APPEND}
-         *                                     or {@link #MODE_OVERWRITE}
+         * @throws IllegalArgumentException if the {@code mode} is not {@link #MODE_PREPEND} or {@link #MODE_APPEND} or
+         *                                  {@link #MODE_OVERWRITE}
          * @see #MODE_PREPEND
          * @see #MODE_APPEND
          * @see #MODE_OVERWRITE
          */
         public void setMode(String mode) {
-            if (MODE_PREPEND.equals(mode) || MODE_APPEND.equals(mode) || MODE_OVERWRITE.equals(
-                    mode)) {
+            if (mode == null) {
+                this.mode = MODE_PREPEND; // default mode is prepend.
+            } else if (MODE_PREPEND.equals(mode) || MODE_APPEND.equals(mode) || MODE_OVERWRITE.equals(mode)) {
                 this.mode = mode;
             } else {
                 throw new IllegalArgumentException(
-                        "Binding mode should be either '" + MODE_PREPEND + "', '" + MODE_APPEND + "' or '" +
-                                MODE_OVERWRITE + "'. Instead found '" + mode + "'.");
+                        "Mode of a binding entry in the component's config should be either '" + MODE_PREPEND + "', '" +
+                                MODE_APPEND + "' or '" + MODE_OVERWRITE + "'. Instead found '" + mode + "'.");
             }
         }
 
         /**
-         * Returns the names of the Fragments of this binding.
+         * Returns the names of the fragments of this binding.
          *
          * @return fragment names
          */
@@ -195,11 +242,16 @@ public class ComponentManifest {
         }
 
         /**
-         * Sets the names of the Fragments of this binding.
+         * Sets the names of the fragments of this binding.
          *
          * @param fragments names of the Fragments to be set
+         * @throws IllegalArgumentException if fragments list is null
          */
         public void setFragments(List<String> fragments) {
+            if (fragments == null) {
+                throw new IllegalArgumentException(
+                        "Fragments of a bindings entry in the component's config cannot be null.");
+            }
             this.fragments = fragments;
         }
     }

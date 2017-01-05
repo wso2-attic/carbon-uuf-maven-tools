@@ -18,8 +18,8 @@
 
 package org.wso2.carbon.uuf.maven.serializer;
 
+import org.wso2.carbon.uuf.maven.bean.DependencyNode;
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
-import org.wso2.carbon.uuf.maven.model.DependencyNode;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.introspector.MethodProperty;
@@ -39,8 +39,6 @@ import java.util.Set;
  */
 public class DependencyTreeSerializer {
 
-    private final Yaml yaml = new Yaml(new DependencyNodeRepresenter());
-
     /**
      * Serialize the specified dependency tree to YAML.
      *
@@ -48,7 +46,8 @@ public class DependencyTreeSerializer {
      * @return YAML representation of the dependency tree
      * @throws SerializationException if an error occurred during serialization
      */
-    public String serialize(DependencyNode rootNode) throws SerializationException {
+    public static String serialize(DependencyNode rootNode) throws SerializationException {
+        Yaml yaml = new Yaml(new DependencyNodeRepresenter());
         try {
             return yaml.dumpAs(rootNode, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
         } catch (Exception e) {
@@ -57,8 +56,7 @@ public class DependencyTreeSerializer {
     }
 
     /**
-     * {@link org.yaml.snakeyaml.representer.Representer} for {@link org.wso2.carbon.uuf.maven.model.DependencyNode}
-     * class.
+     * {@link org.yaml.snakeyaml.representer.Representer} for {@link DependencyNode} class.
      *
      * @implNote This class controls what properties will be serialized and the appearing order of those serialized
      * properties in the output YAML when serializing DependencyNode.
