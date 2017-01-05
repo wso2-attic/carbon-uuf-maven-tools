@@ -59,7 +59,7 @@ public class YamlFileParserTest {
 
     @Test
     public BundleListConfig testBundleDependencyConfiguration() throws Exception {
-        return YamlFileParser.parseString(readResourceFile("/bundle-dependencies.yaml"), BundleListConfig.class);
+        return YamlFileParser.parseString(readResourceFile("/bundles.yaml"), BundleListConfig.class);
     }
 
     @Test

@@ -267,7 +267,7 @@ public class AppMojo extends ComponentMojo {
         try {
             rootNode.traverse(node -> {
                 String bundleDependenciesFilePath = getFilePathIn(node.getArtifactId(), componentsDirectory,
-                                                                  FILE_BUNDLE_DEPENDENCIES);
+                                                                  FILE_BUNDLES);
                 if (!Files.exists(Paths.get(bundleDependenciesFilePath))) {
                     return;
                 }
@@ -275,7 +275,7 @@ public class AppMojo extends ComponentMojo {
                 try {
                     bundleListConfig = YamlFileParser.parse(bundleDependenciesFilePath, BundleListConfig.class);
                 } catch (ParsingException e) {
-                    throw new RuntimeException("Cannot parse '" + FILE_BUNDLE_DEPENDENCIES + "' of " + node +
+                    throw new RuntimeException("Cannot parse '" + FILE_BUNDLES + "' of " + node +
                                                " which read from '" + bundleDependenciesFilePath + "' path.", e);
                 }
                 if (bundleListConfig == null) {
@@ -286,7 +286,7 @@ public class AppMojo extends ComponentMojo {
                 try {
                     Files.delete(Paths.get(bundleDependenciesFilePath));
                 } catch (IOException e) {
-                    throw new RuntimeException("Cannot delete '" + FILE_BUNDLE_DEPENDENCIES + "' of " + node +
+                    throw new RuntimeException("Cannot delete '" + FILE_BUNDLES + "' of " + node +
                                                " which read from '" + bundleDependenciesFilePath + "' path.", e);
                 }
             });

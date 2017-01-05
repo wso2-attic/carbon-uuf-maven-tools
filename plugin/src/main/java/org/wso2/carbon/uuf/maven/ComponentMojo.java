@@ -47,7 +47,7 @@ import java.util.List;
 public class ComponentMojo extends AbstractUUFMojo {
 
     protected static final String FILE_COMPONENT_CONFIG = "component.yaml";
-    public static final String FILE_BUNDLE_DEPENDENCIES = "bundle-dependencies.yaml";
+    public static final String FILE_BUNDLES = "bundles.yaml";
 
     /**
      * Path to the temporary directory for UUF Maven plugin.
@@ -97,7 +97,7 @@ public class ComponentMojo extends AbstractUUFMojo {
         }
         // Create component level bundle-dependencies.yaml file.
         if (bundles != null && !bundles.isEmpty()) {
-            ConfigFileCreator.createBundleDependenciesYaml(bundles, tempDirectoryPath);
+            ConfigFileCreator.createBundlesYaml(bundles, tempDirectoryPath);
             sourceDirectoryPaths.add(tempDirectoryPath);
         }
         // Create zip file.

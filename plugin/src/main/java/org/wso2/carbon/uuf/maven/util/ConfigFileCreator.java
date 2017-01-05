@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.wso2.carbon.uuf.maven.ComponentMojo.FILE_BUNDLE_DEPENDENCIES;
+import static org.wso2.carbon.uuf.maven.ComponentMojo.FILE_BUNDLES;
 
 /**
  * Utility class that creates various configuration files needed by the UUF project creation Mojo's.
@@ -80,13 +80,13 @@ public class ConfigFileCreator {
     }
 
     /**
-     * Creates the bundle-dependencies.yaml file in the given output directory path.
+     * Creates the bundles.yaml file in the given output directory path.
      *
-     * @param bundles the list of bundles instance used with creating the bundle-dependencies.yaml
+     * @param bundles the list of bundles instance used with creating the bundles.yaml
      * @param outputDirectoryPath output location path use with creating yaml file
      * @throws MojoExecutionException thrown when an error occurs while creating or writing the yaml file
      */
-    public static void createBundleDependenciesYaml(List<Bundle> bundles, String outputDirectoryPath)
+    public static void createBundlesYaml(List<Bundle> bundles, String outputDirectoryPath)
             throws MojoExecutionException {
         if (bundles == null || bundles.isEmpty()) {
            return;
@@ -101,11 +101,11 @@ public class ConfigFileCreator {
             } catch (SerializationException e) {
                 throw new MojoExecutionException("Cannot serialize configuration " + bundleListConfig + ".", e);
             }
-            writeFile(Paths.get(outputDirectoryPath, FILE_BUNDLE_DEPENDENCIES),
+            writeFile(Paths.get(outputDirectoryPath, FILE_BUNDLES),
                     applyTemplate(TEMPLATE_GENERATED_FILE, content));
         } catch (IOException e) {
             throw new MojoExecutionException(
-                    "Cannot create '" + FILE_BUNDLE_DEPENDENCIES + "' file in '" + outputDirectoryPath + "'.", e);
+                    "Cannot create '" + FILE_BUNDLES + "' file in '" + outputDirectoryPath + "'.", e);
         }
     }
 

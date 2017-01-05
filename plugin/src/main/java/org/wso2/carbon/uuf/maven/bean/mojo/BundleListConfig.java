@@ -26,6 +26,7 @@ import java.util.List;
  * @since 1.0.0
  */
 public class BundleListConfig {
+
     private List<Bundle> bundles;
 
     /**
