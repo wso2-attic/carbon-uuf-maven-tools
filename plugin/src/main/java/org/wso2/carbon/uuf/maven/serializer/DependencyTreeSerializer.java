@@ -73,13 +73,13 @@ public class DependencyTreeSerializer {
             Set<Property> properties = new LinkedHashSet<>(); // to preserve order
             try {
                 properties.add(new MethodProperty(new PropertyDescriptor("artifactId", DependencyNode.class,
-                                                                         "getArtifactId", null)));
+                        "getArtifactId", null)));
                 properties.add(new MethodProperty(new PropertyDescriptor("version", DependencyNode.class,
-                                                                         "getVersion", null)));
+                        "getVersion", null)));
                 properties.add(new MethodProperty(new PropertyDescriptor("contextPath", DependencyNode.class,
-                                                                         "getContextPath", null)));
+                        "getContextPath", null)));
                 properties.add(new MethodProperty(new PropertyDescriptor("dependencies", DependencyNode.class,
-                                                                         "getDependencies", null)));
+                        "getDependencies", null)));
             } catch (IntrospectionException e) {
                 throw new RuntimeException(
                         "Cannot retrieve properties in JavaBean '" + DependencyNode.class.getName() + "'.", e);

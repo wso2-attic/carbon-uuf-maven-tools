@@ -257,7 +257,7 @@ public class AppMojo extends ComponentMojo {
      * This method reads the bundle dependencies coming from all the components and add them to the application's
      * "bundles" instance which is later used by the carbon-feature-plugin to create the feature.
      *
-     * @param rootNode the current app's dependency node (i.e the root node of the app)
+     * @param rootNode            the current app's dependency node (i.e the root node of the app)
      * @param componentsDirectory the "components" directory within the app
      * @throws MojoExecutionException thrown on error while reading/populating the bundle dependencies
      */

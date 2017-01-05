@@ -34,7 +34,7 @@ public class ConfigurationSerializer {
     /**
      * Serializes the specified config into a YAML.
      *
-     * @param data config data to serialize
+     * @param data config data object to serialize as YAML content
      * @return YAML representation of the config
      * @throws SerializationException if an error occurred during serialization
      */

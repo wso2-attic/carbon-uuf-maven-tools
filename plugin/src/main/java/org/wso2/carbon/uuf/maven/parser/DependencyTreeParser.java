@@ -47,7 +47,7 @@ public class DependencyTreeParser {
             lines = Files.readAllLines(Paths.get(dependencyTreeFilePath));
         } catch (IOException e) {
             throw new ParsingException("Cannot read the content of dependency tree '" + dependencyTreeFilePath + "'.",
-                                       e);
+                    e);
         }
         return parseLines(lines);
     }
@@ -89,7 +89,7 @@ public class DependencyTreeParser {
             } else {
                 // jump > 1, this cannot happen
                 throw new ParsingException("Delta between current level (" + level + ") and previous level (" +
-                                                   previousLevel + ") cannot be greater than 1.");
+                        previousLevel + ") cannot be greater than 1.");
             }
 
             previousLevel = level;
