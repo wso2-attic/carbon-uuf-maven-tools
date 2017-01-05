@@ -26,6 +26,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.wso2.carbon.uuf.maven.bean.ComponentConfig;
 import org.wso2.carbon.uuf.maven.bean.DependencyNode;
+import org.wso2.carbon.uuf.maven.bean.mojo.Bundle;
 import org.wso2.carbon.uuf.maven.bean.mojo.Instructions;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
 import org.wso2.carbon.uuf.maven.parser.YamlFileParser;
@@ -46,6 +47,7 @@ import java.util.List;
 public class ComponentMojo extends AbstractUUFMojo {
 
     protected static final String FILE_COMPONENT_CONFIG = "component.yaml";
+    public static final String FILE_BUNDLES = "bundles.yaml";
 
     /**
      * Path to the temporary directory for UUF Maven plugin.
@@ -58,6 +60,13 @@ public class ComponentMojo extends AbstractUUFMojo {
      */
     @Parameter(readonly = true, required = false)
     protected Instructions instructions;
+
+
+    /**
+     * Configured OSGi bundles.
+     */
+    @Parameter(property = "bundles", readonly = true, required = false)
+    protected List<Bundle> bundles;
 
     /**
      * {@inheritDoc}
@@ -76,7 +85,7 @@ public class ComponentMojo extends AbstractUUFMojo {
             YamlFileParser.parse(componentConfigFilePath, ComponentConfig.class);
         } catch (ParsingException e) {
             throw new MojoExecutionException("Component configuration file '" + componentConfigFilePath + "' of '" +
-                                                     artifactId + "' UUF Component is invalid.", e);
+                                             artifactId + "' UUF Component is invalid.", e);
         }
 
         List<String> sourceDirectoryPaths = new ArrayList<>();
@@ -84,6 +93,11 @@ public class ComponentMojo extends AbstractUUFMojo {
         if ((instructions != null) &&
                 (instructions.getImportPackage() != null) && (!instructions.getImportPackage().isEmpty())) {
             ConfigFileCreator.createOsgiImports(instructions.getImportPackage(), tempDirectoryPath);
+            sourceDirectoryPaths.add(tempDirectoryPath);
+        }
+        // Create component level bundle-dependencies.yaml file.
+        if (bundles != null && !bundles.isEmpty()) {
+            ConfigFileCreator.createBundlesYaml(bundles, tempDirectoryPath);
             sourceDirectoryPaths.add(tempDirectoryPath);
         }
         // Create zip file.

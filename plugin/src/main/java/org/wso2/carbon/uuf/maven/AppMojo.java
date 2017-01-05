@@ -35,16 +35,19 @@ import org.wso2.carbon.uuf.maven.bean.ComponentConfig;
 import org.wso2.carbon.uuf.maven.bean.Configuration;
 import org.wso2.carbon.uuf.maven.bean.DependencyNode;
 import org.wso2.carbon.uuf.maven.bean.mojo.Bundle;
+import org.wso2.carbon.uuf.maven.bean.mojo.BundleListConfig;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
 import org.wso2.carbon.uuf.maven.parser.DependencyTreeParser;
 import org.wso2.carbon.uuf.maven.parser.YamlFileParser;
-import org.wso2.carbon.uuf.maven.serializer.ConfigurationSerializer;
+import org.wso2.carbon.uuf.maven.serializer.YamlSerializer;
 import org.wso2.carbon.uuf.maven.serializer.DependencyTreeSerializer;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -87,12 +90,6 @@ public class AppMojo extends ComponentMojo {
     @Parameter(defaultValue = "${project.build.directory}/maven-shared-archive-resources/uufapps/",
                readonly = true, required = true)
     private String outputDirectoryPath;
-
-    /**
-     * Configured OSGi bundles.
-     */
-    @Parameter(property = "bundles", readonly = true, required = false)
-    private List<Bundle> bundles;
 
     /**
      * Maven Dependency Plugin version to use.
@@ -147,15 +144,17 @@ public class AppMojo extends ComponentMojo {
         copyFiles(sourceDirectoryPath, pathOf(allComponentsDirectory, DIRECTORY_ROOT_COMPONENT));
         // 2.2 Create "osgi-imports" file for the "root" component.
         if ((instructions != null) &&
-                (instructions.getImportPackage() != null) && (!instructions.getImportPackage().isEmpty())) {
+            (instructions.getImportPackage() != null) && (!instructions.getImportPackage().isEmpty())) {
             ConfigFileCreator.createOsgiImports(instructions.getImportPackage(),
                                                 pathOf(allComponentsDirectory, DIRECTORY_ROOT_COMPONENT));
         }
         // 3.1. Create dependency tree.
         DependencyNode rootNode = getDependencyTree(allComponentDependencies);
-        // 3.2. Create the final configuration.
+        // 3.2. Read the bundle-dependencies.yaml file of all the components and add the entries the "bundles" instance.
+        addComponentBundleDependencies(rootNode, allComponentsDirectory);
+        // 3.3. Create the final configuration.
         createConfigurationFile(rootNode, allComponentsDirectory);
-        // 3.3 Create dependency tree file.
+        // 3.4. Create dependency tree file.
         createDependencyTree(rootNode, allComponentsDirectory);
         // 4. Unpack UUF Theme dependencies.
         unpackDependencies(allThemeDependencies, allThemesDirectory);
@@ -168,7 +167,7 @@ public class AppMojo extends ComponentMojo {
         if (!ARTIFACT_TYPE_UUF_APP.equals(packaging)) {
             throw new MojoExecutionException(
                     "Packaging type of an UUF App should be '" + ARTIFACT_TYPE_UUF_APP + "'. Instead found '" +
-                            packaging + "'.");
+                    packaging + "'.");
         }
         // Validation: Artifact ID should end with '.feature'
         if (!artifactId.endsWith(APP_ARTIFACT_ID_TAIL)) {
@@ -181,7 +180,7 @@ public class AppMojo extends ComponentMojo {
             YamlFileParser.parse(componentConfigFilePath, ComponentConfig.class);
         } catch (ParsingException e) {
             throw new MojoExecutionException("Component configuration file '" + componentConfigFilePath + "' of '" +
-                                                     artifactId + "' UUF App is invalid.", e);
+                                             artifactId + "' UUF App is invalid.", e);
         }
         // Validation: Parse app configuration file to make sure it is valid.
         parseAppConfig();
@@ -231,14 +230,14 @@ public class AppMojo extends ComponentMojo {
                     componentConfig = YamlFileParser.parse(configFilePath, ComponentConfig.class);
                 } catch (ParsingException e) {
                     throw new RuntimeException("Cannot parse '" + FILE_COMPONENT_CONFIG + "' of " + node +
-                                                       " which read from '" + configFilePath + "' path.", e);
+                                               " which read from '" + configFilePath + "' path.", e);
                 }
                 try {
                     configuration.merge(componentConfig.getConfig());
                 } catch (IllegalArgumentException e) {
                     throw new RuntimeException(
                             "Cannot merge configuration Map parsed from '" + FILE_COMPONENT_CONFIG + "' of " + node +
-                                    " which read from '" + configFilePath + "' path.", e);
+                            " which read from '" + configFilePath + "' path.", e);
                 }
             });
         } catch (RuntimeException e) {
@@ -248,11 +247,53 @@ public class AppMojo extends ComponentMojo {
         // Now create the app's configuration file by serializing the final configuration.
         String content;
         try {
-            content = ConfigurationSerializer.serialize(configuration);
+            content = YamlSerializer.serialize(configuration);
         } catch (SerializationException e) {
             throw new MojoExecutionException("Cannot serialize configuration " + configuration + ".", e);
         }
         ConfigFileCreator.createConfigurationYaml(content, componentsDirectory);
+    }
+
+    /**
+     * This method reads the bundle dependencies coming from all the components and add them to the application's
+     * "bundles" instance which is later used by the carbon-feature-plugin to create the feature.
+     *
+     * @param rootNode            the current app's dependency node (i.e the root node of the app)
+     * @param componentsDirectory the "components" directory within the app
+     * @throws MojoExecutionException thrown on error while reading/populating the bundle dependencies
+     */
+    private void addComponentBundleDependencies(DependencyNode rootNode, String componentsDirectory)
+            throws MojoExecutionException {
+        try {
+            rootNode.traverse(node -> {
+                String bundleDependenciesFilePath = getFilePathIn(node.getArtifactId(), componentsDirectory,
+                                                                  FILE_BUNDLES);
+                if (!Files.exists(Paths.get(bundleDependenciesFilePath))) {
+                    return;
+                }
+                BundleListConfig bundleListConfig = null;
+                try {
+                    bundleListConfig = YamlFileParser.parse(bundleDependenciesFilePath, BundleListConfig.class);
+                } catch (ParsingException e) {
+                    throw new RuntimeException("Cannot parse '" + FILE_BUNDLES + "' of " + node +
+                                               " which read from '" + bundleDependenciesFilePath + "' path.", e);
+                }
+                if (bundleListConfig == null) {
+                    return;
+                }
+                bundleListConfig.getBundles().forEach(bundles::add);
+                //delete the file after reading its content to prevent it from getting packed with the app
+                try {
+                    Files.delete(Paths.get(bundleDependenciesFilePath));
+                } catch (IOException e) {
+                    throw new RuntimeException("Cannot delete '" + FILE_BUNDLES + "' of " + node +
+                                               " which read from '" + bundleDependenciesFilePath + "' path.", e);
+                }
+            });
+        } catch (Exception e) {
+            throw new MojoExecutionException(
+                    "Cannot add component level bundle dependencies for " + rootNode + ".", e);
+        }
     }
 
     private void createDependencyTree(DependencyNode rootNode, String componentsDirectory)
@@ -378,7 +419,7 @@ public class AppMojo extends ComponentMojo {
             return YamlFileParser.parse(appConfigFilePath, AppConfig.class);
         } catch (ParsingException e) {
             throw new MojoExecutionException("App configuration file '" + appConfigFilePath + "' of '" +
-                                                     artifactId + "' UUF App is invalid.", e);
+                                             artifactId + "' UUF App is invalid.", e);
         }
     }
 }

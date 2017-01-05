@@ -89,7 +89,7 @@ public class DependencyTreeParser {
             } else {
                 // jump > 1, this cannot happen
                 throw new ParsingException("Delta between current level (" + level + ") and previous level (" +
-                                                   previousLevel + ") cannot be greater than 1.");
+                                           previousLevel + ") cannot be greater than 1.");
             }
 
             previousLevel = level;

@@ -24,6 +24,7 @@ import org.testng.annotations.Test;
 import org.wso2.carbon.uuf.maven.bean.AppConfig;
 import org.wso2.carbon.uuf.maven.bean.ComponentConfig;
 import org.wso2.carbon.uuf.maven.bean.ThemeConfig;
+import org.wso2.carbon.uuf.maven.bean.mojo.BundleListConfig;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
 
 import java.io.IOException;
@@ -54,6 +55,11 @@ public class YamlFileParserTest {
     @Test
     public ComponentConfig testRootComponentConfiguration() {
         return YamlFileParser.parseString(readResourceFile("/root-component.yaml"), ComponentConfig.class);
+    }
+
+    @Test
+    public BundleListConfig testBundleDependencyConfiguration() throws Exception {
+        return YamlFileParser.parseString(readResourceFile("/bundles.yaml"), BundleListConfig.class);
     }
 
     @Test

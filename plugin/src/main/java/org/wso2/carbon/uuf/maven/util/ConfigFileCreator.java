@@ -20,6 +20,10 @@ package org.wso2.carbon.uuf.maven.util;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.wso2.carbon.uuf.maven.bean.mojo.Bundle;
+import org.wso2.carbon.uuf.maven.exception.SerializationException;
+import org.wso2.carbon.uuf.maven.bean.mojo.BundleListConfig;
+import org.wso2.carbon.uuf.maven.serializer.YamlSerializer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +33,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.wso2.carbon.uuf.maven.ComponentMojo.FILE_BUNDLES;
 
 /**
  * Utility class that creates various configuration files needed by the UUF project creation Mojo's.
@@ -69,6 +76,36 @@ public class ConfigFileCreator {
         } catch (IOException e) {
             throw new MojoExecutionException(
                     "Cannot create '" + FILE_OSGI_IMPORTS + "' file in '" + outputDirectoryPath + "'.", e);
+        }
+    }
+
+    /**
+     * Creates the bundles.yaml file in the given output directory path.
+     *
+     * @param bundles the list of bundles instance used with creating the bundles.yaml
+     * @param outputDirectoryPath output location path use with creating yaml file
+     * @throws MojoExecutionException thrown when an error occurs while creating or writing the yaml file
+     */
+    public static void createBundlesYaml(List<Bundle> bundles, String outputDirectoryPath)
+            throws MojoExecutionException {
+        if (bundles == null || bundles.isEmpty()) {
+           return;
+        }
+        try {
+            createDirectory(Paths.get(outputDirectoryPath));
+            BundleListConfig bundleListConfig = new BundleListConfig();
+            bundleListConfig.setBundles(bundles);
+            String content;
+            try {
+                content = YamlSerializer.serialize(bundleListConfig);
+            } catch (SerializationException e) {
+                throw new MojoExecutionException("Cannot serialize configuration " + bundleListConfig + ".", e);
+            }
+            writeFile(Paths.get(outputDirectoryPath, FILE_BUNDLES),
+                    applyTemplate(TEMPLATE_GENERATED_FILE, content));
+        } catch (IOException e) {
+            throw new MojoExecutionException(
+                    "Cannot create '" + FILE_BUNDLES + "' file in '" + outputDirectoryPath + "'.", e);
         }
     }
 
