@@ -55,10 +55,10 @@ public class YamlFileParser {
             loadedBean = parseString(content, type);
         } catch (IOException e) {
             throw new ParsingException("Cannot read the content of configuration file '" + configurationFile + "'.",
-                    e);
+                                       e);
         } catch (Exception e) {
             throw new ParsingException("Cannot parse the configuration file '" + configurationFile + "'.",
-                    e);
+                                       e);
         }
         if (loadedBean == null) {
             // Either configuration file is empty or has comments only.
