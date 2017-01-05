@@ -1,0 +1,14 @@
+# test
+apis: []
+bindings: []
+config:
+    appName: "test app 2"
+    users:
+        - "Sirimal"
+    successMsg: "Hoooooray!!!"
+    devices:
+        ios:
+            id: 9999
+            location: "Anuradhapura"
+        android:
+            locked: true

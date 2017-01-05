@@ -18,9 +18,11 @@
 
 package org.wso2.carbon.uuf.maven.serializer;
 
+import org.wso2.carbon.uuf.maven.bean.Configuration;
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
-import org.wso2.carbon.uuf.maven.model.Configuration;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.nodes.Tag;
 
 /**
  * YAML serializer for {@link Configuration} model.
@@ -29,8 +31,6 @@ import org.yaml.snakeyaml.Yaml;
  */
 public class ConfigurationSerializer {
 
-    private final Yaml yaml = new Yaml();
-
     /**
      * Serializes the specified config into a YAML.
      *
@@ -38,9 +38,13 @@ public class ConfigurationSerializer {
      * @return YAML representation of the config
      * @throws SerializationException if an error occurred during serialization
      */
-    public String serialize(Configuration configuration) throws SerializationException {
+    public static String serialize(Configuration configuration) throws SerializationException {
+        DumperOptions dumperOptions = new DumperOptions();
+        dumperOptions.setAllowReadOnlyProperties(true);
+        Yaml yaml = new Yaml(dumperOptions);
+
         try {
-            return yaml.dumpAsMap(configuration.asMap());
+            return yaml.dumpAs(configuration, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
         } catch (Exception e) {
             throw new SerializationException("Cannot serialize config " + configuration + ".", e);
         }

@@ -30,21 +30,21 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
+import org.wso2.carbon.uuf.maven.bean.AppConfig;
+import org.wso2.carbon.uuf.maven.bean.ComponentConfig;
+import org.wso2.carbon.uuf.maven.bean.Configuration;
+import org.wso2.carbon.uuf.maven.bean.DependencyNode;
+import org.wso2.carbon.uuf.maven.bean.mojo.Bundle;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
-import org.wso2.carbon.uuf.maven.model.Bundle;
-import org.wso2.carbon.uuf.maven.model.Configuration;
-import org.wso2.carbon.uuf.maven.model.DependencyNode;
-import org.wso2.carbon.uuf.maven.parser.ComponentManifestParser;
-import org.wso2.carbon.uuf.maven.parser.ConfigurationParser;
 import org.wso2.carbon.uuf.maven.parser.DependencyTreeParser;
+import org.wso2.carbon.uuf.maven.parser.YamlFileParser;
 import org.wso2.carbon.uuf.maven.serializer.ConfigurationSerializer;
 import org.wso2.carbon.uuf.maven.serializer.DependencyTreeSerializer;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -68,6 +68,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class AppMojo extends ComponentMojo {
 
+    private static final String FILE_APP_CONFIG = "app.yaml";
     private static final String FILE_DEPENDENCY_TREE = "dependency.tree";
     private static final String DIRECTORY_COMPONENTS = "components";
     private static final String DIRECTORY_THEMES = "themes";
@@ -145,17 +146,15 @@ public class AppMojo extends ComponentMojo {
         // 2.1. Create "root" component.
         copyFiles(sourceDirectoryPath, pathOf(allComponentsDirectory, DIRECTORY_ROOT_COMPONENT));
         // 2.2 Create "osgi-imports" file for the "root" component.
-        if ((instructions != null) && !instructions.isEmpty()) {
-            String osgiImportsContent = instructions.get(CONFIGURATION_IMPORT_PACKAGE);
-            if ((osgiImportsContent != null) && !osgiImportsContent.trim().isEmpty()) {
-                ConfigFileCreator.createOsgiImports(osgiImportsContent,
-                                                    pathOf(allComponentsDirectory, DIRECTORY_ROOT_COMPONENT));
-            }
+        if ((instructions != null) &&
+                (instructions.getImportPackage() != null) && (!instructions.getImportPackage().isEmpty())) {
+            ConfigFileCreator.createOsgiImports(instructions.getImportPackage(),
+                                                pathOf(allComponentsDirectory, DIRECTORY_ROOT_COMPONENT));
         }
         // 3.1. Create dependency tree.
         DependencyNode rootNode = getDependencyTree(allComponentDependencies);
         // 3.2. Create the final configuration.
-        createConfigFile(rootNode, allComponentsDirectory);
+        createConfigurationFile(rootNode, allComponentsDirectory);
         // 3.3 Create dependency tree file.
         createDependencyTree(rootNode, allComponentsDirectory);
         // 4. Unpack UUF Theme dependencies.
@@ -176,22 +175,16 @@ public class AppMojo extends ComponentMojo {
             throw new MojoExecutionException(
                     "Artifact ID of an UUF App should end with '.feature' as it is packaged as a Carbon Feature.");
         }
-        // Validation: Parse configuration file to make sure it is a valid YAML file.
-        String configFilePath = pathOf(sourceDirectoryPath, FILE_CONFIG);
+        // Validation: Parse component configuration file to make sure it is valid.
+        String componentConfigFilePath = pathOf(sourceDirectoryPath, FILE_COMPONENT_CONFIG);
         try {
-            ConfigurationParser.parse(configFilePath);
+            YamlFileParser.parse(componentConfigFilePath, ComponentConfig.class);
         } catch (ParsingException e) {
-            throw new MojoExecutionException("Configuration file '" + configFilePath + "' of this UUF App is invalid.",
-                                             e);
+            throw new MojoExecutionException("Component configuration file '" + componentConfigFilePath + "' of '" +
+                                                     artifactId + "' UUF App is invalid.", e);
         }
-        // Validation: Parse component manifest file to make sure it is valid.
-        String componentManifestFilePath = pathOf(sourceDirectoryPath, FILE_COMPONENT_MANIFEST);
-        try {
-            ComponentManifestParser.parse(componentManifestFilePath);
-        } catch (ParsingException e) {
-            throw new MojoExecutionException(
-                    "Component manifest file '" + componentManifestFilePath + "' of this UUF App is invalid.", e);
-        }
+        // Validation: Parse app configuration file to make sure it is valid.
+        parseAppConfig();
     }
 
     private DependencyNode getDependencyTree(Set<Artifact> includes) throws MojoExecutionException {
@@ -225,52 +218,48 @@ public class AppMojo extends ComponentMojo {
         }
     }
 
-    private void createConfigFile(DependencyNode rootNode, String componentsDirectory) throws MojoExecutionException {
-        Configuration configuration = new Configuration();
+    private void createConfigurationFile(DependencyNode rootNode, String componentsDirectory)
+            throws MojoExecutionException {
+        Configuration configuration = new Configuration(parseAppConfig());
         // Create the final configuration by traversing through the dependency tree.
         try {
             rootNode.traverse(node -> {
-                String configFilePath = getFilePathIn(node.getArtifactId(), componentsDirectory, FILE_CONFIG);
-                Map configMap;
+                String configFilePath = getFilePathIn(node.getArtifactId(), componentsDirectory, FILE_COMPONENT_CONFIG);
                 // Since we are in a lambda, we throw RuntimeExceptions.
+                ComponentConfig componentConfig;
                 try {
-                    configMap = ConfigurationParser.parse(configFilePath);
+                    componentConfig = YamlFileParser.parse(configFilePath, ComponentConfig.class);
                 } catch (ParsingException e) {
-                    throw new RuntimeException("Cannot parse '" + FILE_CONFIG + "' of " + node +
+                    throw new RuntimeException("Cannot parse '" + FILE_COMPONENT_CONFIG + "' of " + node +
                                                        " which read from '" + configFilePath + "' path.", e);
                 }
-                if (configMap == null) {
-                    return; // No configuration found for this node.
-                }
                 try {
-                    configuration.merge(configMap);
+                    configuration.merge(componentConfig.getConfig());
                 } catch (IllegalArgumentException e) {
                     throw new RuntimeException(
-                            "Cannot merge configuration Map parsed from '" + FILE_CONFIG + "' of " + node +
+                            "Cannot merge configuration Map parsed from '" + FILE_COMPONENT_CONFIG + "' of " + node +
                                     " which read from '" + configFilePath + "' path.", e);
                 }
             });
         } catch (RuntimeException e) {
             // Catch above thrown RuntimeExceptions.
-            throw new MojoExecutionException(
-                    "Cannot create final configuration for " + rootNode + ".", e);
+            throw new MojoExecutionException("Cannot create final configuration for " + rootNode + ".", e);
         }
         // Now create the app's configuration file by serializing the final configuration.
-        ConfigurationSerializer serializer = new ConfigurationSerializer();
         String content;
         try {
-            content = serializer.serialize(configuration);
+            content = ConfigurationSerializer.serialize(configuration);
         } catch (SerializationException e) {
             throw new MojoExecutionException("Cannot serialize configuration " + configuration + ".", e);
         }
-        ConfigFileCreator.createConfigYaml(content, componentsDirectory);
+        ConfigFileCreator.createConfigurationYaml(content, componentsDirectory);
     }
 
     private void createDependencyTree(DependencyNode rootNode, String componentsDirectory)
             throws MojoExecutionException {
         String content;
         try {
-            content = new DependencyTreeSerializer().serialize(rootNode);
+            content = DependencyTreeSerializer.serialize(rootNode);
         } catch (SerializationException e) {
             throw new MojoExecutionException(
                     "Cannot serialize dependency tree where root node is " + rootNode + ".", e);
@@ -372,14 +361,24 @@ public class AppMojo extends ComponentMojo {
             // root component
             return pathOf(componentsDirectory, DIRECTORY_ROOT_COMPONENT, fileName);
         } else {
-            int lastIndex = artifactId.lastIndexOf(".");
+            int lastIndex = componentArtifactId.lastIndexOf(".");
             String componentContext;
             if (lastIndex > -1) {
-                componentContext = artifactId.substring(lastIndex + 1);
+                componentContext = componentArtifactId.substring(lastIndex + 1);
             } else {
                 componentContext = componentArtifactId;
             }
             return pathOf(componentsDirectory, componentContext, fileName);
+        }
+    }
+
+    private AppConfig parseAppConfig() throws MojoExecutionException {
+        String appConfigFilePath = pathOf(sourceDirectoryPath, FILE_APP_CONFIG);
+        try {
+            return YamlFileParser.parse(appConfigFilePath, AppConfig.class);
+        } catch (ParsingException e) {
+            throw new MojoExecutionException("App configuration file '" + appConfigFilePath + "' of '" +
+                                                     artifactId + "' UUF App is invalid.", e);
         }
     }
 }

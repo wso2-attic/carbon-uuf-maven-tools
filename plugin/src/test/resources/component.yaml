@@ -1,0 +1,25 @@
+# test
+apis:
+    - className: "org.wso2.carbon.uuf.sample.api.HelloService"
+      uri: "/hello-service/"
+bindings:
+    - zoneName: "org.wso2.carbon.uuf.sample.foundation.footer"
+      fragments:
+        - "org.wso2.carbon.uuf.sample.foundation.footer"
+    - zoneName: "org.wso2.carbon.uuf.sample.foundation.menubar"
+      mode: "append"
+      fragments:
+        - "org.wso2.carbon.uuf.sample.foundation.secured-menubar"
+config:
+    appName: "test app 1"
+    pageSize: 10
+    users:
+        - "Kamal"
+        - "Amal"
+    devices:
+        android:
+            id: 12345
+            location: "Colombo"
+        windows:
+            id: 102030
+            location: "Kandy"
