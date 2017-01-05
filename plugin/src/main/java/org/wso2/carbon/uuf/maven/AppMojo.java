@@ -144,9 +144,9 @@ public class AppMojo extends ComponentMojo {
         copyFiles(sourceDirectoryPath, pathOf(allComponentsDirectory, DIRECTORY_ROOT_COMPONENT));
         // 2.2 Create "osgi-imports" file for the "root" component.
         if ((instructions != null) &&
-                (instructions.getImportPackage() != null) && (!instructions.getImportPackage().isEmpty())) {
+            (instructions.getImportPackage() != null) && (!instructions.getImportPackage().isEmpty())) {
             ConfigFileCreator.createOsgiImports(instructions.getImportPackage(),
-                    pathOf(allComponentsDirectory, DIRECTORY_ROOT_COMPONENT));
+                                                pathOf(allComponentsDirectory, DIRECTORY_ROOT_COMPONENT));
         }
         // 3.1. Create dependency tree.
         DependencyNode rootNode = getDependencyTree(allComponentDependencies);

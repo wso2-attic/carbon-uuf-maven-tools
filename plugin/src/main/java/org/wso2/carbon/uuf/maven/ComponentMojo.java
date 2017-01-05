@@ -43,7 +43,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @Mojo(name = "create-component", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
-        threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
+      threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class ComponentMojo extends AbstractUUFMojo {
 
     protected static final String FILE_COMPONENT_CONFIG = "component.yaml";
@@ -85,7 +85,7 @@ public class ComponentMojo extends AbstractUUFMojo {
             YamlFileParser.parse(componentConfigFilePath, ComponentConfig.class);
         } catch (ParsingException e) {
             throw new MojoExecutionException("Component configuration file '" + componentConfigFilePath + "' of '" +
-                    artifactId + "' UUF Component is invalid.", e);
+                                             artifactId + "' UUF Component is invalid.", e);
         }
 
         List<String> sourceDirectoryPaths = new ArrayList<>();
@@ -104,7 +104,7 @@ public class ComponentMojo extends AbstractUUFMojo {
         sourceDirectoryPaths.add(sourceDirectoryPath);
         String baseDirectoryName = new DependencyNode(artifactId, version, null).getContextPath();
         File archive = ZipCreator.createArchive(sourceDirectoryPaths, baseDirectoryName, outputDirectoryPath,
-                finalName);
+                                                finalName);
         project.getArtifact().setFile(archive);
         projectHelper.attachArtifact(project, ZipCreator.ARCHIVE_FORMAT, null, archive);
     }
