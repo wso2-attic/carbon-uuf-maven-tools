@@ -65,4 +65,12 @@ public class Bundle {
     public void setVersion(String version) {
         this.version = version;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "{" + this.symbolicName + ":" + this.version + "}";
+    }
 }

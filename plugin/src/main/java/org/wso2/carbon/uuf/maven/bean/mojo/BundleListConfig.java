@@ -45,4 +45,13 @@ public class BundleListConfig {
     public List<Bundle> getBundles() {
         return bundles;
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "{" + bundles.toString() + "}";
+    }
 }

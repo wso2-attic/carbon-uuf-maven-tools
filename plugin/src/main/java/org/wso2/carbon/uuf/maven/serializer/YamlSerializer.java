@@ -18,18 +18,17 @@
 
 package org.wso2.carbon.uuf.maven.serializer;
 
-import org.wso2.carbon.uuf.maven.bean.Configuration;
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.nodes.Tag;
 
 /**
- * YAML serializer for {@link Configuration} model.
+ * YAML serializer for serializing any data model.
  *
  * @since 1.0.0
  */
-public class ConfigurationSerializer {
+public class YamlSerializer {
 
     /**
      * Serializes the specified config into a YAML.

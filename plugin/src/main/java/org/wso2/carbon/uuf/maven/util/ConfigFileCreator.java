@@ -23,7 +23,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.wso2.carbon.uuf.maven.bean.mojo.Bundle;
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
 import org.wso2.carbon.uuf.maven.bean.mojo.BundleListConfig;
-import org.wso2.carbon.uuf.maven.serializer.ConfigurationSerializer;
+import org.wso2.carbon.uuf.maven.serializer.YamlSerializer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -97,7 +97,7 @@ public class ConfigFileCreator {
             bundleListConfig.setBundles(bundles);
             String content;
             try {
-                content = ConfigurationSerializer.serialize(bundleListConfig);
+                content = YamlSerializer.serialize(bundleListConfig);
             } catch (SerializationException e) {
                 throw new MojoExecutionException("Cannot serialize configuration " + bundleListConfig + ".", e);
             }

@@ -40,7 +40,7 @@ import org.wso2.carbon.uuf.maven.exception.ParsingException;
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
 import org.wso2.carbon.uuf.maven.parser.DependencyTreeParser;
 import org.wso2.carbon.uuf.maven.parser.YamlFileParser;
-import org.wso2.carbon.uuf.maven.serializer.ConfigurationSerializer;
+import org.wso2.carbon.uuf.maven.serializer.YamlSerializer;
 import org.wso2.carbon.uuf.maven.serializer.DependencyTreeSerializer;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 
@@ -246,7 +246,7 @@ public class AppMojo extends ComponentMojo {
         // Now create the app's configuration file by serializing the final configuration.
         String content;
         try {
-            content = ConfigurationSerializer.serialize(configuration);
+            content = YamlSerializer.serialize(configuration);
         } catch (SerializationException e) {
             throw new MojoExecutionException("Cannot serialize configuration " + configuration + ".", e);
         }
