@@ -328,9 +328,9 @@ public class AppMojo extends ComponentMojo {
                             element(name("bundles"),
                                     (bundles == null ? Collections.<Bundle>emptyList() : bundles).stream()
                                             .map(bundle -> element(name("bundle"),
-                                                    element(name("symbolicName"),
-                                                            bundle.getSymbolicName()),
-                                                    element(name("version"), bundle.getVersion()))
+                                                                   element(name("symbolicName"),
+                                                                           bundle.getSymbolicName()),
+                                                                   element(name("version"), bundle.getVersion()))
                                             ).toArray(MojoExecutor.Element[]::new))
                     ),
                     executionEnvironment(project, session, pluginManager)
