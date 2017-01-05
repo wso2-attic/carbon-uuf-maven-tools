@@ -68,7 +68,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
  * @since 1.0.0
  */
 @Mojo(name = "create-app", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
-        threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
+      threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class AppMojo extends ComponentMojo {
 
     private static final String FILE_APP_CONFIG = "app.yaml";
@@ -88,7 +88,7 @@ public class AppMojo extends ComponentMojo {
      * Path to the output directory of this Mojo
      */
     @Parameter(defaultValue = "${project.build.directory}/maven-shared-archive-resources/uufapps/",
-            readonly = true, required = true)
+               readonly = true, required = true)
     private String outputDirectoryPath;
 
     /**
@@ -167,7 +167,7 @@ public class AppMojo extends ComponentMojo {
         if (!ARTIFACT_TYPE_UUF_APP.equals(packaging)) {
             throw new MojoExecutionException(
                     "Packaging type of an UUF App should be '" + ARTIFACT_TYPE_UUF_APP + "'. Instead found '" +
-                            packaging + "'.");
+                    packaging + "'.");
         }
         // Validation: Artifact ID should end with '.feature'
         if (!artifactId.endsWith(APP_ARTIFACT_ID_TAIL)) {
@@ -180,7 +180,7 @@ public class AppMojo extends ComponentMojo {
             YamlFileParser.parse(componentConfigFilePath, ComponentConfig.class);
         } catch (ParsingException e) {
             throw new MojoExecutionException("Component configuration file '" + componentConfigFilePath + "' of '" +
-                    artifactId + "' UUF App is invalid.", e);
+                                             artifactId + "' UUF App is invalid.", e);
         }
         // Validation: Parse app configuration file to make sure it is valid.
         parseAppConfig();
@@ -230,14 +230,14 @@ public class AppMojo extends ComponentMojo {
                     componentConfig = YamlFileParser.parse(configFilePath, ComponentConfig.class);
                 } catch (ParsingException e) {
                     throw new RuntimeException("Cannot parse '" + FILE_COMPONENT_CONFIG + "' of " + node +
-                            " which read from '" + configFilePath + "' path.", e);
+                                               " which read from '" + configFilePath + "' path.", e);
                 }
                 try {
                     configuration.merge(componentConfig.getConfig());
                 } catch (IllegalArgumentException e) {
                     throw new RuntimeException(
                             "Cannot merge configuration Map parsed from '" + FILE_COMPONENT_CONFIG + "' of " + node +
-                                    " which read from '" + configFilePath + "' path.", e);
+                            " which read from '" + configFilePath + "' path.", e);
                 }
             });
         } catch (RuntimeException e) {
@@ -267,27 +267,27 @@ public class AppMojo extends ComponentMojo {
         try {
             rootNode.traverse(node -> {
                 String bundleDependenciesFilePath = getFilePathIn(node.getArtifactId(), componentsDirectory,
-                        FILE_BUNDLE_DEPENDENCIES);
+                                                                  FILE_BUNDLE_DEPENDENCIES);
                 if (!Files.exists(Paths.get(bundleDependenciesFilePath))) {
                     return;
                 }
+                BundleListConfig bundleListConfig = null;
                 try {
-                    BundleListConfig bundleListConfig = YamlFileParser.parse(bundleDependenciesFilePath,
-                            BundleListConfig.class);
-                    if (bundleListConfig == null) {
-                        return;
-                    }
-                    bundleListConfig.getBundles().forEach(bundles::add);
-                    //delete the file after reading its content to prevent it from getting packed with the app
-                    try {
-                        Files.delete(Paths.get(bundleDependenciesFilePath));
-                    } catch (IOException e) {
-                        throw new RuntimeException("Cannot delete '" + FILE_BUNDLE_DEPENDENCIES + "' of " + node +
-                                                   " which read from '" + bundleDependenciesFilePath + "' path.", e);
-                    }
+                    bundleListConfig = YamlFileParser.parse(bundleDependenciesFilePath, BundleListConfig.class);
                 } catch (ParsingException e) {
                     throw new RuntimeException("Cannot parse '" + FILE_BUNDLE_DEPENDENCIES + "' of " + node +
-                            " which read from '" + bundleDependenciesFilePath + "' path.", e);
+                                               " which read from '" + bundleDependenciesFilePath + "' path.", e);
+                }
+                if (bundleListConfig == null) {
+                    return;
+                }
+                bundleListConfig.getBundles().forEach(bundles::add);
+                //delete the file after reading its content to prevent it from getting packed with the app
+                try {
+                    Files.delete(Paths.get(bundleDependenciesFilePath));
+                } catch (IOException e) {
+                    throw new RuntimeException("Cannot delete '" + FILE_BUNDLE_DEPENDENCIES + "' of " + node +
+                                               " which read from '" + bundleDependenciesFilePath + "' path.", e);
                 }
             });
         } catch (Exception e) {
@@ -419,7 +419,7 @@ public class AppMojo extends ComponentMojo {
             return YamlFileParser.parse(appConfigFilePath, AppConfig.class);
         } catch (ParsingException e) {
             throw new MojoExecutionException("App configuration file '" + appConfigFilePath + "' of '" +
-                    artifactId + "' UUF App is invalid.", e);
+                                             artifactId + "' UUF App is invalid.", e);
         }
     }
 }
