@@ -223,7 +223,7 @@ public class AppMojo extends ComponentMojo {
         // Create the final configuration by traversing through the dependency tree.
         try {
             rootNode.traverse(node -> {
-                String configFilePath = getFilePathIn(node.getArtifactId(), componentsDirectory, FILE_COMPONENT_CONFIG);
+                String configFilePath = getFilePathIn(node, componentsDirectory, FILE_COMPONENT_CONFIG);
                 // Since we are in a lambda, we throw RuntimeExceptions.
                 ComponentConfig componentConfig;
                 try {
@@ -266,8 +266,7 @@ public class AppMojo extends ComponentMojo {
             throws MojoExecutionException {
         try {
             rootNode.traverse(node -> {
-                String bundleDependenciesFilePath = getFilePathIn(node.getArtifactId(), componentsDirectory,
-                                                                  FILE_BUNDLES);
+                String bundleDependenciesFilePath = getFilePathIn(node, componentsDirectory, FILE_BUNDLES);
                 if (!Files.exists(Paths.get(bundleDependenciesFilePath))) {
                     return;
                 }
@@ -397,19 +396,12 @@ public class AppMojo extends ComponentMojo {
         }
     }
 
-    private String getFilePathIn(String componentArtifactId, String componentsDirectory, String fileName) {
-        if (artifactId.equals(componentArtifactId)) {
+    private String getFilePathIn(DependencyNode node, String componentsDirectory, String fileName) {
+        if (artifactId.equals(node.getArtifactId())) {
             // root component
             return pathOf(componentsDirectory, DIRECTORY_ROOT_COMPONENT, fileName);
         } else {
-            int lastIndex = componentArtifactId.lastIndexOf(".");
-            String componentContext;
-            if (lastIndex > -1) {
-                componentContext = componentArtifactId.substring(lastIndex + 1);
-            } else {
-                componentContext = componentArtifactId;
-            }
-            return pathOf(componentsDirectory, componentContext, fileName);
+            return pathOf(componentsDirectory, node.getContextPath(), fileName);
         }
     }
 
