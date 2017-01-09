@@ -111,7 +111,9 @@ User should add the plugin dependency into project pom.xml file in order to crea
 ```
 Once you add the carbon-uuf-maven-plugin and set the goal as ‘create-component’, you can create a uuf component by running maven packaging command as ‘mvn clean install’.  You should import external packages you used inside the component as mentioned in the above pom file. 
 
-(e.g : <Import-Package> org.wso2.carbon.uuf.sample.simpleauth.bundle </Import-Package>)
+```xml
+(e.g. : - <Import-Package> org.wso2.carbon.uuf.sample.simpleauth.bundle </Import-Package> ). 
+```
 
 Moreover all bundle dependencies used by this component should be specified as following example.
 
