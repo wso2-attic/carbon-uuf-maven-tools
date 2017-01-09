@@ -40,8 +40,8 @@ import org.wso2.carbon.uuf.maven.exception.ParsingException;
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
 import org.wso2.carbon.uuf.maven.parser.DependencyTreeParser;
 import org.wso2.carbon.uuf.maven.parser.YamlFileParser;
-import org.wso2.carbon.uuf.maven.serializer.YamlSerializer;
 import org.wso2.carbon.uuf.maven.serializer.DependencyTreeSerializer;
+import org.wso2.carbon.uuf.maven.serializer.YamlSerializer;
 import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 
 import java.io.IOException;
@@ -186,7 +186,12 @@ public class AppMojo extends ComponentMojo {
         parseAppConfig();
     }
 
-    private DependencyNode getDependencyTree(Set<Artifact> includes) throws MojoExecutionException {
+    private DependencyNode getDependencyTree(Set<Artifact> componentDependencies) throws MojoExecutionException {
+        if (componentDependencies.isEmpty()) {
+            // There are no component dependencies. So only one node is in the dependency tree and its the root app.
+            return new DependencyNode(this.artifactId, this.version, null);
+        }
+
         String dependencyTreeFilePath = tempDirectoryPath + FILE_DEPENDENCY_TREE;
         try {
             executeMojo(
@@ -199,7 +204,7 @@ public class AppMojo extends ComponentMojo {
                     configuration(
                             element(name("verbose"), "true"),
                             element(name("outputFile"), dependencyTreeFilePath),
-                            element(name("includes"), includes.stream()
+                            element(name("includes"), componentDependencies.stream()
                                     .map(artifact -> artifact.getGroupId() + ":" + artifact.getArtifactId() + "::")
                                     .collect(Collectors.joining(",")))
                     ),
@@ -376,7 +381,11 @@ public class AppMojo extends ComponentMojo {
         }
     }
 
-    private void unpackDependencies(Set<Artifact> includes, String outputDirectory) throws MojoExecutionException {
+    private void unpackDependencies(Set<Artifact> dependencies, String outputDirectory) throws MojoExecutionException {
+        if (dependencies.isEmpty()) {
+            return; // nothing to unpack
+        }
+
         try {
             executeMojo(
                     plugin(
@@ -388,12 +397,12 @@ public class AppMojo extends ComponentMojo {
                     configuration(
                             element(name("outputDirectory"), outputDirectory),
                             element(name("includeArtifactIds"),
-                                    includes.stream().map(Artifact::getArtifactId).collect(Collectors.joining(",")))
+                                    dependencies.stream().map(Artifact::getArtifactId).collect(Collectors.joining(",")))
                     ),
                     executionEnvironment(project, session, pluginManager)
             );
         } catch (MojoExecutionException e) {
-            throw new MojoExecutionException("Cannot unpack dependencies " + includes + ".", e);
+            throw new MojoExecutionException("Cannot unpack dependencies " + dependencies + ".", e);
         }
     }
 
