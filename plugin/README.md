@@ -117,10 +117,11 @@ Moreover all bundle dependencies used by this component should be specified as f
 
  e.g :
  ```xml
-<bundle>
-    <symbolicName>org.wso2.carbon.uuf.sample.pets-store.bundle</symbolicName>
-    <version> 1.0.0 </version>
-</bundle>
+ <bundle>
+     <symbolicName>org.wso2.carbon.uuf.sample.pets-store.bundle</symbolicName>
+     <version> 1.0.0 </version>
+ </bundle>
+ ```
 
 #### 2) Creating a UUF Theme
 
