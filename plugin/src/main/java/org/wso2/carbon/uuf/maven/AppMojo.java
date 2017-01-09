@@ -106,7 +106,7 @@ public class AppMojo extends ComponentMojo {
     /**
      * Carbon Feature Plugin version to use.
      */
-    @Parameter(defaultValue = "2.0.1", readonly = true, required = false)
+    @Parameter(defaultValue = "3.0.0", readonly = true, required = false)
     private String carbonFeaturePluginVersion;
 
     /**
