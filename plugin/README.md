@@ -95,6 +95,13 @@ User should add the plugin dependency into project pom.xml file in order to crea
                            <!-- import necessary packages -->
                            <Import-Package> … </Import-Package>
                        </instructions>
+                       <!--All backend bundle dependencies for this component should be specified here-->
+                       <bundles>
+                           <bundle>
+                               <symbolicName> … </symbolicName>
+                               <version> … </version>
+                           </bundle>
+                       </bundles>
                    </configuration>
                </execution>
            </executions>
@@ -105,6 +112,15 @@ User should add the plugin dependency into project pom.xml file in order to crea
 Once you add the carbon-uuf-maven-plugin and set the goal as ‘create-component’, you can create a uuf component by running maven packaging command as ‘mvn clean install’.  You should import external packages you used inside the component as mentioned in the above pom file. 
 
 (e.g : <Import-Package> org.wso2.carbon.uuf.sample.simpleauth.bundle </Import-Package>)
+
+Moreover all bundle dependencies used by this component should be specified as following example.
+
+ e.g :
+ ```xml
+<bundle>
+    <symbolicName>org.wso2.carbon.uuf.sample.pets-store.bundle</symbolicName>
+    <version> 1.0.0 </version>
+</bundle>
 
 #### 2) Creating a UUF Theme
 
@@ -212,7 +228,7 @@ The plugin dependency and the plugin goal that is added into project pom.xml fil
                            <!-- import necessary packages -->
                            <Import-Package> … </Import-Package>
                        </instructions>
-                       <!--All backend dependencies should be specified here-->
+                       <!--All bundle dependencies for the root component should be specified here-->
                        <bundles>
                            <bundle>
                                <symbolicName> … </symbolicName>
@@ -230,7 +246,7 @@ Since we are going to create a UUF application, the goal should be defined as �
 ```xml
 (e.g. : - <Import-Package> org.wso2.carbon.uuf.sample.simpleauth.bundle </Import-Package> ). 
 ```
-Moreover all backend dependencies should be specified as following example.
+Moreover all bundle dependencies used by the 'root' component should be specified as following example.
 
  e.g :
  ```xml
