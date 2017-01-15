@@ -46,8 +46,9 @@ import java.util.List;
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class ComponentMojo extends AbstractUUFMojo {
 
-    protected static final String FILE_COMPONENT_CONFIG = "component.yaml";
+    public static final String ARTIFACT_TYPE_UUF_COMPONENT = "uuf-component";
     public static final String FILE_BUNDLES = "bundles.yaml";
+    protected static final String FILE_COMPONENT_CONFIG = "component.yaml";
 
     /**
      * Path to the temporary directory for UUF Maven plugin.

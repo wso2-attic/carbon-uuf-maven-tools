@@ -40,6 +40,7 @@ import java.util.Collections;
       threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class ThemeMojo extends AbstractUUFMojo {
 
+    public static final String ARTIFACT_TYPE_UUF_THEME = "uuf-theme";
     private static final String FILE_THEME = "theme.yaml";
 
     /**
