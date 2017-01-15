@@ -108,5 +108,35 @@
                 </lifecycles>
             </configuration>
         </component>
+        <!--End copy-paste-->
+        <component>
+            <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+            <role-hint>uuf-app</role-hint>
+            <implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler
+            </implementation>
+            <configuration>
+                <type>uuf-app</type>
+                <extension>zip</extension>
+                <packaging>uuf-app</packaging>
+                <classifier>uuf-app</classifier>
+                <language>html</language>
+            </configuration>
+        </component>
+        <component>
+            <role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+            <role-hint>uuf-app</role-hint>
+            <implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
+            <configuration>
+                <lifecycles>
+                    <lifecycle>
+                        <id>default</id>
+                        <phases>
+                            <install>org.apache.maven.plugins:maven-install-plugin:install</install>
+                            <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
+                        </phases>
+                    </lifecycle>
+                </lifecycles>
+            </configuration>
+        </component>
     </components>
 </component-set>
