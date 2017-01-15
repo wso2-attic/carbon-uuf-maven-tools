@@ -20,21 +20,15 @@ package org.wso2.carbon.uuf.maven;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.twdata.maven.mojoexecutor.MojoExecutor;
 import org.wso2.carbon.uuf.maven.bean.AppConfig;
 import org.wso2.carbon.uuf.maven.bean.ComponentConfig;
 import org.wso2.carbon.uuf.maven.bean.Configuration;
 import org.wso2.carbon.uuf.maven.bean.DependencyNode;
-import org.wso2.carbon.uuf.maven.bean.mojo.Bundle;
 import org.wso2.carbon.uuf.maven.bean.mojo.BundleListConfig;
 import org.wso2.carbon.uuf.maven.exception.ParsingException;
 import org.wso2.carbon.uuf.maven.exception.SerializationException;
@@ -47,7 +41,6 @@ import org.wso2.carbon.uuf.maven.util.ConfigFileCreator;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -63,33 +56,23 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 /**
- * UUF Application creation Mojo.
+ * Base class for all UUF app creation Mojos.
  *
  * @since 1.0.0
  */
-@Mojo(name = "create-app", inheritByDefault = false, requiresDependencyResolution = ResolutionScope.COMPILE,
-      threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
-public class AbstractAppMojo extends ComponentMojo {
+public abstract class AbstractAppMojo extends ComponentMojo {
 
     private static final String FILE_APP_CONFIG = "app.yaml";
     private static final String FILE_DEPENDENCY_TREE = "dependency.tree";
     private static final String DIRECTORY_COMPONENTS = "components";
     private static final String DIRECTORY_THEMES = "themes";
     private static final String DIRECTORY_ROOT_COMPONENT = "root";
-    private static final String APP_ARTIFACT_ID_TAIL = ".feature";
 
     /**
      * The Maven session associated with this Mojo.
      */
     @Parameter(defaultValue = "${session}", readonly = true, required = true)
-    private MavenSession session;
-
-    /**
-     * Path to the output directory of this Mojo
-     */
-    @Parameter(defaultValue = "${project.build.directory}/maven-shared-archive-resources/uufapps/",
-               readonly = true, required = true)
-    private String outputDirectoryPath;
+    protected MavenSession session;
 
     /**
      * Maven Dependency Plugin version to use.
@@ -104,16 +87,24 @@ public class AbstractAppMojo extends ComponentMojo {
     private String resourcesPluginVersion;
 
     /**
-     * Carbon Feature Plugin version to use.
-     */
-    @Parameter(defaultValue = "3.0.0", readonly = true, required = false)
-    private String carbonFeaturePluginVersion;
-
-    /**
      * Plugin manager to execute other Maven plugins.
      */
     @Component(hint = "default")
-    private BuildPluginManager pluginManager;
+    protected BuildPluginManager pluginManager;
+
+    /**
+     * Returns the path to the output directory.
+     *
+     * @return path to the output directory.
+     */
+    protected abstract String getOutputDirectoryPath();
+
+    /**
+     * Creates the final artifact of the this Maven project.
+     *
+     * @throws MojoExecutionException if an error occurs during artifact creation
+     */
+    protected abstract void createProjectArtifact() throws MojoExecutionException;
 
     /**
      * {@inheritDoc}
@@ -123,9 +114,7 @@ public class AbstractAppMojo extends ComponentMojo {
         // Do validations.
         validate();
 
-        // Compute the App's fully qualified name by removing ".feature" from the artifact ID.
-        String appFullyQualifiedName = artifactId.substring(0, (artifactId.length() - APP_ARTIFACT_ID_TAIL.length()));
-        outputDirectoryPath += appFullyQualifiedName;
+        String outputDirectoryPath = getOutputDirectoryPath();
         // Categorize dependencies.
         @SuppressWarnings("unchecked")
         Set<Artifact> allDependencies = project.getArtifacts();
@@ -133,7 +122,7 @@ public class AbstractAppMojo extends ComponentMojo {
                 .filter(artifact -> ARTIFACT_TYPE_UUF_COMPONENT.equals(artifact.getClassifier()))
                 .collect(Collectors.toSet());
         Set<Artifact> allThemeDependencies = allDependencies.stream()
-                .filter(artifact -> ARTIFACT_TYPE_UUF_THEME.equals(artifact.getClassifier()))
+                .filter(artifact -> ThemeMojo.ARTIFACT_TYPE_UUF_THEME.equals(artifact.getClassifier()))
                 .collect(Collectors.toSet());
         String allComponentsDirectory = pathOf(outputDirectoryPath, DIRECTORY_COMPONENTS);
         String allThemesDirectory = pathOf(outputDirectoryPath, DIRECTORY_THEMES);
@@ -158,22 +147,11 @@ public class AbstractAppMojo extends ComponentMojo {
         createDependencyTree(rootNode, allComponentsDirectory);
         // 4. Unpack UUF Theme dependencies.
         unpackDependencies(allThemeDependencies, allThemesDirectory);
-        // 5. Create Carbon Feature.
-        createCarbonFeature(appFullyQualifiedName);
+        // 5. Create final artifact.
+        createProjectArtifact();
     }
 
-    private void validate() throws MojoExecutionException {
-        // Validation: Packaging type should be 'carbon-feature'
-        if (!ARTIFACT_TYPE_UUF_APP.equals(packaging)) {
-            throw new MojoExecutionException(
-                    "Packaging type of an UUF App should be '" + ARTIFACT_TYPE_UUF_APP + "'. Instead found '" +
-                            packaging + "'.");
-        }
-        // Validation: Artifact ID should end with '.feature'
-        if (!artifactId.endsWith(APP_ARTIFACT_ID_TAIL)) {
-            throw new MojoExecutionException(
-                    "Artifact ID of an UUF App should end with '.feature' as it is packaged as a Carbon Feature.");
-        }
+    protected void validate() throws MojoExecutionException {
         // Validation: Parse component configuration file to make sure it is valid.
         String componentConfigFilePath = pathOf(sourceDirectoryPath, FILE_COMPONENT_CONFIG);
         try {
@@ -314,46 +292,6 @@ public class AbstractAppMojo extends ComponentMojo {
         ConfigFileCreator.createDependencyTree(content, componentsDirectory);
     }
 
-    private void createCarbonFeature(String appFullyQualifiedName) throws MojoExecutionException {
-        // Create a 'resources' directory and add it to the project as a resources directory.
-        String tempResourcesDirectoryPath = pathOf(tempDirectoryPath, "resources");
-        Resource resource = new Resource();
-        resource.setDirectory(tempResourcesDirectoryPath);
-        project.addResource(resource);
-        // Create the "p2.inf" file in that 'resources' directory.
-        ConfigFileCreator.createP2Inf(appFullyQualifiedName, tempResourcesDirectoryPath);
-        // Create Carbon Feature.
-        try {
-            executeMojo(
-                    plugin(
-                            groupId("org.wso2.carbon.maven"),
-                            artifactId("carbon-feature-plugin"),
-                            version(carbonFeaturePluginVersion)
-                    ),
-                    goal("generate"),
-                    configuration(
-                            element(name("propertyFile"), ConfigFileCreator.createFeatureProperties(tempDirectoryPath)),
-                            element(name("adviceFileContents"),
-                                    element(name("advice"),
-                                            element(name("name"), "org.wso2.carbon.p2.category.type"),
-                                            element(name("value"), "server")
-                                    )
-                            ),
-                            element(name("bundles"),
-                                    (bundles == null ? Collections.<Bundle>emptyList() : bundles).stream()
-                                            .map(bundle -> element(name("bundle"),
-                                                                   element(name("symbolicName"),
-                                                                           bundle.getSymbolicName()),
-                                                                   element(name("version"), bundle.getVersion()))
-                                            ).toArray(MojoExecutor.Element[]::new))
-                    ),
-                    executionEnvironment(project, session, pluginManager)
-            );
-        } catch (MojoExecutionException e) {
-            throw new MojoExecutionException(
-                    "Cannot create Carbon Feature for UUF App '" + appFullyQualifiedName + "'.", e);
-        }
-    }
 
     private void copyFiles(String sourcePath, String destinationPath) throws MojoExecutionException {
         // TODO: 10/19/16 Exclude unnecessary files (e.g. .iml, .DS_Store) when packing the root component
