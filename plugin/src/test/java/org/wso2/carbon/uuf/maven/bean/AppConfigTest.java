@@ -67,7 +67,7 @@ public class AppConfigTest {
         Assert.assertThrows(IllegalArgumentException.class,
                             () -> appConfig.setErrorPages(Collections.singletonMap("99", "/foundation/error/404")));
         Assert.assertThrows(IllegalArgumentException.class,
-                            () -> appConfig.setErrorPages(Collections.singletonMap("1000", "/foundation/error/404")));
+                            () -> appConfig.setErrorPages(Collections.singletonMap("600", "/foundation/error/404")));
         Assert.assertThrows(IllegalArgumentException.class,
                             () -> appConfig.setErrorPages(Collections.singletonMap("404", "")));
         Assert.assertThrows(IllegalArgumentException.class,

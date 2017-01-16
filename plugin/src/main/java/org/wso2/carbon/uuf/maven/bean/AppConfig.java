@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  */
 public class AppConfig {
 
-    private static final Pattern HTTP_STATUS_CODES_PATTERN = Pattern.compile("[1-9][0-9][0-9]");
+    private static final Pattern HTTP_STATUS_CODES_PATTERN = Pattern.compile("[1-5][0-9][0-9]");
 
     private String contextPath;
     private String theme;
@@ -146,7 +146,7 @@ public class AppConfig {
 
                 if (!httpStatusCode.equals("default") && !HTTP_STATUS_CODES_PATTERN.matcher(httpStatusCode).matches()) {
                     throw new IllegalArgumentException(
-                            "HTTP status code of an error page entry in the app's config must be between 100 and 999." +
+                            "HTTP status code of an error page entry in the app's config must be between 100 and 599." +
                                     " Instead found '" + httpStatusCode + "' for URI '" + errorPageUri + "'.");
                 }
 
