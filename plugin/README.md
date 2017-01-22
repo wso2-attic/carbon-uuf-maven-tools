@@ -71,7 +71,7 @@ org.wso2.carbon.<product-name>.<component-name>.ui
 |
 ‘---- pom.xml
 ```
-Please refer complete version of simple-oauth component sample [here](https://github.com/wso2/carbon-uuf/tree/master/samples/components/org.wso2.carbon.uuf.sample.simple-auth)
+Please refer complete version of simple-oauth component sample [here](https://github.com/wso2/carbon-uuf/tree/master/samples/components/org.wso2.carbon.uuf.sample.simple-auth.ui)
 
 User should add the plugin dependency into project pom.xml file in order to create an UUF component as follows. This will be automatically added with the generated archetype.
 
@@ -151,7 +151,7 @@ org.wso2.carbon.<product-name>.[<app-name>.]<theme-name>.theme
 ‘---- pom.xml
 ```
 
-Please refer complete version of ‘green’ theme sample [here](https://github.com/wso2/carbon-uuf/tree/master/samples/themes/org.wso2.carbon.uuf.sample.theme.green).
+Please refer complete version of ‘green’ theme sample [here](https://github.com/wso2/carbon-uuf/tree/master/samples/themes/org.wso2.carbon.uuf.sample.green.theme).
 
 The plugin dependency and the plugin goal that is added into project pom.xml file in order to create an UUF theme as follows. This will be automatically added with the generated archetype.
 
@@ -206,7 +206,7 @@ org.wso2.carbon.<product-name>.<app-name>.feature
 ‘---- pom.xml /* defines dependent components */
 ```
 
-Please refer complete version of pets-store sample [here](https://github.com/wso2/carbon-uuf/tree/master/samples/apps/org.wso2.carbon.uuf.sample.pets-store)
+Please refer complete version of pets-store sample [here](https://github.com/wso2/carbon-uuf/tree/master/samples/apps/org.wso2.carbon.uuf.sample.pets-store.app)
 
 The plugin dependency and the plugin goal that is added into project pom.xml file in order to create an UUF application as follows. This will be automatically added with the generated archetype.
 
