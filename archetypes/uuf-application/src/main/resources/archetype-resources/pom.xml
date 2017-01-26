@@ -44,15 +44,15 @@
         <!-- NOTE: Add **ONLY** UUF App/Component/Theme dependencies here.
         If you need to ship non-UUF dependencies with your UUF App, please use a p2 feature.-->
         <dependency>
-            <groupId>org.wso2.carbon.uuf.sample</groupId>
-            <artifactId>org.wso2.carbon.uuf.sample.foundation</artifactId>
+            <groupId>org.wso2.carbon.uuf.common</groupId>
+            <artifactId>org.wso2.carbon.uuf.common.foundation.ui</artifactId>
             <version>1.0.0-SNAPSHOT</version>
             <type>zip</type>
             <classifier>uuf-component</classifier>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.uuf.sample</groupId>
-            <artifactId>org.wso2.carbon.uuf.sample.theme.default</artifactId>
+            <groupId>org.wso2.carbon.uuf.common</groupId>
+            <artifactId>org.wso2.carbon.uuf.common.default.theme</artifactId>
             <version>1.0.0-SNAPSHOT</version>
             <type>zip</type>
             <classifier>uuf-theme</classifier>
