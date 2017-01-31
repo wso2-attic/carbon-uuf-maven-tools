@@ -105,18 +105,15 @@ public class AppConfigTest {
 
     @Test
     public void testSecurityConfigValidations() {
-        AppConfig.PatternsConfig patternsConfig = new AppConfig.PatternsConfig();
+        AppConfig.SecurityConfig securityConfig = new AppConfig.SecurityConfig();
         Assert.assertThrows(IllegalArgumentException.class,
-                            () -> patternsConfig.setAccept(Collections.singletonList("")));
+                () -> securityConfig.setCsrfIgnoreUris(Collections.singletonList("")));
         Assert.assertThrows(IllegalArgumentException.class,
-                            () -> patternsConfig.setReject(Collections.singletonList("")));
-
-        patternsConfig.setAccept(null);
-        patternsConfig.setAccept(Collections.emptyList());
-        patternsConfig.setAccept(Collections.singletonList("/some/pattern"));
-        patternsConfig.setReject(null);
-        patternsConfig.setReject(Collections.emptyList());
-        patternsConfig.setReject(Collections.singletonList("/some/pattern"));
+                () -> securityConfig.setCsrfIgnoreUris(Collections.singletonList("some/uri")));
+        Assert.assertThrows(IllegalArgumentException.class,
+                () -> securityConfig.setXssIgnoreUris(Collections.singletonList("")));
+        Assert.assertThrows(IllegalArgumentException.class,
+                () -> securityConfig.setXssIgnoreUris(Collections.singletonList("some/uri")));
     }
 
     private static AppConfig createAppConfig() {

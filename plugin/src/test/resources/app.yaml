@@ -22,11 +22,7 @@ errorPages:
   default: "/foundation/error/default"
 loginPageUri: "/simple-auth/login"
 security:
-  csrfPatterns:
-    accept: []
-    reject: []
-  xssPatterns:
-    accept: []
-    reject: []
+  csrfIgnoreUris: []
+  xssIgnoreUris: []
   responseHeaders:
     "Some Header": "some Value"
