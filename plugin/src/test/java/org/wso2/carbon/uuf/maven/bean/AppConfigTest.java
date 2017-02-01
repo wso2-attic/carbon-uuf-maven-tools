@@ -117,6 +117,10 @@ public class AppConfigTest {
 
         securityConfig.setCsrfIgnoreUris(Collections.singletonList("/valid/uri"));
         securityConfig.setXssIgnoreUris(Collections.singletonList("/valid/uri"));
+        securityConfig.setCsrfIgnoreUris(null);
+        securityConfig.setXssIgnoreUris(null);
+        securityConfig.setCsrfIgnoreUris(Collections.singletonList(null));
+        securityConfig.setXssIgnoreUris(Collections.singletonList(null));
     }
 
     private static AppConfig createAppConfig() {

@@ -376,15 +376,22 @@ public class AppConfig {
          * @throws IllegalArgumentException if URIs in {@code csrfIgnoreUris} is empty or doesnn't start with '/'.
          */
         public void setCsrfIgnoreUris(List<String> csrfIgnoreUris) {
-            for (String csrfUri : csrfIgnoreUris) {
-                if (csrfUri.isEmpty()) {
-                    throw new IllegalArgumentException("URIs configured in 'csrfIgnoreUris' cannot be empty.");
-                } else if (!csrfUri.startsWith("/")) {
-                    throw new IllegalArgumentException(
-                            "URIs configured in 'csrfIgnoreUris' must start with a '/'. ");
+            if (csrfIgnoreUris != null) {
+                for (String csrfUri : csrfIgnoreUris) {
+                    if (csrfUri != null) {
+                        if (csrfUri.isEmpty()) {
+                            throw new IllegalArgumentException("CSRF ignore URI in the app's config cannot be empty.");
+                        } else if (!csrfUri.startsWith("/")) {
+                            throw new IllegalArgumentException(
+                                    "XSS ignore URI in the app's config must start with a '/'. Instead found '" +
+                                            csrfUri.charAt(0) + "' at the beginning of the ignore URI '" + csrfUri + "'.");
+                        }
+                    }
                 }
+                this.csrfIgnoreUris = csrfIgnoreUris;
+            } else {
+                this.csrfIgnoreUris = Collections.emptyList();
             }
-            this.csrfIgnoreUris = (csrfIgnoreUris == null) ? Collections.emptyList() : csrfIgnoreUris;
         }
 
         /**
@@ -403,15 +410,22 @@ public class AppConfig {
          * @throws IllegalArgumentException if URIs in {@code xssIgnoreUris} is empty or doesn't start with '/'.
          */
         public void setXssIgnoreUris(List<String> xssIgnoreUris) {
-            for (String xssUri : xssIgnoreUris) {
-                if (xssUri.isEmpty()) {
-                    throw new IllegalArgumentException("URIs configured in 'xssIgnoreUris' cannot be empty.");
-                } else if (!xssUri.startsWith("/")) {
-                    throw new IllegalArgumentException(
-                            "URIs configured in 'xssIgnoreUris' must start with a '/'. ");
+            if (xssIgnoreUris != null) {
+                for (String xssUri : xssIgnoreUris) {
+                    if (xssUri != null) {
+                        if (xssUri.isEmpty()) {
+                            throw new IllegalArgumentException("XSS ignore URI in the app's config cannot be empty.");
+                        } else if (!xssUri.startsWith("/")) {
+                            throw new IllegalArgumentException(
+                                    "XSS ignore URI in the app's config must start with a '/'. Instead found '" +
+                                            xssUri.charAt(0) + "' at the beginning of the ignore URI '" + xssUri + "'.");
+                        }
+                    }
                 }
+                this.xssIgnoreUris = xssIgnoreUris;
+            } else {
+                this.xssIgnoreUris = Collections.emptyList();
             }
-            this.xssIgnoreUris = (xssIgnoreUris == null) ? Collections.emptyList() : xssIgnoreUris;
         }
 
         /**
