@@ -373,7 +373,7 @@ public class AppConfig {
          * Sets the list of URI's that doesn't require CSRF protection.
          *
          * @param csrfIgnoreUris list of URI's that doesn't require CSRF protection.
-         * @throws IllegalArgumentException if URIs in {@code csrfIgnoreUris} is empty or doesnn't start with '/'.
+         * @throws IllegalArgumentException if URIs in {@code csrfIgnoreUris} is empty, null or doesn't start with '/'.
          */
         public void setCsrfIgnoreUris(List<String> csrfIgnoreUris) {
             if (csrfIgnoreUris != null) {
@@ -386,6 +386,8 @@ public class AppConfig {
                                     "XSS ignore URI in the app's config must start with a '/'. Instead found '" +
                                             csrfUri.charAt(0) + "' at the beginning of the ignore URI '" + csrfUri + "'.");
                         }
+                    } else {
+                        throw new IllegalArgumentException("CSRF ignore URI in the app's config cannot be 'null'.");
                     }
                 }
                 this.csrfIgnoreUris = csrfIgnoreUris;
@@ -407,7 +409,7 @@ public class AppConfig {
          * Sets the list of URI's that doesn't require XSS protection.
          *
          * @param xssIgnoreUris the list of URI's that doesn't require XSS protection.
-         * @throws IllegalArgumentException if URIs in {@code xssIgnoreUris} is empty or doesn't start with '/'.
+         * @throws IllegalArgumentException if URIs in {@code xssIgnoreUris} is empty, null or doesn't start with '/'.
          */
         public void setXssIgnoreUris(List<String> xssIgnoreUris) {
             if (xssIgnoreUris != null) {
@@ -420,6 +422,8 @@ public class AppConfig {
                                     "XSS ignore URI in the app's config must start with a '/'. Instead found '" +
                                             xssUri.charAt(0) + "' at the beginning of the ignore URI '" + xssUri + "'.");
                         }
+                    } else {
+                        throw new IllegalArgumentException("XSS ignore URI in the app's config cannot be 'null'.");
                     }
                 }
                 this.xssIgnoreUris = xssIgnoreUris;

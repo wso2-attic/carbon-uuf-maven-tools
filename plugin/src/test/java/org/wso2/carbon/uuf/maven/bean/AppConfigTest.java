@@ -119,8 +119,11 @@ public class AppConfigTest {
         securityConfig.setXssIgnoreUris(Collections.singletonList("/valid/uri"));
         securityConfig.setCsrfIgnoreUris(null);
         securityConfig.setXssIgnoreUris(null);
-        securityConfig.setCsrfIgnoreUris(Collections.singletonList(null));
-        securityConfig.setXssIgnoreUris(Collections.singletonList(null));
+
+        Assert.assertThrows(IllegalArgumentException.class,
+                () -> securityConfig.setCsrfIgnoreUris(Collections.singletonList(null)));
+        Assert.assertThrows(IllegalArgumentException.class,
+                () -> securityConfig.setXssIgnoreUris(Collections.singletonList(null)));
     }
 
     private static AppConfig createAppConfig() {
