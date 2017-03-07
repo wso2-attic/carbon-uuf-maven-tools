@@ -35,6 +35,8 @@ public class AppConfig {
     private String contextPath;
     private String theme;
     private String loginPageUri;
+    private String authenticator;
+    private String logoutPageUri;
     private Map<String, String> errorPages = Collections.emptyMap();
     private List<Menu> menus = Collections.emptyList();
     private SecurityConfig security = new SecurityConfig();
@@ -119,6 +121,43 @@ public class AppConfig {
             }
         }
         this.loginPageUri = loginPageUri;
+    }
+
+    /**
+     * Returns the logout page URI in this app's config.
+     *
+     * @return URI of the logout page in this app's config
+     */
+    public String getLogoutPageUri () {
+        return logoutPageUri;
+    }
+
+    /**
+     * Sets the logout page URI in this app's config.
+     * This logout page URI is not a mandatory field.
+     *
+     * @param logoutPageUri URI of the logout to be set
+     */
+    public void setLogoutPageUri(String logoutPageUri) {
+        this.logoutPageUri = logoutPageUri;
+    }
+
+    /**
+     * Returns the authenticator class in this app's config.
+     *
+     * @return Authenticator class name in this app's config
+     */
+    public String getAuthenticator() {
+        return authenticator;
+    }
+
+    /**
+     * Sets the authenticator class in this app's config.
+     *
+     * @param authenticator Authenticator class name to be set
+     */
+    public void setAuthenticator(String authenticator) {
+        this.authenticator = authenticator;
     }
 
     /**
