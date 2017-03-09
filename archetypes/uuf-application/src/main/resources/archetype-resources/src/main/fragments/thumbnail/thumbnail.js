@@ -15,6 +15,6 @@
  */
 
 //noinspection JSUnusedGlobalSymbols
-function onRequest(context) {
+function onGet(context) {
     return {appData: {name: null, image: null}};
 }
