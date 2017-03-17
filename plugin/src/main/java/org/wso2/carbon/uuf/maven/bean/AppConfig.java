@@ -356,44 +356,80 @@ public class AppConfig {
      */
     public static class SecurityConfig {
 
-        private PatternsConfig csrfPatterns = new PatternsConfig();
-        private PatternsConfig xssPatterns = new PatternsConfig();
+        private List<String> csrfIgnoreUris = Collections.emptyList();
+        private List<String> xssIgnoreUris = Collections.emptyList();
         private Map<String, String> responseHeaders = Collections.emptyMap();
 
         /**
-         * Returns CSRF URI patterns of this security configuration.
+         * Returns the list of URI's that doesn't require CSRF protection.
          *
-         * @return CSRF URI patterns
+         * @return list of URI's that doesn't require CSRF protection.
          */
-        public PatternsConfig getCsrfPatterns() {
-            return csrfPatterns;
+        public List<String> getCsrfIgnoreUris() {
+            return csrfIgnoreUris;
         }
 
         /**
-         * Sets the CSRF URI patterns of this security configuration.
+         * Sets the list of URI's that doesn't require CSRF protection.
          *
-         * @param csrfPatterns CSRF URI patterns to be set
+         * @param csrfIgnoreUris list of URI's that doesn't require CSRF protection.
+         * @throws IllegalArgumentException if URIs in {@code csrfIgnoreUris} is empty, null or doesn't start with '/'.
          */
-        public void setCsrfPatterns(PatternsConfig csrfPatterns) {
-            this.csrfPatterns = (csrfPatterns == null) ? new PatternsConfig() : csrfPatterns;
+        public void setCsrfIgnoreUris(List<String> csrfIgnoreUris) {
+            if (csrfIgnoreUris != null) {
+                for (String csrfUri : csrfIgnoreUris) {
+                    if (csrfUri != null) {
+                        if (csrfUri.isEmpty()) {
+                            throw new IllegalArgumentException("CSRF ignore URI in the app's config cannot be empty.");
+                        } else if (!csrfUri.startsWith("/")) {
+                            throw new IllegalArgumentException(
+                                    "XSS ignore URI in the app's config must start with a '/'. Instead found '" +
+                                            csrfUri.charAt(0) + "' at the beginning of the ignore URI '" + csrfUri + "'.");
+                        }
+                    } else {
+                        throw new IllegalArgumentException("CSRF ignore URI in the app's config cannot be 'null'.");
+                    }
+                }
+                this.csrfIgnoreUris = csrfIgnoreUris;
+            } else {
+                this.csrfIgnoreUris = Collections.emptyList();
+            }
         }
 
         /**
-         * Returns XSS URI patterns of this security configuration.
+         * Returns the list of URI's that doesn't require XSS protection.
          *
-         * @return XSS URI patterns
+         * @return list of URI's that doesn't require XSS protection.
          */
-        public PatternsConfig getXssPatterns() {
-            return xssPatterns;
+        public List<String> getXssIgnoreUris() {
+            return xssIgnoreUris;
         }
 
         /**
-         * Sets the XSS URI patterns of this security configuration.
+         * Sets the list of URI's that doesn't require XSS protection.
          *
-         * @param xssPatterns XSS URI patterns to be set
+         * @param xssIgnoreUris the list of URI's that doesn't require XSS protection.
+         * @throws IllegalArgumentException if URIs in {@code xssIgnoreUris} is empty, null or doesn't start with '/'.
          */
-        public void setXssPatterns(PatternsConfig xssPatterns) {
-            this.xssPatterns = (xssPatterns == null) ? new PatternsConfig() : xssPatterns;
+        public void setXssIgnoreUris(List<String> xssIgnoreUris) {
+            if (xssIgnoreUris != null) {
+                for (String xssUri : xssIgnoreUris) {
+                    if (xssUri != null) {
+                        if (xssUri.isEmpty()) {
+                            throw new IllegalArgumentException("XSS ignore URI in the app's config cannot be empty.");
+                        } else if (!xssUri.startsWith("/")) {
+                            throw new IllegalArgumentException(
+                                    "XSS ignore URI in the app's config must start with a '/'. Instead found '" +
+                                            xssUri.charAt(0) + "' at the beginning of the ignore URI '" + xssUri + "'.");
+                        }
+                    } else {
+                        throw new IllegalArgumentException("XSS ignore URI in the app's config cannot be 'null'.");
+                    }
+                }
+                this.xssIgnoreUris = xssIgnoreUris;
+            } else {
+                this.xssIgnoreUris = Collections.emptyList();
+            }
         }
 
         /**
@@ -415,70 +451,4 @@ public class AppConfig {
         }
     }
 
-    /**
-     * Bean class that represents security related URI patterns configurations in the app's config file of an UUF App.
-     *
-     * @since 1.0.0
-     */
-    public static class PatternsConfig {
-
-        private List<String> accept = Collections.emptyList();
-        private List<String> reject = Collections.emptyList();
-
-        /**
-         * Returns allowing URI patterns of this URI pattern configuration.
-         *
-         * @return allowing URI patterns
-         */
-        public List<String> getAccept() {
-            return accept;
-        }
-
-        /**
-         * Sets the allowing URI patterns of this URI pattern configuration.
-         *
-         * @param accept allowing URI patterns to be set
-         */
-        public void setAccept(List<String> accept) {
-            if (accept == null) {
-                this.accept = Collections.emptyList();
-            } else {
-                for (String uriPattern : accept) {
-                    if (uriPattern.isEmpty()) {
-                        throw new IllegalArgumentException("Accepting URI pattern cannot be empty.");
-                    }
-                    // TODO: 12/29/16 Check whether uriPattern is a valid pattern.
-                }
-                this.accept = accept;
-            }
-        }
-
-        /**
-         * Returns denying URI patterns of this URI pattern configuration.
-         *
-         * @return denying URI patterns
-         */
-        public List<String> getReject() {
-            return reject;
-        }
-
-        /**
-         * Sets the denying URI patterns of this URI pattern configuration.
-         *
-         * @param reject denying URI patterns to be set
-         */
-        public void setReject(List<String> reject) {
-            if (reject == null) {
-                this.reject = Collections.emptyList();
-            } else {
-                for (String uriPattern : reject) {
-                    if (uriPattern.isEmpty()) {
-                        throw new IllegalArgumentException("Rejecting URI pattern cannot be empty.");
-                    }
-                    // TODO: 12/29/16 Check whether uriPattern is a valid pattern.
-                }
-                this.reject = reject;
-            }
-        }
-    }
 }

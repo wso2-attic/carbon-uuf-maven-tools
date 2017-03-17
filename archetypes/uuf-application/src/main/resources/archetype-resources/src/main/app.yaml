@@ -24,11 +24,7 @@ loginPageUri: "/simple-auth/login"
 
 # Security related configurations for this app.
 security:
-  csrfPatterns:
-    accept: []
-    reject: []
-  xssPatterns:
-    accept: []
-    reject: []
+  csrfIgnoreUris: []
+  xssIgnoreUris: []
   responseHeaders:
     "X-Frame-Options": "DENY"
