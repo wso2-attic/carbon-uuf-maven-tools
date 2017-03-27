@@ -27,4 +27,7 @@ security:
   csrfIgnoreUris: []
   xssIgnoreUris: []
   responseHeaders:
-    "X-Frame-Options": "DENY"
+     staticResources:
+      "Content-Security-Policy": "default-src 'none'; script-src 'self' ssl.google-analytics.com;"
+     pages:
+      "X-Frame-Options": "DENY"
