@@ -358,7 +358,7 @@ public class AppConfig {
 
         private List<String> csrfIgnoreUris = Collections.emptyList();
         private List<String> xssIgnoreUris = Collections.emptyList();
-        private ResponseHeaders responseHeaders;
+        private ResponseHeaders responseHeaders = new ResponseHeaders();
 
         /**
          * Returns the list of URI's that doesn't require CSRF protection.
