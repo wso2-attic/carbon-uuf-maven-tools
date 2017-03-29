@@ -78,6 +78,12 @@
                 <artifactId>plexus-archiver</artifactId>
                 <version>${plexus-archiver.version}</version>
             </dependency>
+            <!--Maven Archiver-->
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-archiver</artifactId>
+                <version>${maven-archiver.version}</version>
+            </dependency>
             <!--Other-->
             <dependency>
                 <groupId>commons-io</groupId>
@@ -114,6 +120,8 @@
         <mojo-executor.version>2.2.0</mojo-executor.version>
         <!--Plexus Archiver-->
         <plexus-archiver.version>3.0</plexus-archiver.version>
+        <!--Maven Archiver-->
+        <maven-archiver.version>3.1.1</maven-archiver.version>
         <!--Other-->
         <commons-io.version>2.1</commons-io.version>
         <orbit.org.yaml.version>1.16.0.wso2v1</orbit.org.yaml.version>
