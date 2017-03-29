@@ -25,4 +25,7 @@ security:
   csrfIgnoreUris: []
   xssIgnoreUris: []
   responseHeaders:
-    "Some Header": "some Value"
+    staticResources:
+      "Content-Security-Policy": "default-src 'none';"
+    pages:
+      "X-Frame-Options": "DENY"
