@@ -35,6 +35,7 @@ public class AppConfig {
     private String contextPath;
     private String theme;
     private String loginPageUri;
+    private String sessionManager;
     private Map<String, String> errorPages = Collections.emptyMap();
     private List<Menu> menus = Collections.emptyList();
     private SecurityConfig security = new SecurityConfig();
@@ -119,6 +120,24 @@ public class AppConfig {
             }
         }
         this.loginPageUri = loginPageUri;
+    }
+
+    /**
+     * Get session manager implementation class.
+     *
+     * @return session manager implementation class
+     */
+    public String getSessionManager() {
+        return sessionManager;
+    }
+
+    /**
+     * Set session manager implementation class.
+     *
+     * @param sessionManager session manager implementation class
+     */
+    public void setSessionManager(String sessionManager) {
+        this.sessionManager = sessionManager;
     }
 
     /**
