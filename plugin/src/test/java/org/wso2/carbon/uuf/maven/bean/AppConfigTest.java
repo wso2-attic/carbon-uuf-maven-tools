@@ -60,6 +60,13 @@ public class AppConfigTest {
     }
 
     @Test
+    public void testAuthenticatorValidations() {
+        AppConfig appConfig = createAppConfig();
+        appConfig.setAuthenticator(null);
+        appConfig.setAuthenticator("/sso/login");
+    }
+
+    @Test
     public void testErrorPagesValidations() {
         AppConfig appConfig = createAppConfig();
         Assert.assertThrows(IllegalArgumentException.class,
