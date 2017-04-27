@@ -31,10 +31,14 @@ import java.util.regex.Pattern;
 public class AppConfig {
 
     private static final Pattern HTTP_STATUS_CODES_PATTERN = Pattern.compile("[1-5][0-9][0-9]");
+    private static final Pattern FULLY_QUALIFIED_CLASS_NAME_PATTERN =
+            Pattern.compile("\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*" +
+                    "(\\.\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)*");
 
     private String contextPath;
     private String theme;
     private String loginPageUri;
+    private String sessionManager;
     private Map<String, String> errorPages = Collections.emptyMap();
     private List<Menu> menus = Collections.emptyList();
     private SecurityConfig security = new SecurityConfig();
@@ -119,6 +123,34 @@ public class AppConfig {
             }
         }
         this.loginPageUri = loginPageUri;
+    }
+
+    /**
+     * Returns session manager class name of this app's config.
+     *
+     * @return session manager implementation class
+     */
+    public String getSessionManager() {
+        return sessionManager;
+    }
+
+    /**
+     * Set session manager implementation class.
+     *
+     * @param sessionManager session manager implementation class
+     */
+    public void setSessionManager(String sessionManager) {
+        if (sessionManager != null) {
+            if (sessionManager.isEmpty()) {
+                throw new IllegalArgumentException("Session Manager configured with 'sessionManager' key in the app's" +
+                        " config cannot be empty.");
+            }
+            if (!FULLY_QUALIFIED_CLASS_NAME_PATTERN.matcher(sessionManager).matches()) {
+                throw new IllegalArgumentException("Session Manager configured with 'sessionManager' key in the app's" +
+                        " config is invalid and do not comprehend to be a fully qualified java class name.");
+            }
+        }
+        this.sessionManager = sessionManager;
     }
 
     /**
