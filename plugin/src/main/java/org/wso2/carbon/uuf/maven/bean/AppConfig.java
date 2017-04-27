@@ -39,6 +39,7 @@ public class AppConfig {
     private String theme;
     private String loginPageUri;
     private String authorizer;
+    private String authenticator;
     private SessionConfig sessionManagement = new SessionConfig();
     private Map<String, String> errorPages = Collections.emptyMap();
     private List<Menu> menus = Collections.emptyList();
@@ -151,6 +152,34 @@ public class AppConfig {
             }
         }
         this.authorizer = authorizer;
+    }
+
+    /**
+     * Returns the authenticator class name of this app's config.
+     *
+     * @return authenticator implementation class
+     */
+    public String getAuthenticator() {
+        return authenticator;
+    }
+
+    /**
+     * Set authenticator implementation class.
+     *
+     * @param authenticator authenticator implementation class
+     */
+    public void setAuthenticator(String authenticator) {
+        if (authenticator != null) {
+            if (authenticator.isEmpty()) {
+                throw new IllegalArgumentException("Authenticator configured with 'authenticator' key in the app's" +
+                                                   " config cannot be empty.");
+            }
+            if (!FULLY_QUALIFIED_CLASS_NAME_PATTERN.matcher(authenticator).matches()) {
+                throw new IllegalArgumentException("Authenticator configured with 'authenticator' key in the app's" +
+                                                   " config is invalid and do not comprehend to be a fully qualified java class name.");
+            }
+        }
+        this.authenticator = authenticator;
     }
 
     /**
