@@ -61,17 +61,22 @@ public class AppConfigTest {
 
     @Test
     public void testSessionManagerValidations() {
-        AppConfig appConfig = createAppConfig();
-        Assert.assertThrows(IllegalArgumentException.class, () -> appConfig.setSessionManager(""));
-        Assert.assertThrows(IllegalArgumentException.class, () -> appConfig.setSessionManager("c/lass"));
-        Assert.assertThrows(IllegalArgumentException.class, () -> appConfig.setSessionManager("c*lass"));
+        AppConfig.SessionConfig sessionConfig = new AppConfig.SessionConfig();
 
-        // Null class name
-        appConfig.setSessionManager(null);
+        // Session manager factory class validations
+        Assert.assertThrows(IllegalArgumentException.class, () -> sessionConfig.setFactoryClassName(""));
+        Assert.assertThrows(IllegalArgumentException.class, () -> sessionConfig.setFactoryClassName("c/lass"));
+        Assert.assertThrows(IllegalArgumentException.class, () -> sessionConfig.setFactoryClassName("c*lass"));
+        sessionConfig.setFactoryClassName(null);
+        sessionConfig.setFactoryClassName("PersistentSessionManager");
+        sessionConfig.setFactoryClassName("org.wso2.carbon.uuf.sample.simpleauth.bundle.api.auth." +
+                "PersistentSessionManagerFactory");
 
-        // Valid class names
-        appConfig.setSessionManager("PersistentSessionManager");
-        appConfig.setSessionManager("org.wso2.carbon.uuf.sample.simpleauth.bundle.api.auth.PersistentSessionManager");
+        // Session timeout validations
+        Assert.assertEquals(0L, sessionConfig.getTimeout());
+        Assert.assertThrows(IllegalArgumentException.class, () -> sessionConfig.setTimeout(-1));
+        Assert.assertThrows(IllegalArgumentException.class, () -> sessionConfig.setTimeout(0));
+        sessionConfig.setTimeout(1);
     }
 
     @Test

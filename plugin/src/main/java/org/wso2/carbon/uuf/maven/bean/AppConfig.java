@@ -31,14 +31,11 @@ import java.util.regex.Pattern;
 public class AppConfig {
 
     private static final Pattern HTTP_STATUS_CODES_PATTERN = Pattern.compile("[1-5][0-9][0-9]");
-    private static final Pattern FULLY_QUALIFIED_CLASS_NAME_PATTERN =
-            Pattern.compile("\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*" +
-                    "(\\.\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)*");
 
     private String contextPath;
     private String theme;
     private String loginPageUri;
-    private String sessionManager;
+    private SessionConfig sessionManagement = new SessionConfig();
     private Map<String, String> errorPages = Collections.emptyMap();
     private List<Menu> menus = Collections.emptyList();
     private SecurityConfig security = new SecurityConfig();
@@ -126,31 +123,21 @@ public class AppConfig {
     }
 
     /**
-     * Returns session manager class name of this app's config.
+     * Returns the session management configuration of this app's config.
      *
-     * @return session manager implementation class
+     * @return session management configuration
      */
-    public String getSessionManager() {
-        return sessionManager;
+    public SessionConfig getSessionManagement() {
+        return sessionManagement;
     }
 
     /**
-     * Set session manager implementation class.
+     * Sets the session management configuration for this app's config.
      *
-     * @param sessionManager session manager implementation class
+     * @param sessionManagement session management configuration
      */
-    public void setSessionManager(String sessionManager) {
-        if (sessionManager != null) {
-            if (sessionManager.isEmpty()) {
-                throw new IllegalArgumentException("Session Manager configured with 'sessionManager' key in the app's" +
-                        " config cannot be empty.");
-            }
-            if (!FULLY_QUALIFIED_CLASS_NAME_PATTERN.matcher(sessionManager).matches()) {
-                throw new IllegalArgumentException("Session Manager configured with 'sessionManager' key in the app's" +
-                        " config is invalid and do not comprehend to be a fully qualified java class name.");
-            }
-        }
-        this.sessionManager = sessionManager;
+    public void setSessionManagement(SessionConfig sessionManagement) {
+        this.sessionManagement = (sessionManagement == null) ? new SessionConfig() : sessionManagement;
     }
 
     /**
@@ -287,6 +274,69 @@ public class AppConfig {
                 throw new IllegalArgumentException("Items of a menu cannot be empty list.");
             }
             this.items = items;
+        }
+    }
+
+    /**
+     * Bean class that represents the session manager's config of an UUF app.
+     *
+     * @since 1.0.0
+     */
+    public static class SessionConfig {
+
+        public static final Pattern FULLY_QUALIFIED_CLASS_NAME_PATTERN =
+                Pattern.compile("\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*" +
+                        "(\\.\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)*");
+
+        private String factoryClassName;
+        private long timeout;
+
+        /**
+         * Returns the session manager factory class name for this configuration.
+         *
+         * @return session manager factory class name
+         */
+        public String getFactoryClassName() {
+            return factoryClassName;
+        }
+
+        /**
+         * Sets the session manager factory class name for this configuration.
+         *
+         * @param factoryClassName session manager factory class name
+         */
+        public void setFactoryClassName(String factoryClassName) {
+            if (factoryClassName != null) {
+                if (factoryClassName.isEmpty()) {
+                    throw new IllegalArgumentException("Session Manager Factory cannot be empty.");
+                }
+                if (!FULLY_QUALIFIED_CLASS_NAME_PATTERN.matcher(factoryClassName).matches()) {
+                    throw new IllegalArgumentException("Session Manager Factory class name is invalid and do not " +
+                            "comprehend to be a fully qualified java class name.");
+                }
+            }
+            this.factoryClassName = factoryClassName;
+        }
+
+        /**
+         * Returns the session manager's session timeout in seconds for this configuration.
+         *
+         * @return session manager's session timeout in seconds
+         */
+        public long getTimeout() {
+            return timeout;
+        }
+
+        /**
+         * Sets the session manager's session timeout in seconds for this configuration.
+         *
+         * @param timeout session manager's session timeout in seconds
+         */
+        public void setTimeout(long timeout) {
+            if (timeout <= 0) {
+                throw new IllegalArgumentException("Session timeout should be greater than 0.");
+            }
+            this.timeout = timeout;
         }
     }
 
