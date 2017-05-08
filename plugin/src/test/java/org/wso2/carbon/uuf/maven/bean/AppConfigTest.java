@@ -80,6 +80,20 @@ public class AppConfigTest {
     }
 
     @Test
+    public void testAuthorizerValidations() {
+        AppConfig appConfig = new AppConfig();
+
+        // Session manager factory class validations
+        Assert.assertThrows(IllegalArgumentException.class, () -> appConfig.setAuthorizer(""));
+        Assert.assertThrows(IllegalArgumentException.class, () -> appConfig.setAuthorizer("c/lass"));
+        Assert.assertThrows(IllegalArgumentException.class, () -> appConfig.setAuthorizer("c*lass"));
+        appConfig.setAuthorizer(null);
+        appConfig.setAuthorizer("SimpleAuthorizer");
+        appConfig.setAuthorizer("org.wso2.carbon.uuf.sample.simpleauth.bundle.api.auth." +
+                "SimpleAuthorizer");
+    }
+
+    @Test
     public void testErrorPagesValidations() {
         AppConfig appConfig = createAppConfig();
         Assert.assertThrows(IllegalArgumentException.class,
