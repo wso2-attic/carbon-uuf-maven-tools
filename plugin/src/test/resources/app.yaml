@@ -1,5 +1,9 @@
 # test
 theme : "org.wso2.carbon.uuf.sample.theme.default"
+sessionManagement:
+  factoryClassName: "org.wso2.carbon.uuf.sample.simpleauth.bundle.api.auth.PersistentSessionManagerFactory"
+  timeout: 600
+authorizer: "org.wso2.carbon.uuf.sample.simpleauth.bundle.api.auth.CaasAuthorizer"
 menus :
   - name: "main"
     items:

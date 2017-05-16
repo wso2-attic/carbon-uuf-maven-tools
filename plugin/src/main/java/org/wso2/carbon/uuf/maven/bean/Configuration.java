@@ -46,6 +46,7 @@ public class Configuration extends AppConfig {
         setContextPath(appConfig.getContextPath());
         setTheme(appConfig.getTheme());
         setLoginPageUri(appConfig.getLoginPageUri());
+        setAuthorizer(appConfig.getAuthorizer());
         setSessionManagement(appConfig.getSessionManagement());
         setErrorPages(appConfig.getErrorPages());
         setMenus(appConfig.getMenus());

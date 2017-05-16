@@ -31,10 +31,14 @@ import java.util.regex.Pattern;
 public class AppConfig {
 
     private static final Pattern HTTP_STATUS_CODES_PATTERN = Pattern.compile("[1-5][0-9][0-9]");
+    public static final Pattern FULLY_QUALIFIED_CLASS_NAME_PATTERN =
+            Pattern.compile("\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*" +
+                    "(\\.\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)*");
 
     private String contextPath;
     private String theme;
     private String loginPageUri;
+    private String authorizer;
     private SessionConfig sessionManagement = new SessionConfig();
     private Map<String, String> errorPages = Collections.emptyMap();
     private List<Menu> menus = Collections.emptyList();
@@ -120,6 +124,33 @@ public class AppConfig {
             }
         }
         this.loginPageUri = loginPageUri;
+    }
+
+    /**
+     * Returns the authorizer in this app's config.
+     *
+     * @return authorizer in this app's config
+     */
+    public String getAuthorizer() {
+        return authorizer;
+    }
+
+    /**
+     * Sets the authorizer in this app's config.
+     *
+     * @param authorizer in this app's config
+     */
+    public void setAuthorizer(String authorizer) {
+        if (authorizer != null) {
+            if (authorizer.isEmpty()) {
+                throw new IllegalArgumentException("Authorizer class name cannot be empty.");
+            }
+            if (!FULLY_QUALIFIED_CLASS_NAME_PATTERN.matcher(authorizer).matches()) {
+                throw new IllegalArgumentException("Authorizer class name '" + authorizer +
+                        "' is not a fully qualified Java class name.");
+            }
+        }
+        this.authorizer = authorizer;
     }
 
     /**
@@ -284,10 +315,6 @@ public class AppConfig {
      */
     public static class SessionConfig {
 
-        public static final Pattern FULLY_QUALIFIED_CLASS_NAME_PATTERN =
-                Pattern.compile("\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*" +
-                        "(\\.\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)*");
-
         private String factoryClassName;
         private long timeout;
 
@@ -308,11 +335,11 @@ public class AppConfig {
         public void setFactoryClassName(String factoryClassName) {
             if (factoryClassName != null) {
                 if (factoryClassName.isEmpty()) {
-                    throw new IllegalArgumentException("Session Manager Factory cannot be empty.");
+                    throw new IllegalArgumentException("Session Manager Factory class name cannot be empty.");
                 }
                 if (!FULLY_QUALIFIED_CLASS_NAME_PATTERN.matcher(factoryClassName).matches()) {
-                    throw new IllegalArgumentException("Session Manager Factory class name is invalid and do not " +
-                            "comprehend to be a fully qualified java class name.");
+                    throw new IllegalArgumentException("Session Manager Factory class name '" + factoryClassName +
+                            "' is not a fully qualified Java class name.");
                 }
             }
             this.factoryClassName = factoryClassName;
