@@ -33,10 +33,6 @@ import java.nio.file.Paths;
  */
 public abstract class AbstractUUFMojo extends AbstractMojo {
 
-    protected static final String ARTIFACT_TYPE_UUF_APP = "carbon-feature";
-    protected static final String ARTIFACT_TYPE_UUF_COMPONENT = "uuf-component";
-    protected static final String ARTIFACT_TYPE_UUF_THEME = "uuf-theme";
-
     /**
      * Associated Maven project with this Mojo.
      */
