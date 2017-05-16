@@ -3,6 +3,14 @@
 # Default theme for this app.
 theme : "org.wso2.carbon.uuf.common.default.theme"
 
+# Session manager configuration for this app.
+sessionManagement:
+  factoryClassName: "org.wso2.carbon.uuf.api.auth.InMemorySessionManagerFactory"
+  timeout: 600
+
+# Authorizer for this app.
+authorizer: null
+
 # Menus in this app.
 menus :
   - name: "main"
