@@ -22,13 +22,10 @@
             <defaultValue>org.wso2.carbon.uuf.sample</defaultValue>
         </requiredProperty>
         <requiredProperty key="artifactId">
-            <defaultValue>org.wso2.carbon.uuf.sample.hello-world</defaultValue>
+            <defaultValue>org.wso2.carbon.uuf.sample.hello-world.ui</defaultValue>
         </requiredProperty>
         <requiredProperty key="version">
             <defaultValue>1.0.0-SNAPSHOT</defaultValue>
-        </requiredProperty>
-        <requiredProperty key="package">
-            <defaultValue>org.wso2.carbon.uuf.sample.hello-world</defaultValue>
         </requiredProperty>
         <requiredProperty key="componentName">
             <defaultValue>Hello World Component</defaultValue>
