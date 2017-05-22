@@ -18,10 +18,5 @@
  */
 
 function onGet(env) {
-    return {
-        appData: {
-            name: "My Pet",
-            image: "my-pet.png"
-        }
-    };
+    return {"helloMessage": "Hello World from fragment!"};
 }
