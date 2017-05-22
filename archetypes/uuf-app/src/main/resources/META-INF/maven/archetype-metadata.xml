@@ -16,6 +16,7 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
+
 <archetype-descriptor name="hello-world-app">
     <requiredProperties>
         <requiredProperty key="groupId">
@@ -27,11 +28,8 @@
         <requiredProperty key="version">
             <defaultValue>1.0.0-SNAPSHOT</defaultValue>
         </requiredProperty>
-        <requiredProperty key="package">
-            <defaultValue>org.wso2.carbon.uuf.sample.hello-world</defaultValue>
-        </requiredProperty>
-        <requiredProperty key="applicationName">
-            <defaultValue>Hello World App</defaultValue>
+        <requiredProperty key="directoryName">
+            <defaultValue>org.wso2.carbon.uuf.sample.hello-world.app</defaultValue>
         </requiredProperty>
     </requiredProperties>
     <fileSets>
