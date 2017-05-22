@@ -35,7 +35,7 @@
     <modules>
         <module>uuf-theme</module>
         <module>uuf-component</module>
-        <module>uuf-application</module>
+        <module>uuf-app</module>
     </modules>
 
     <build>
