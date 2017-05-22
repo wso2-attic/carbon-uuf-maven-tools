@@ -20,29 +20,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>${groupId}</groupId>
+    <artifactId>${artifactId}</artifactId>
+    <version>${version}</version>
+    <packaging>uuf-component</packaging>
+
+    <name>WSO2 UUF Component - ${artifactId}</name>
+    <url>http://wso2.org</url>
+
     <parent>
         <groupId>org.wso2</groupId>
         <artifactId>wso2</artifactId>
         <version>5</version>
     </parent>
 
-    <groupId>${groupId}</groupId>
-    <artifactId>${artifactId}</artifactId>
-    <version>${version}</version>
-    <packaging>uuf-component</packaging>
-
-    <url>http://wso2.org</url>
-
-    <properties>
-        <!--NOTE: Add releveant package imports if you are using callOsgiService() from JavaScript of the component-->
-        <import.package>
-            org.wso2.carbon.uuf.sample.*
-        </import.package>
-    </properties>
-
     <dependencies>
-        <!-- NOTE: Add **ONLY** UUF App/Component/Theme dependencies here.
-        If you need to ship non-UUF dependencies with your UUF App, please use a p2 feature.-->
+        <!--UUF component dependencies goes here-->
         <dependency>
             <groupId>org.wso2.carbon.uuf.common</groupId>
             <artifactId>org.wso2.carbon.uuf.common.foundation.ui</artifactId>
@@ -50,13 +43,12 @@
             <type>zip</type>
             <classifier>uuf-component</classifier>
         </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.uuf.common</groupId>
-            <artifactId>org.wso2.carbon.uuf.common.default.theme</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <type>zip</type>
-            <classifier>uuf-theme</classifier>
-        </dependency>
+        <!--Backend bundle dependencies goes here-->
+        <!--Sample:-->
+        <!--<dependency>-->
+            <!--<groupId>org.wso2.carbon.uuf.sample</groupId>-->
+            <!--<artifactId>org.wso2.carbon.uuf.sample.simple-auth.bundle</artifactId>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>
@@ -73,6 +65,21 @@
                         <goals>
                             <goal>create-component</goal>
                         </goals>
+                        <configuration>
+                            <!--All OSGi imports should be specified here-->
+                            <instructions>
+                                <!--Sample:-->
+                                <!--<Import-Package>org.wso2.carbon.uuf.sample.simpleauth.bundle</Import-Package>-->
+                            </instructions>
+                            <!--All backend bundles should be specified here-->
+                            <bundles>
+                                <!--Sample:-->
+                                <!--<bundle>-->
+                                    <!--<symbolicName>org.wso2.carbon.uuf.sample.simple-auth.bundle</symbolicName>-->
+                                    <!--<version>1.0.0</version>-->
+                                <!--</bundle>-->
+                            </bundles>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
