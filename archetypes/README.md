@@ -20,41 +20,40 @@ To install this maven archetype into your local system, issue following command 
 
     mvn clean install
 
-### Create sample UUF-Application using uuf-application-archetype
+### Create sample UUF-Application using uuf-app-archetype
 
 Navigate into a preferred location where you need to create your sample project.
   
     mvn archetype:generate -DarchetypeCatalog=local
   
-Then select `the org.wso2.carbon.uuf.maven.archtype:uuf-application-archetype` as new archetype.   
+Then select `the org.wso2.carbon.uuf.maven.archtype:uuf-app-archetype` as new archetype.   
 
 ```sh
-mvn archetype:generate -DarchetypeCatalog=local
+$ mvn archetype:generate -DarchetypeCatalog=local
 [INFO] Scanning for projects...
-[INFO]
+[INFO]                                                                         
 [INFO] ------------------------------------------------------------------------
 [INFO] Building Maven Stub Project (No POM) 1
 [INFO] ------------------------------------------------------------------------
-[INFO]
-[INFO] >>> maven-archetype-plugin:2.4:generate (default-cli) @ standalone-pom >>>
-[INFO]
-[INFO] <<< maven-archetype-plugin:2.4:generate (default-cli) @ standalone-pom <<<
-[INFO]
+[INFO] 
+[INFO] >>> maven-archetype-plugin:2.4:generate (default-cli) > generate-sources @ standalone-pom >>>
+[INFO] 
+[INFO] <<< maven-archetype-plugin:2.4:generate (default-cli) < generate-sources @ standalone-pom <<<
+[INFO] 
 [INFO] --- maven-archetype-plugin:2.4:generate (default-cli) @ standalone-pom ---
 [INFO] Generating project in Interactive mode
 [INFO] No archetype defined. Using maven-archetype-quickstart (org.apache.maven.archetypes:maven-archetype-quickstart:1.0)
 Choose archetype:
-1: local -> org.wso2.iot:mdm-android-agent-archetype (Creates a MDM-Android agent project)
-2: local -> org.wso2.cdmf.devicetype:cdmf-devicetype-archetype (WSO2 CDMF Device Type Archetype)
-3: local -> org.wso2.iot:cdmf-devicetype-archetype (WSO2 CDMF Device Type Archetype)
-4: local -> org.wso2.msf4j:msf4j-microservice (This an archetype for WSO2 MSF4J microservice)
-5: local -> org.wso2.carbon.uuf.maven:uuf-application-archetype (Maven archetype for UUF apps)
-6: local -> org.wso2.carbon.uuf.maven:uuf-component-archetype (Maven archetype for UUF components)
-7: local -> org.wso2.carbon.uuf.maven:uuf-theme-archetype (Maven archetype for UUF themes)
-Choose a number or apply filter (format: [groupId:]artifactId, case sensitive contains): : 5
+1: local -> org.apache.synapse:synapse-package-archetype (This archetype can be used to create Maven projects that bundle a mediation
+        into a standalone distribution ready to be executed)
+2: local -> org.wso2.carbon.uuf.maven:uuf-theme-archetype (Creates an UUF theme project)
+3: local -> org.wso2.carbon.uuf.maven:uuf-component-archetype (Creates an UUF component project)
+4: local -> org.wso2.carbon.uuf.maven:uuf-app-archetype (Maven archetype for UUF apps)
+Choose a number or apply filter (format: [groupId:]artifactId, case sensitive contains): : 4
+
 ```
 
-Then the archtype will provide some default values for groupId, artifactId, version, packaging and name of your application.
+Then the archtype will provide some default values for groupId, artifactId, version, packaging and name of your app.
 Or you can just type 'n' to start interactive mode for entering your own values.
 
 ### Building UUF App and deploy.
@@ -113,6 +112,6 @@ Goto "File->New->Maven Project->Next->Next". Select "All Catalogs" on the Catalo
 Goto "File-->New Project-->Maven-->Next". Then click "Add archetype" and enter the following values for groupId, artifactId and version. Replace [version] with required version you need. 
 
     GroupId : ArtifactId : Version
-    org.wso2.carbon.uuf.maven:uuf-application-archetype:[version]
+    org.wso2.carbon.uuf.maven:uuf-app-archetype:[version]
     org.wso2.carbon.uuf.maven:uuf-component-archetype:[version]
     org.wso2.carbon.uuf.maven:uuf-theme-archetype:[version]

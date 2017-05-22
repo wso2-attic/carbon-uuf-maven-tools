@@ -23,7 +23,7 @@
     <packaging>maven-archetype</packaging>
 
     <name>WSO2 UUF Maven Tools - Archetypes - Theme</name>
-    <description>Maven archetype for UUF themes</description>
+    <description>Creates an UUF theme project</description>
     <url>http://wso2.org</url>
 
     <parent>

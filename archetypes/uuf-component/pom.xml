@@ -23,7 +23,7 @@
     <packaging>maven-archetype</packaging>
 
     <name>WSO2 UUF Maven Tools - Archetypes - Component</name>
-    <description>Maven archetype for UUF components</description>
+    <description>Creates an UUF component project</description>
     <url>http://wso2.org</url>
 
     <parent>
