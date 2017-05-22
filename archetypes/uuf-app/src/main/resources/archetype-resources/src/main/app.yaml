@@ -1,4 +1,4 @@
-# Configurations of ${applicationName}.
+# Configurations of ${artifactId}.
 
 # Default theme for this app.
 theme : "org.wso2.carbon.uuf.common.default.theme"

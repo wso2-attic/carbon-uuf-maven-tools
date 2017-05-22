@@ -1,8 +1,9 @@
 {{layout "org.wso2.carbon.uuf.common.foundation.ui.main"}}
 {{favicon "images/favicon.png"}}
-{{title @config.appName}}
-{{#fillZone "content"}}
-{{!write your content here.}}
-    <b class="heading">{{helloMessage}}</b>
-{{/fillZone}}
+{{title (i18n "app.page.home.title") " | " (i18n "app.name")}}
 {{css "css/styles.css"}}
+
+{{#fillZone "content"}}
+{{!write your page content here.}}
+    <h1>{{helloMessage}}</h1>
+{{/fillZone}}
