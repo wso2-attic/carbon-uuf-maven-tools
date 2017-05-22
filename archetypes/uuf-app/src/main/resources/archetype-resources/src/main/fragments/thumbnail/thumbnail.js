@@ -21,7 +21,7 @@ function onGet(env) {
     return {
         appData: {
             name: "My Pet",
-            image: "thumb.png"
+            image: "my-pet.png"
         }
     };
 }
