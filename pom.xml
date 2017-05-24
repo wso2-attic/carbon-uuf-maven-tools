@@ -22,7 +22,7 @@
 
     <groupId>org.wso2.carbon.uuf.maven</groupId>
     <artifactId>carbon-uuf</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>WSO2 UUF Maven Tools</name>
