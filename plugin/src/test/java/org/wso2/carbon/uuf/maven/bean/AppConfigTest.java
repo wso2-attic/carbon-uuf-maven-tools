@@ -80,6 +80,21 @@ public class AppConfigTest {
     }
 
     @Test
+    public void testAuthenticatorValidations() {
+        AppConfig appConfig = createAppConfig();
+        Assert.assertThrows(IllegalArgumentException.class, () -> appConfig.setAuthenticator(""));
+        Assert.assertThrows(IllegalArgumentException.class, () -> appConfig.setAuthenticator("c/lass"));
+        Assert.assertThrows(IllegalArgumentException.class, () -> appConfig.setAuthenticator("c*lass"));
+
+        // Null class name
+        appConfig.setAuthenticator(null);
+
+        // Valid class names
+        appConfig.setAuthenticator("CaasAuthenticator");
+        appConfig.setAuthenticator("org.wso2.carbon.uuf.api.auth.CaasAuthenticator");
+    }
+
+    @Test
     public void testAuthorizerValidations() {
         AppConfig appConfig = new AppConfig();
 
