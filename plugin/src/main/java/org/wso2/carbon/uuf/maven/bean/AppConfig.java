@@ -37,9 +37,8 @@ public class AppConfig {
 
     private String contextPath;
     private String theme;
-    private String loginPageUri;
     private String authorizer;
-    private String authenticator;
+    private Authenticator authenticator;
     private SessionConfig sessionManagement = new SessionConfig();
     private Map<String, String> errorPages = Collections.emptyMap();
     private List<Menu> menus = Collections.emptyList();
@@ -98,36 +97,6 @@ public class AppConfig {
     }
 
     /**
-     * Returns the login page URI in this app's config.
-     *
-     * @return URI of the login page in this app's config
-     */
-    public String getLoginPageUri() {
-        return loginPageUri;
-    }
-
-    /**
-     * Sets the login page URI in this app's config.
-     *
-     * @param loginPageUri URI of the login page to be set
-     * @throws IllegalArgumentException if {@code loginPageUri} is empty or doesn't start with a '/'.
-     */
-    public void setLoginPageUri(String loginPageUri) {
-        if (loginPageUri != null) {
-            if (loginPageUri.isEmpty()) {
-                throw new IllegalArgumentException(
-                        "Login page URI configured with 'loginPageUri' key in the app's config cannot be empty.");
-            }
-            if (loginPageUri.charAt(0) != '/') {
-                throw new IllegalArgumentException(
-                        "Login page URI configured with 'loginPageUri' key in the app's config must start with a '/'." +
-                                " Instead found '" + loginPageUri.charAt(0) + "' at the beginning.");
-            }
-        }
-        this.loginPageUri = loginPageUri;
-    }
-
-    /**
      * Returns the authorizer in this app's config.
      *
      * @return authorizer in this app's config
@@ -155,30 +124,20 @@ public class AppConfig {
     }
 
     /**
-     * Returns the authenticator class name of this app's config.
+     * Returns the authenticator config of the app
      *
-     * @return authenticator implementation class
+     * @return authenticator config
      */
-    public String getAuthenticator() {
+    public Authenticator getAuthenticator() {
         return authenticator;
     }
 
     /**
-     * Set authenticator implementation class.
+     * Set the authenticator config for the app
      *
-     * @param authenticator authenticator implementation class
+     * @param authenticator authenticator config
      */
-    public void setAuthenticator(String authenticator) {
-        if (authenticator != null) {
-            if (authenticator.isEmpty()) {
-                throw new IllegalArgumentException("Authenticator configured with 'authenticator' key in the app's" +
-                                                   " config cannot be empty.");
-            }
-            if (!FULLY_QUALIFIED_CLASS_NAME_PATTERN.matcher(authenticator).matches()) {
-                throw new IllegalArgumentException("Authenticator configured with 'authenticator' key in the app's" +
-                                                   " config is invalid and do not comprehend to be a fully qualified java class name.");
-            }
-        }
+    public void setAuthenticator(Authenticator authenticator) {
         this.authenticator = authenticator;
     }
 
@@ -632,6 +591,106 @@ public class AppConfig {
          */
         public void setPages(Map<String, String> pages) {
             this.pages = pages;
+        }
+    }
+
+    /**
+     * Bean class that represents the authenticator configurations of an UUF App.
+     *
+     * @since 1.0.0
+     */
+    public static class Authenticator {
+        private String className;
+        private String loginUri;
+        private String logoutUri;
+
+        /**
+         * Returns the fully qualified name of the authenticator class
+         *
+         * @return Fully qualified authenticator class name
+         */
+        public String getClassName() {
+            return className;
+        }
+
+        /**
+         * Sets the fully qualified name of the authenticator class for the UUF app
+         *
+         * @param className The name of the authenticator class
+         */
+        public void setClassName(String className) {
+            if (className != null) {
+                if (className.isEmpty()) {
+                    throw new IllegalArgumentException("Authenticator configured with 'className' key in the app's" +
+                            " config cannot be empty.");
+                }
+                if (!FULLY_QUALIFIED_CLASS_NAME_PATTERN.matcher(className).matches()) {
+                    throw new IllegalArgumentException("Authenticator configured with 'className' key in the app's" +
+                            " config is invalid and do not comprehend to be a fully qualified java class name.");
+                }
+            }
+            this.className = className;
+        }
+
+        /**
+         * Returns the login page URI of the UUF app
+         *
+         * @return login page URI
+         */
+        public String getLoginUri() {
+            return loginUri;
+        }
+
+        /**
+         * Sets the login page URI of the uuf app
+         *
+         * @param loginUri The URI of the login page
+         * @throws IllegalArgumentException if loginUri is empty or doesn't start with a '/'
+         */
+
+        public void setLoginUri(String loginUri) {
+            if (loginUri != null) {
+                if (loginUri.isEmpty()) {
+                    throw new IllegalArgumentException(
+                            "Login page URI configured with 'loginUri' key in the app's config cannot be empty.");
+                }
+                if (loginUri.charAt(0) != '/') {
+                    throw new IllegalArgumentException(
+                            "Login page URI configured with 'loginUri' key in the app's config must start with a '/'." +
+                                    " Instead found '" + loginUri.charAt(0) + "' at the beginning.");
+                }
+            }
+            this.loginUri = loginUri;
+        }
+
+        /**
+         * Returns the logout page URI of the UUF app
+         *
+         * @return logoutUri The URI of the logout page
+         */
+        public String getLogoutUri() {
+            return logoutUri;
+        }
+
+        /**
+         * Sets the logout page URI
+         *
+         * @param logoutUri The  uri of the logout page
+         * @throws IllegalArgumentException if logoutUri is empty or doesn't start with a '/'
+         */
+        public void setLogoutUri(String logoutUri) {
+            if (logoutUri != null) {
+                if (logoutUri.isEmpty()) {
+                    throw new IllegalArgumentException(
+                            "Login page URI configured with 'logoutUri' key in the app's config cannot be empty.");
+                }
+                if (logoutUri.charAt(0) != '/') {
+                    throw new IllegalArgumentException(
+                            "Login page URI configured with 'logoutUri' key in the app's config must start with a '/'." +
+                                    " Instead found '" + logoutUri.charAt(0) + "' at the beginning.");
+                }
+            }
+            this.logoutUri = logoutUri;
         }
     }
 }
