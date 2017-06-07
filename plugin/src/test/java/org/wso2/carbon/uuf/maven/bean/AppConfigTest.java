@@ -49,17 +49,6 @@ public class AppConfigTest {
     }
 
     @Test
-    public void testLoginPageUriValidations() {
-        AppConfig appConfig = createAppConfig();
-        Assert.assertThrows(IllegalArgumentException.class, () -> appConfig.setLoginPageUri(""));
-        Assert.assertThrows(IllegalArgumentException.class, () -> appConfig.setLoginPageUri("login"));
-        Assert.assertThrows(IllegalArgumentException.class, () -> appConfig.setLoginPageUri("l/ogin"));
-
-        appConfig.setLoginPageUri(null);
-        appConfig.setLoginPageUri("/sso/login");
-    }
-
-    @Test
     public void testSessionManagerValidations() {
         AppConfig.SessionConfig sessionConfig = new AppConfig.SessionConfig();
 
@@ -81,17 +70,31 @@ public class AppConfigTest {
 
     @Test
     public void testAuthenticatorValidations() {
-        AppConfig appConfig = createAppConfig();
-        Assert.assertThrows(IllegalArgumentException.class, () -> appConfig.setAuthenticator(""));
-        Assert.assertThrows(IllegalArgumentException.class, () -> appConfig.setAuthenticator("c/lass"));
-        Assert.assertThrows(IllegalArgumentException.class, () -> appConfig.setAuthenticator("c*lass"));
+        AppConfig.Authenticator authentitcatorConfig = new AppConfig.Authenticator();
+        // Invalid class names
+        Assert.assertThrows(IllegalArgumentException.class, () -> authentitcatorConfig.setClassName(""));
+        Assert.assertThrows(IllegalArgumentException.class, () -> authentitcatorConfig.setClassName("c/lass"));
+        Assert.assertThrows(IllegalArgumentException.class, () -> authentitcatorConfig.setClassName("c*lass"));
 
         // Null class name
-        appConfig.setAuthenticator(null);
+        authentitcatorConfig.setClassName(null);
 
         // Valid class names
-        appConfig.setAuthenticator("CaasAuthenticator");
-        appConfig.setAuthenticator("org.wso2.carbon.uuf.api.auth.CaasAuthenticator");
+        authentitcatorConfig.setClassName("CaasAuthenticator");
+        authentitcatorConfig.setClassName("org.wso2.carbon.uuf.api.auth.CaasAuthenticator");
+
+        // Invalid login / logout uri
+        Assert.assertThrows(IllegalArgumentException.class, () -> authentitcatorConfig.setLoginUri(""));
+        Assert.assertThrows(IllegalArgumentException.class, () -> authentitcatorConfig.setLoginUri("a/b"));
+
+        Assert.assertThrows(IllegalArgumentException.class, () -> authentitcatorConfig.setLogoutUri("a/b"));
+        Assert.assertThrows(IllegalArgumentException.class, () -> authentitcatorConfig.setLogoutUri("a/b"));
+
+        // Valid login / logout uri
+        authentitcatorConfig.setLoginUri("/simple-auth/login");
+        authentitcatorConfig.setLoginUri(null);
+        authentitcatorConfig.setLoginUri("/simple-auth/logout");
+        authentitcatorConfig.setLoginUri(null);
     }
 
     @Test

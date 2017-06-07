@@ -24,7 +24,10 @@ menus :
 errorPages:
   404: "/foundation/error/404"
   default: "/foundation/error/default"
-loginPageUri: "/simple-auth/login"
+authenticator:
+  className: "org.wso2.carbon.uuf.auth.DummyAuth"
+  loginUri: "/simple-auth/login"
+  logoutUri: "/simple-auth/logout"
 security:
   csrfIgnoreUris: []
   xssIgnoreUris: []
